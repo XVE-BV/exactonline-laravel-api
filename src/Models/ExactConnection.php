@@ -35,7 +35,6 @@ use Picqer\Financials\Exact\Connection;
  */
 class ExactConnection extends Model
 {
-
     /**
      * The table associated with the model.
      *

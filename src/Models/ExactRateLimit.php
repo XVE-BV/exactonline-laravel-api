@@ -24,7 +24,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ExactRateLimit extends Model
 {
-
     /**
      * The table associated with the model.
      *
