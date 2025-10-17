@@ -20,7 +20,7 @@ it('revokes tokens locally and deactivates the connection', function () {
         'refresh_token_expires_at' => now()->addDays(10)->timestamp,
     ]);
 
-    $action = new RevokeTokensAction();
+    $action = new RevokeTokensAction;
 
     // Act (skip notifying Exact Online to keep test deterministic)
     $action->execute($connection, false);

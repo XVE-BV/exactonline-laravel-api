@@ -16,7 +16,7 @@ it('stores tokens with defaults and encrypts them', function () {
         'is_active' => false,
     ]);
 
-    $action = new StoreTokensAction();
+    $action = new StoreTokensAction;
 
     $now = now();
     \Illuminate\Support\Carbon::setTestNow($now);
