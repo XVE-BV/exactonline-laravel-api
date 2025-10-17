@@ -17,9 +17,8 @@ class AcquireAccessTokenAction
      * This action exchanges an OAuth authorization code for access and refresh tokens.
      * Used during the initial OAuth flow after user authorizes the application.
      *
-     * @param ExactConnection $connection
-     * @param string $authorizationCode
      * @return array{access_token: string, refresh_token: string, expires_at: int}
+     *
      * @throws TokenRefreshException
      * @throws \InvalidArgumentException
      */
@@ -58,7 +57,7 @@ class AcquireAccessTokenAction
 
             throw TokenRefreshException::refreshFailed(
                 (string) $connection->id,
-                'Failed to exchange authorization code: ' . $e->getMessage()
+                'Failed to exchange authorization code: '.$e->getMessage()
             );
         }
     }
@@ -66,8 +65,6 @@ class AcquireAccessTokenAction
     /**
      * Validate the authorization code
      *
-     * @param string $code
-     * @return void
      * @throws \InvalidArgumentException
      */
     protected function validateAuthorizationCode(string $code): void
@@ -85,9 +82,8 @@ class AcquireAccessTokenAction
     /**
      * Exchange authorization code for tokens using picqer Connection
      *
-     * @param ExactConnection $connection
-     * @param string $code
      * @return array{access_token: string, refresh_token: string, expires_at: int}
+     *
      * @throws TokenRefreshException
      */
     protected function exchangeCodeForTokens(
@@ -96,13 +92,13 @@ class AcquireAccessTokenAction
     ): array {
         try {
             $picqerConnection = $connection->getPicqerConnection();
-            
+
             // Set the authorization code
             $picqerConnection->setAuthorizationCode($code);
-            
+
             // Exchange code for tokens
             $picqerConnection->connect();
-            
+
             // Get the tokens
             $accessToken = $picqerConnection->getAccessToken();
             $refreshToken = $picqerConnection->getRefreshToken();
@@ -152,12 +148,12 @@ class AcquireAccessTokenAction
 
             throw TokenRefreshException::refreshFailed(
                 (string) $connection->id,
-                'Exact Online API error: ' . $e->getMessage()
+                'Exact Online API error: '.$e->getMessage()
             );
         } catch (\Exception $e) {
             throw TokenRefreshException::refreshFailed(
                 (string) $connection->id,
-                'Failed to exchange authorization code: ' . $e->getMessage()
+                'Failed to exchange authorization code: '.$e->getMessage()
             );
         }
     }
@@ -165,9 +161,7 @@ class AcquireAccessTokenAction
     /**
      * Store the acquired tokens securely
      *
-     * @param ExactConnection $connection
-     * @param array{access_token: string, refresh_token: string, expires_at: int} $tokens
-     * @return void
+     * @param  array{access_token: string, refresh_token: string, expires_at: int}  $tokens
      */
     protected function storeTokens(ExactConnection $connection, array $tokens): void
     {

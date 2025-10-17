@@ -15,9 +15,7 @@ class StoreTokensAction
      * This action handles the secure storage of access and refresh tokens,
      * including automatic encryption and setting appropriate expiration timestamps.
      *
-     * @param ExactConnection $connection
-     * @param array{access_token: string, refresh_token: string, expires_at?: int} $tokens
-     * @return ExactConnection
+     * @param  array{access_token: string, refresh_token: string, expires_at?: int}  $tokens
      */
     public function execute(
         ExactConnection $connection,
@@ -51,8 +49,8 @@ class StoreTokensAction
     /**
      * Validate the token array structure
      *
-     * @param array<string, mixed> $tokens
-     * @return void
+     * @param  array<string, mixed>  $tokens
+     *
      * @throws \InvalidArgumentException
      */
     protected function validateTokens(array $tokens): void
@@ -81,8 +79,7 @@ class StoreTokensAction
     /**
      * Calculate the access token expiration timestamp
      *
-     * @param array{expires_at?: int} $tokens
-     * @return int
+     * @param  array{expires_at?: int}  $tokens
      */
     protected function calculateTokenExpiration(array $tokens): int
     {
@@ -99,8 +96,6 @@ class StoreTokensAction
      * Calculate the refresh token expiration timestamp
      *
      * Exact Online refresh tokens are valid for 30 days from acquisition.
-     *
-     * @return int
      */
     protected function calculateRefreshTokenExpiration(): int
     {

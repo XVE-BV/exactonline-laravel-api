@@ -16,9 +16,7 @@ class RevokeTokensAction
      * This action revokes the tokens both locally (in database) and optionally
      * with Exact Online's revocation endpoint if available.
      *
-     * @param ExactConnection $connection
-     * @param bool $notifyExactOnline Whether to notify Exact Online about revocation
-     * @return void
+     * @param  bool  $notifyExactOnline  Whether to notify Exact Online about revocation
      */
     public function execute(
         ExactConnection $connection,
@@ -46,9 +44,6 @@ class RevokeTokensAction
      *
      * Note: Exact Online may not support token revocation endpoint.
      * This is a best-effort attempt and failures are logged but not thrown.
-     *
-     * @param ExactConnection $connection
-     * @return void
      */
     protected function revokeWithExactOnline(ExactConnection $connection): void
     {
@@ -61,7 +56,7 @@ class RevokeTokensAction
             // Note: picqer/exact-php-client doesn't have a built-in revoke method
             // This is where we would call Exact Online's revocation endpoint if available
             // For now, we just log the attempt
-            
+
             Log::info('Token revocation with Exact Online not implemented', [
                 'connection_id' => $connection->id,
                 'reason' => 'Exact Online API does not provide a token revocation endpoint',
@@ -81,9 +76,6 @@ class RevokeTokensAction
 
     /**
      * Clear tokens from the database
-     *
-     * @param ExactConnection $connection
-     * @return void
      */
     protected function clearTokensFromDatabase(ExactConnection $connection): void
     {

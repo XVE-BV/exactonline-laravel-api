@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 use Skylence\ExactonlineLaravelApi\Support\Config;
 
 class RedirectToExactController extends Controller
@@ -17,23 +16,21 @@ class RedirectToExactController extends Controller
     /**
      * Redirect the user to Exact Online for OAuth authorization.
      *
-     * @param Request $request
-     * @param int|null $connectionId Optional existing connection to re-authenticate
-     * @return RedirectResponse
+     * @param  int|null  $connectionId  Optional existing connection to re-authenticate
      */
     public function __invoke(Request $request, ?int $connectionId = null): RedirectResponse
     {
         // Generate a random state for CSRF protection
         $state = Str::random(40);
-        
+
         // Store state in session for validation on callback
         $request->session()->put('exact_oauth_state', $state);
-        
+
         // Store connection ID if re-authenticating
         if ($connectionId !== null) {
             $request->session()->put('exact_oauth_connection_id', $connectionId);
         }
-        
+
         // Store intended URL to redirect back to after OAuth
         if ($request->has('redirect_to')) {
             $request->session()->put('exact_oauth_redirect_to', $request->input('redirect_to'));
@@ -44,7 +41,7 @@ class RedirectToExactController extends Controller
 
         Log::info('Redirecting to Exact Online for OAuth authorization', [
             'connection_id' => $connectionId,
-            'state' => substr($state, 0, 10) . '...',
+            'state' => substr($state, 0, 10).'...',
         ]);
 
         return redirect()->away($authorizationUrl);
@@ -52,9 +49,6 @@ class RedirectToExactController extends Controller
 
     /**
      * Build the Exact Online authorization URL.
-     *
-     * @param string $state
-     * @return string
      */
     protected function buildAuthorizationUrl(string $state): string
     {
@@ -77,18 +71,16 @@ class RedirectToExactController extends Controller
 
     /**
      * Get the OAuth callback redirect URL.
-     *
-     * @return string
      */
     protected function getRedirectUrl(): string
     {
         $configUrl = Config::getRedirectUrl();
-        
+
         // If it's a relative URL, make it absolute
         if (! filter_var($configUrl, FILTER_VALIDATE_URL)) {
             return url($configUrl);
         }
-        
+
         return $configUrl;
     }
 }

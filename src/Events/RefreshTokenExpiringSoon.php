@@ -15,22 +15,15 @@ class RefreshTokenExpiringSoon
 
     /**
      * Create a new event instance.
-     *
-     * @param ExactConnection $connection
-     * @param int $daysUntilExpiry
-     * @param int $warningThreshold
      */
     public function __construct(
         public ExactConnection $connection,
         public int $daysUntilExpiry,
         public int $warningThreshold
-    ) {
-    }
+    ) {}
 
     /**
      * Check if the token is critically close to expiring.
-     *
-     * @return bool
      */
     public function isCritical(): bool
     {
@@ -39,8 +32,6 @@ class RefreshTokenExpiringSoon
 
     /**
      * Get a human-readable message about the expiry.
-     *
-     * @return string
      */
     public function getMessage(): string
     {

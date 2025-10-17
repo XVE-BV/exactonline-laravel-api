@@ -23,8 +23,8 @@ class RefreshAccessTokenAction
      * - Automatic retry with exponential backoff (3 attempts)
      * - Handles race conditions in multi-server environments
      *
-     * @param ExactConnection $connection
      * @return array{access_token: string, refresh_token: string, expires_at: int}
+     *
      * @throws TokenRefreshException
      */
     public function execute(ExactConnection $connection): array
@@ -98,9 +98,6 @@ class RefreshAccessTokenAction
 
     /**
      * Check if token needs refresh (proactive at 9 minutes)
-     *
-     * @param ExactConnection $connection
-     * @return bool
      */
     protected function tokenNeedsRefresh(ExactConnection $connection): bool
     {
@@ -115,9 +112,8 @@ class RefreshAccessTokenAction
     /**
      * Perform token refresh with exponential backoff retry
      *
-     * @param ExactConnection $connection
-     * @param int $maxRetries
      * @return array{access_token: string, refresh_token: string, expires_at: int}
+     *
      * @throws TokenRefreshException
      */
     protected function performTokenRefreshWithRetry(
@@ -162,14 +158,14 @@ class RefreshAccessTokenAction
     /**
      * Actual token refresh using picqer's Connection
      *
-     * @param ExactConnection $connection
      * @return array{access_token: string, refresh_token: string, expires_at: int}
+     *
      * @throws TokenRefreshException
      */
     protected function performTokenRefresh(ExactConnection $connection): array
     {
         // Check if refresh token is expired (30 days)
-        if ($connection->refresh_token_expires_at && 
+        if ($connection->refresh_token_expires_at &&
             $connection->refresh_token_expires_at < now()->timestamp) {
             throw TokenRefreshException::refreshTokenExpired((string) $connection->id);
         }
@@ -206,19 +202,19 @@ class RefreshAccessTokenAction
 
         } catch (\Picqer\Financials\Exact\ApiException $e) {
             // Check if it's a refresh token expired error
-            if (str_contains($e->getMessage(), 'refresh_token') || 
+            if (str_contains($e->getMessage(), 'refresh_token') ||
                 str_contains($e->getMessage(), 'invalid_grant')) {
                 throw TokenRefreshException::refreshTokenExpired((string) $connection->id);
             }
 
             throw TokenRefreshException::refreshFailed(
                 (string) $connection->id,
-                'Exact Online API error: ' . $e->getMessage()
+                'Exact Online API error: '.$e->getMessage()
             );
         } catch (\Exception $e) {
             throw TokenRefreshException::refreshFailed(
                 (string) $connection->id,
-                'Unexpected error: ' . $e->getMessage()
+                'Unexpected error: '.$e->getMessage()
             );
         }
     }
@@ -226,9 +222,7 @@ class RefreshAccessTokenAction
     /**
      * Store refreshed tokens securely
      *
-     * @param ExactConnection $connection
-     * @param array{access_token: string, refresh_token: string, expires_at: int} $tokens
-     * @return void
+     * @param  array{access_token: string, refresh_token: string, expires_at: int}  $tokens
      */
     protected function storeTokens(ExactConnection $connection, array $tokens): void
     {
@@ -246,9 +240,8 @@ class RefreshAccessTokenAction
     /**
      * Wait for another process to finish refresh, then return updated tokens
      *
-     * @param ExactConnection $connection
-     * @param int $maxWaitMs
      * @return array{access_token: string, refresh_token: string, expires_at: int}
+     *
      * @throws TokenRefreshException
      */
     protected function waitForRefreshAndReturnTokens(
@@ -280,8 +273,8 @@ class RefreshAccessTokenAction
     /**
      * Extract tokens from connection
      *
-     * @param ExactConnection $connection
      * @return array{access_token: string, refresh_token: string, expires_at: int}
+     *
      * @throws TokenRefreshException
      */
     protected function extractTokens(ExactConnection $connection): array
