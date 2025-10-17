@@ -93,7 +93,7 @@ class BatchSyncEntitiesAction
 
                 } catch (\Exception $e) {
                     $stats['errors']++;
-                    
+
                     Log::error('Failed to process entity in batch sync', [
                         'connection_id' => $connection->id,
                         'entity_class' => $entityClass,
@@ -131,7 +131,7 @@ class BatchSyncEntitiesAction
             ]);
 
             throw new ConnectionException(
-                'Failed to batch sync entities: ' . $e->getMessage(),
+                'Failed to batch sync entities: '.$e->getMessage(),
                 $e->getCode(),
                 $e
             );
@@ -141,10 +141,7 @@ class BatchSyncEntitiesAction
     /**
      * Get entities using a generator for memory efficiency
      *
-     * @param  ExactConnection  $connection
-     * @param  Model  $entity
      * @param  array<string, mixed>  $options
-     * @return Generator
      */
     protected function getEntitiesGenerator(ExactConnection $connection, Model $entity, array $options): Generator
     {
@@ -193,7 +190,6 @@ class BatchSyncEntitiesAction
     /**
      * Apply filters to the entity query
      *
-     * @param  Model  $entity
      * @param  array<string, mixed>  $options
      */
     protected function applyFilters(Model $entity, array $options): void
@@ -232,7 +228,6 @@ class BatchSyncEntitiesAction
     /**
      * Validate that the entity class exists and extends Model
      *
-     * @param  string  $entityClass
      *
      * @throws ConnectionException
      */
@@ -246,7 +241,7 @@ class BatchSyncEntitiesAction
 
         if (! is_subclass_of($entityClass, Model::class)) {
             throw ConnectionException::invalidConfiguration(
-                "Entity class {$entityClass} must extend " . Model::class
+                "Entity class {$entityClass} must extend ".Model::class
             );
         }
     }

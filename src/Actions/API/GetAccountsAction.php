@@ -75,7 +75,7 @@ class GetAccountsAction
             ]);
 
             throw new ConnectionException(
-                'Failed to retrieve accounts: ' . $e->getMessage(),
+                'Failed to retrieve accounts: '.$e->getMessage(),
                 $e->getCode(),
                 $e
             );
@@ -139,7 +139,6 @@ class GetAccountsAction
     /**
      * Apply OData query options to the entity
      *
-     * @param  Account  $account
      * @param  array<string, mixed>  $options
      */
     protected function applyQueryOptions(Account $account, array $options): void

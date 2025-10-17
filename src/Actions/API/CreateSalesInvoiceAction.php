@@ -6,7 +6,6 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\SalesInvoice;
-use Picqer\Financials\Exact\SalesInvoiceLine;
 use Skylence\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\TrackRateLimitUsageAction;
@@ -116,7 +115,7 @@ class CreateSalesInvoiceAction
             ]);
 
             throw new ConnectionException(
-                'Failed to create sales invoice: ' . $e->getMessage(),
+                'Failed to create sales invoice: '.$e->getMessage(),
                 $e->getCode(),
                 $e
             );

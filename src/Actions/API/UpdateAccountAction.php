@@ -108,7 +108,7 @@ class UpdateAccountAction
             ]);
 
             throw new ConnectionException(
-                'Failed to update account: ' . $e->getMessage(),
+                'Failed to update account: '.$e->getMessage(),
                 $e->getCode(),
                 $e
             );

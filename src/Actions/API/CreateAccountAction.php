@@ -100,7 +100,7 @@ class CreateAccountAction
             ]);
 
             throw new ConnectionException(
-                'Failed to create account: ' . $e->getMessage(),
+                'Failed to create account: '.$e->getMessage(),
                 $e->getCode(),
                 $e
             );

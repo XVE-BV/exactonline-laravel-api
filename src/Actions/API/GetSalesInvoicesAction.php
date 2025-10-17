@@ -86,7 +86,7 @@ class GetSalesInvoicesAction
             ]);
 
             throw new ConnectionException(
-                'Failed to retrieve sales invoices: ' . $e->getMessage(),
+                'Failed to retrieve sales invoices: '.$e->getMessage(),
                 $e->getCode(),
                 $e
             );
@@ -133,7 +133,6 @@ class GetSalesInvoicesAction
     /**
      * Apply OData query options to the entity
      *
-     * @param  SalesInvoice  $invoice
      * @param  array<string, mixed>  $options
      */
     protected function applyQueryOptions(SalesInvoice $invoice, array $options): void

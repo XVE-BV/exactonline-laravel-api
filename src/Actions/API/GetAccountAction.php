@@ -85,7 +85,7 @@ class GetAccountAction
             ]);
 
             throw new ConnectionException(
-                'Failed to retrieve account: ' . $e->getMessage(),
+                'Failed to retrieve account: '.$e->getMessage(),
                 $e->getCode(),
                 $e
             );

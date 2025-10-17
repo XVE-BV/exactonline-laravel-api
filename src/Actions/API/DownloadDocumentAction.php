@@ -46,7 +46,7 @@ class DownloadDocumentAction
             // If no attachment ID provided, get the document's attachments
             if ($attachmentId === null) {
                 $attachmentId = $this->getFirstAttachmentId($connection, $documentId);
-                
+
                 if ($attachmentId === null) {
                     Log::info('No attachments found for document', [
                         'connection_id' => $connection->id,
@@ -73,7 +73,7 @@ class DownloadDocumentAction
 
             // Download the actual file content
             $downloadUrl = $result->Url;
-            
+
             if (empty($downloadUrl)) {
                 throw new ConnectionException('Document attachment has no download URL');
             }
@@ -108,7 +108,7 @@ class DownloadDocumentAction
             ]);
 
             throw new ConnectionException(
-                'Failed to download document: ' . $e->getMessage(),
+                'Failed to download document: '.$e->getMessage(),
                 $e->getCode(),
                 $e
             );
@@ -117,10 +117,6 @@ class DownloadDocumentAction
 
     /**
      * Get the first attachment ID for a document
-     *
-     * @param  ExactConnection  $connection
-     * @param  string  $documentId
-     * @return string|null
      */
     protected function getFirstAttachmentId(ExactConnection $connection, string $documentId): ?string
     {
@@ -150,9 +146,6 @@ class DownloadDocumentAction
     /**
      * Download file content from URL using picqer connection
      *
-     * @param  \Picqer\Financials\Exact\Connection  $picqerConnection
-     * @param  string  $url
-     * @return string
      *
      * @throws \Exception
      */
@@ -161,11 +154,11 @@ class DownloadDocumentAction
         // Use picqer's download method if available
         // Otherwise, make a direct HTTP request with authentication
         $client = $picqerConnection->getClient();
-        
+
         $response = $client->request('GET', $url, [
             'headers' => [
                 'Accept' => 'application/octet-stream',
-                'Authorization' => 'Bearer ' . $picqerConnection->getAccessToken(),
+                'Authorization' => 'Bearer '.$picqerConnection->getAccessToken(),
             ],
         ]);
 
@@ -180,9 +173,6 @@ class DownloadDocumentAction
 
     /**
      * Get MIME type based on file extension
-     *
-     * @param  string  $filename
-     * @return string
      */
     protected function getMimeType(string $filename): string
     {
