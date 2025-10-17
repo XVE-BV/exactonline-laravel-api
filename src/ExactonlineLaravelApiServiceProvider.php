@@ -17,7 +17,7 @@ class ExactonlineLaravelApiServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('exactonline-laravel-api')
-            ->hasConfigFile()
+            ->hasConfigFile('exactonline-laravel-api')
             ->hasViews()
             ->hasMigration('create_exactonline_laravel_api_table')
             ->hasCommand(ExactonlineLaravelApiCommand::class);
