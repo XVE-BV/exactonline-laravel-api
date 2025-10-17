@@ -15,28 +15,28 @@ return new class extends Migration
     {
         Schema::create('exact_webhooks', function (Blueprint $table) {
             $table->id();
-            
+
             // Relationship to connection
             $table->foreignId('connection_id')
                 ->constrained('exact_connections')
                 ->cascadeOnDelete();
-            
+
             // Exact Online webhook details
             $table->string('webhook_id')->nullable()->comment('Exact Online webhook ID');
             $table->string('topic')->index()->comment('Webhook topic/event type (e.g., Accounts, SalesInvoices)');
             $table->string('callback_url')->comment('URL where webhooks will be received');
             $table->string('webhook_secret')->nullable()->comment('Secret for webhook signature validation');
-            
+
             // Status
             $table->boolean('is_active')->default(true)->index();
-            
+
             // Metadata
             $table->json('metadata')->nullable()->comment('Additional webhook metadata');
             $table->timestamp('last_received_at')->nullable()->comment('Last time a webhook was received');
             $table->integer('events_received')->default(0)->comment('Count of events received');
-            
+
             $table->timestamps();
-            
+
             // Indexes
             $table->unique(['connection_id', 'topic']);
             $table->index(['connection_id', 'is_active']);

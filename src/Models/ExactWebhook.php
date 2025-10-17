@@ -109,7 +109,7 @@ class ExactWebhook extends Model
     /**
      * Scope a query to only include active webhooks.
      *
-     * @param \Illuminate\Database\Eloquent\Builder<ExactWebhook> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<ExactWebhook>  $query
      * @return \Illuminate\Database\Eloquent\Builder<ExactWebhook>
      */
     public function scopeActive($query)
@@ -120,8 +120,7 @@ class ExactWebhook extends Model
     /**
      * Scope a query to filter by topic.
      *
-     * @param \Illuminate\Database\Eloquent\Builder<ExactWebhook> $query
-     * @param string $topic
+     * @param  \Illuminate\Database\Eloquent\Builder<ExactWebhook>  $query
      * @return \Illuminate\Database\Eloquent\Builder<ExactWebhook>
      */
     public function scopeByTopic($query, string $topic)
@@ -132,8 +131,8 @@ class ExactWebhook extends Model
     /**
      * Scope a query to filter by multiple topics.
      *
-     * @param \Illuminate\Database\Eloquent\Builder<ExactWebhook> $query
-     * @param array<string> $topics
+     * @param  \Illuminate\Database\Eloquent\Builder<ExactWebhook>  $query
+     * @param  array<string>  $topics
      * @return \Illuminate\Database\Eloquent\Builder<ExactWebhook>
      */
     public function scopeByTopics($query, array $topics)
@@ -143,8 +142,6 @@ class ExactWebhook extends Model
 
     /**
      * Mark that a webhook event was received.
-     *
-     * @return void
      */
     public function markEventReceived(): void
     {
@@ -154,9 +151,6 @@ class ExactWebhook extends Model
 
     /**
      * Check if this topic is valid.
-     *
-     * @param string $topic
-     * @return bool
      */
     public static function isValidTopic(string $topic): bool
     {
@@ -165,8 +159,6 @@ class ExactWebhook extends Model
 
     /**
      * Get the event class name for this webhook topic.
-     *
-     * @return string
      */
     public function getEventClassName(): string
     {
@@ -182,10 +174,6 @@ class ExactWebhook extends Model
 
     /**
      * Verify the webhook signature.
-     *
-     * @param string $payload
-     * @param string $signature
-     * @return bool
      */
     public function verifySignature(string $payload, string $signature): bool
     {
@@ -194,7 +182,7 @@ class ExactWebhook extends Model
         }
 
         $expectedSignature = hash_hmac('sha256', $payload, $this->webhook_secret);
-        
+
         return hash_equals($expectedSignature, $signature);
     }
 }
