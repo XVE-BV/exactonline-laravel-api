@@ -90,11 +90,11 @@ return [
     'rate_limiting' => [
         // If true, the package will automatically wait when hitting the minutely limit
         'wait_on_minutely_limit' => env('EXACT_WAIT_ON_RATE_LIMIT', true),
-        
+
         // If true, the package will throw an exception when hitting the daily limit
         // If false, it will attempt to wait (not recommended as daily limits reset after 24 hours)
         'throw_on_daily_limit' => env('EXACT_THROW_ON_DAILY_LIMIT', true),
-        
+
         // Maximum time to wait for rate limit reset (in seconds)
         'max_wait_seconds' => env('EXACT_MAX_WAIT_SECONDS', 65),
     ],
@@ -110,10 +110,10 @@ return [
     'webhooks' => [
         // The URL path where webhooks will be received
         'path' => env('EXACT_WEBHOOK_PATH', '/exact/webhooks'),
-        
+
         // Queue to use for processing webhooks (null for sync processing)
         'queue' => env('EXACT_WEBHOOK_QUEUE', null),
-        
+
         // Webhook topics to subscribe to (leave empty for all)
         'topics' => [
             'Accounts',
@@ -138,15 +138,15 @@ return [
     'connection' => [
         // Base URL for Exact Online API (can be overridden per connection)
         'base_url' => env('EXACT_BASE_URL', 'https://start.exactonline.nl'),
-        
+
         // Default division (administration) to use
         'division' => env('EXACT_DIVISION', null),
-        
+
         // Cache settings for tokens
         'cache' => [
             // Cache store to use for distributed locking during token refresh
             'store' => env('EXACT_CACHE_STORE', 'redis'),
-            
+
             // Lock timeout in seconds (should be less than token lifetime)
             'lock_timeout' => env('EXACT_LOCK_TIMEOUT', 30),
         ],
@@ -175,13 +175,13 @@ return [
     'logging' => [
         // Log channel to use
         'channel' => env('EXACT_LOG_CHANNEL', 'daily'),
-        
+
         // Log API requests and responses
         'log_requests' => env('EXACT_LOG_REQUESTS', false),
-        
+
         // Log token refresh operations
         'log_token_refresh' => env('EXACT_LOG_TOKEN_REFRESH', true),
-        
+
         // Log rate limit hits
         'log_rate_limits' => env('EXACT_LOG_RATE_LIMITS', true),
     ],
@@ -197,7 +197,7 @@ return [
     'testing' => [
         // Use Exact Online sandbox environment
         'use_sandbox' => env('EXACT_USE_SANDBOX', false),
-        
+
         // Sandbox URL
         'sandbox_url' => env('EXACT_SANDBOX_URL', 'https://start.exactonline.nl'),
     ],

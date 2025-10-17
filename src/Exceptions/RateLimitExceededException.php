@@ -22,9 +22,9 @@ class RateLimitExceededException extends Exception
     public static function dailyLimitExceeded(int $limit, int $resetInSeconds): self
     {
         $hours = round($resetInSeconds / 3600, 1);
-        
+
         return new self(
-            "Daily API rate limit of {$limit} requests exceeded. " .
+            "Daily API rate limit of {$limit} requests exceeded. ".
             "Limit will reset in {$hours} hours.",
             $resetInSeconds,
             'daily'
@@ -34,7 +34,7 @@ class RateLimitExceededException extends Exception
     public static function minutelyLimitExceeded(int $limit, int $resetInSeconds): self
     {
         return new self(
-            "Minutely API rate limit of {$limit} requests exceeded. " .
+            "Minutely API rate limit of {$limit} requests exceeded. ".
             "Please wait {$resetInSeconds} seconds before retrying.",
             $resetInSeconds,
             'minutely'
