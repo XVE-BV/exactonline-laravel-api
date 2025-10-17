@@ -16,6 +16,9 @@ return [
         'client_id' => env('EXACT_CLIENT_ID'),
         'client_secret' => env('EXACT_CLIENT_SECRET'),
         'redirect_url' => env('EXACT_REDIRECT_URL', '/exact/oauth/callback'),
+        'success_url' => env('EXACT_OAUTH_SUCCESS_URL', '/dashboard'),
+        'failure_url' => env('EXACT_OAUTH_FAILURE_URL', '/'),
+        'force_login' => env('EXACT_FORCE_LOGIN', false),
     ],
 
     /*

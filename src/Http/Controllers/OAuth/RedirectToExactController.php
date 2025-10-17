@@ -15,80 +15,120 @@ use Skylence\ExactonlineLaravelApi\Support\Config;
 class RedirectToExactController extends Controller
 {
     /**
-     * Redirect the user to Exact Online for OAuth authorization.
+     * Redirect user to Exact Online OAuth authorization page
+     *
+     * This controller generates the OAuth authorization URL and redirects
+     * the user to Exact Online for authentication and authorization.
      *
      * @param Request $request
-     * @param int|null $connectionId Optional existing connection to re-authenticate
+     * @param int|null $connectionId Optional existing connection to re-authorize
      * @return RedirectResponse
      */
     public function __invoke(Request $request, ?int $connectionId = null): RedirectResponse
     {
-        // Generate a random state for CSRF protection
-        $state = Str::random(40);
+        // Generate state for CSRF protection
+        $state = $this->generateState();
         
-        // Store state in session for validation on callback
+        // Store state in session for verification on callback
         $request->session()->put('exact_oauth_state', $state);
         
-        // Store connection ID if re-authenticating
-        if ($connectionId !== null) {
+        // Store connection ID if re-authorizing existing connection
+        if ($connectionId) {
             $request->session()->put('exact_oauth_connection_id', $connectionId);
         }
-        
-        // Store intended URL to redirect back to after OAuth
-        if ($request->has('redirect_to')) {
-            $request->session()->put('exact_oauth_redirect_to', $request->input('redirect_to'));
-        }
 
-        // Build the authorization URL
-        $authorizationUrl = $this->buildAuthorizationUrl($state);
+        // Get or create connection record
+        $connection = $this->getOrCreateConnection($request, $connectionId);
+        
+        // Generate authorization URL
+        $authUrl = $this->generateAuthorizationUrl($connection, $state);
 
         Log::info('Redirecting to Exact Online for OAuth authorization', [
-            'connection_id' => $connectionId,
-            'state' => substr($state, 0, 10) . '...',
+            'connection_id' => $connection->id,
+            'auth_url' => $authUrl,
         ]);
 
-        return redirect()->away($authorizationUrl);
+        return redirect()->away($authUrl);
     }
 
     /**
-     * Build the Exact Online authorization URL.
+     * Generate a random state value for CSRF protection
      *
+     * @return string
+     */
+    protected function generateState(): string
+    {
+        return Str::random(40);
+    }
+
+    /**
+     * Get existing connection or create a new one
+     *
+     * @param Request $request
+     * @param int|null $connectionId
+     * @return ExactConnection
+     */
+    protected function getOrCreateConnection(Request $request, ?int $connectionId): ExactConnection
+    {
+        if ($connectionId) {
+            $connection = ExactConnection::findOrFail($connectionId);
+        } else {
+            // Create a new connection record
+            $connection = ExactConnection::create([
+                'user_id' => $request->user()?->id,
+                'tenant_id' => $request->session()->get('tenant_id'),
+                'client_id' => Config::getClientId(),
+                'client_secret' => Config::getClientSecret(),
+                'redirect_url' => $this->getRedirectUrl($request),
+                'base_url' => config('exactonline-laravel-api.connection.base_url', 'https://start.exactonline.nl'),
+                'is_active' => false, // Will be activated after successful token acquisition
+                'name' => 'Exact Online Connection',
+            ]);
+        }
+
+        return $connection;
+    }
+
+    /**
+     * Generate the OAuth authorization URL
+     *
+     * @param ExactConnection $connection
      * @param string $state
      * @return string
      */
-    protected function buildAuthorizationUrl(string $state): string
+    protected function generateAuthorizationUrl(ExactConnection $connection, string $state): string
     {
-        $baseUrl = config('exactonline-laravel-api.connection.base_url', 'https://start.exactonline.nl');
-        $clientId = Config::getClientId();
-        $redirectUrl = $this->getRedirectUrl();
+        $baseUrl = $connection->base_url;
+        $clientId = $connection->client_id;
+        $redirectUrl = $connection->redirect_url;
 
-        // Build query parameters
-        $queryParams = http_build_query([
+        // Build authorization URL with required parameters
+        $params = http_build_query([
             'client_id' => $clientId,
-            'redirect_uri' => $redirectUrl,
             'response_type' => 'code',
+            'redirect_uri' => $redirectUrl,
             'state' => $state,
-            'force_login' => config('exactonline-laravel-api.oauth.force_login', '0'),
+            'force_login' => 0, // Set to 1 to force re-authentication
         ]);
 
-        // Exact Online OAuth authorization endpoint
-        return "{$baseUrl}/api/oauth2/auth?{$queryParams}";
+        return "{$baseUrl}/api/oauth2/auth?{$params}";
     }
 
     /**
-     * Get the OAuth callback redirect URL.
+     * Get the redirect URL for OAuth callback
      *
+     * @param Request $request
      * @return string
      */
-    protected function getRedirectUrl(): string
+    protected function getRedirectUrl(Request $request): string
     {
-        $configUrl = Config::getRedirectUrl();
+        $configuredUrl = Config::getRedirectUrl();
         
         // If it's a relative URL, make it absolute
-        if (! filter_var($configUrl, FILTER_VALIDATE_URL)) {
-            return url($configUrl);
+        if (! filter_var($configuredUrl, FILTER_VALIDATE_URL)) {
+            return $request->getSchemeAndHttpHost() . $configuredUrl;
         }
-        
-        return $configUrl;
+
+        return $configuredUrl;
     }
 }
