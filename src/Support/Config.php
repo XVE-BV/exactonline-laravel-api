@@ -12,9 +12,10 @@ class Config
      * Get action class from config with type validation
      *
      * @template T
-     * @param string $actionName
-     * @param class-string<T> $actionBaseClass
+     *
+     * @param  class-string<T>  $actionBaseClass
      * @return class-string<T>
+     *
      * @throws InvalidActionClass
      */
     public static function getActionClass(string $actionName, string $actionBaseClass): string
@@ -30,16 +31,17 @@ class Config
      * Get fresh action instance with type validation
      *
      * @template T
-     * @param string $actionName
-     * @param class-string<T> $actionBaseClass
+     *
+     * @param  class-string<T>  $actionBaseClass
      * @return T
+     *
      * @throws InvalidActionClass
      */
     public static function getAction(string $actionName, string $actionBaseClass)
     {
         $actionClass = self::getActionClass($actionName, $actionBaseClass);
 
-        return new $actionClass();
+        return new $actionClass;
     }
 
     /**
