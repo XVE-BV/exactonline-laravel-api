@@ -6,6 +6,7 @@ namespace Skylence\ExactonlineLaravelApi\Http\Controllers\OAuth;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Skylence\ExactonlineLaravelApi\Actions\OAuth\AcquireAccessTokenAction;
@@ -16,191 +17,203 @@ use Skylence\ExactonlineLaravelApi\Support\Config;
 class CallbackController extends Controller
 {
     /**
-     * Handle OAuth callback from Exact Online
-     *
-     * This controller receives the authorization code from Exact Online,
-     * validates the state parameter for CSRF protection, and exchanges
-     * the code for access and refresh tokens.
+     * Handle the OAuth callback from Exact Online.
      *
      * @param Request $request
-     * @return RedirectResponse
+     * @param AcquireAccessTokenAction $acquireTokenAction
+     * @return RedirectResponse|Response
      */
-    public function __invoke(Request $request): RedirectResponse
-    {
+    public function __invoke(
+        Request $request,
+        AcquireAccessTokenAction $acquireTokenAction
+    ): RedirectResponse|Response {
+        // Validate the OAuth callback
         try {
-            // Validate state parameter for CSRF protection
-            $this->validateState($request);
+            $this->validateCallback($request);
+        } catch (\Exception $e) {
+            Log::error('OAuth callback validation failed', [
+                'error' => $e->getMessage(),
+            ]);
 
-            // Get authorization code
-            $authorizationCode = $request->input('code');
-            
-            if (! $authorizationCode) {
-                throw new \InvalidArgumentException('No authorization code received from Exact Online');
-            }
+            return $this->handleCallbackError($e->getMessage());
+        }
 
-            // Check if error was returned
-            if ($request->has('error')) {
-                $error = $request->input('error');
-                $errorDescription = $request->input('error_description', 'Unknown error');
-                throw new \RuntimeException("OAuth error from Exact Online: {$error} - {$errorDescription}");
-            }
+        // Get or create connection
+        $connection = $this->getOrCreateConnection($request);
 
-            // Get the connection
-            $connection = $this->getConnection($request);
-
-            // Exchange authorization code for tokens
-            $action = Config::getAction(
-                'acquire_access_token',
-                AcquireAccessTokenAction::class
+        // Exchange authorization code for tokens
+        try {
+            $tokens = $acquireTokenAction->execute(
+                $connection,
+                $request->input('code')
             );
-
-            $tokens = $action->execute($connection, $authorizationCode);
 
             Log::info('OAuth callback successful', [
                 'connection_id' => $connection->id,
-                'token_expires_at' => $tokens['expires_at'],
             ]);
 
-            // Clean up session
-            $this->cleanupSession($request);
+            // Clear OAuth session data
+            $this->clearOAuthSession($request);
 
             // Redirect to success URL
-            return $this->redirectToSuccess($request, $connection);
+            return $this->handleCallbackSuccess($request, $connection);
 
-        } catch (\Throwable $e) {
-            Log::error('OAuth callback failed', [
+        } catch (TokenRefreshException $e) {
+            Log::error('Failed to acquire tokens in OAuth callback', [
+                'connection_id' => $connection->id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
             ]);
 
-            // Clean up session
-            $this->cleanupSession($request);
-
-            // Redirect to failure URL
-            return $this->redirectToFailure($request, $e);
+            return $this->handleCallbackError($e->getMessage());
         }
     }
 
     /**
-     * Validate the state parameter for CSRF protection
+     * Validate the OAuth callback request.
      *
      * @param Request $request
      * @return void
-     * @throws \RuntimeException
+     * @throws \Exception
      */
-    protected function validateState(Request $request): void
+    protected function validateCallback(Request $request): void
     {
-        $sessionState = $request->session()->get('exact_oauth_state');
-        $requestState = $request->input('state');
+        // Check for error from Exact Online
+        if ($request->has('error')) {
+            $error = $request->input('error');
+            $errorDescription = $request->input('error_description', 'Unknown error');
 
-        if (! $sessionState || ! $requestState) {
-            throw new \RuntimeException('Missing state parameter - possible CSRF attack');
+            throw new \Exception("OAuth error: {$error} - {$errorDescription}");
         }
 
-        if (! hash_equals($sessionState, $requestState)) {
-            throw new \RuntimeException('Invalid state parameter - possible CSRF attack');
+        // Validate authorization code is present
+        if (! $request->has('code')) {
+            throw new \Exception('Authorization code missing from callback');
+        }
+
+        // Validate state for CSRF protection
+        $state = $request->input('state');
+        $sessionState = $request->session()->get('exact_oauth_state');
+
+        if (! $state || ! $sessionState || $state !== $sessionState) {
+            throw new \Exception('Invalid state parameter - possible CSRF attack');
         }
     }
 
     /**
-     * Get the connection for this OAuth flow
+     * Get existing connection or create a new one.
      *
      * @param Request $request
      * @return ExactConnection
-     * @throws \RuntimeException
      */
-    protected function getConnection(Request $request): ExactConnection
+    protected function getOrCreateConnection(Request $request): ExactConnection
     {
-        // Check if we have a connection ID in session (re-authorization)
+        // Check if we're re-authenticating an existing connection
         $connectionId = $request->session()->get('exact_oauth_connection_id');
-        
-        if ($connectionId) {
-            return ExactConnection::findOrFail($connectionId);
-        }
 
-        // Try to find the most recent inactive connection for this user
-        $userId = $request->user()?->id;
-        
-        if ($userId) {
-            $connection = ExactConnection::where('user_id', $userId)
-                ->where('is_active', false)
-                ->latest()
-                ->first();
-                
+        if ($connectionId) {
+            $connection = ExactConnection::find($connectionId);
             if ($connection) {
                 return $connection;
             }
         }
 
-        // Try to find any recent inactive connection
-        $connection = ExactConnection::where('is_active', false)
-            ->latest()
-            ->first();
-            
-        if (! $connection) {
-            throw new \RuntimeException('No connection found for OAuth callback');
+        // Create a new connection
+        return $this->createNewConnection($request);
+    }
+
+    /**
+     * Create a new Exact Online connection.
+     *
+     * @param Request $request
+     * @return ExactConnection
+     */
+    protected function createNewConnection(Request $request): ExactConnection
+    {
+        $connection = new ExactConnection();
+
+        // Set OAuth configuration
+        $connection->client_id = Config::getClientId();
+        $connection->client_secret = Config::getClientSecret();
+        $connection->redirect_url = Config::getRedirectUrl();
+        $connection->base_url = config('exactonline-laravel-api.connection.base_url', 'https://start.exactonline.nl');
+
+        // Set user/tenant if available
+        if ($request->user()) {
+            $connection->user_id = $request->user()->id;
         }
+
+        // Set tenant if multi-tenant
+        if ($request->has('tenant_id')) {
+            $connection->tenant_id = $request->input('tenant_id');
+        }
+
+        // Set a default name
+        $connection->name = 'Exact Online Connection ' . now()->format('Y-m-d H:i');
+
+        $connection->save();
 
         return $connection;
     }
 
     /**
-     * Clean up OAuth session data
+     * Clear OAuth session data.
      *
      * @param Request $request
      * @return void
      */
-    protected function cleanupSession(Request $request): void
+    protected function clearOAuthSession(Request $request): void
     {
         $request->session()->forget([
             'exact_oauth_state',
             'exact_oauth_connection_id',
+            'exact_oauth_redirect_to',
         ]);
     }
 
     /**
-     * Redirect to success URL after successful OAuth
+     * Handle successful OAuth callback.
      *
      * @param Request $request
      * @param ExactConnection $connection
      * @return RedirectResponse
      */
-    protected function redirectToSuccess(Request $request, ExactConnection $connection): RedirectResponse
+    protected function handleCallbackSuccess(Request $request, ExactConnection $connection): RedirectResponse
     {
-        $successUrl = config('exactonline-laravel-api.oauth.success_url', '/');
+        // Check for custom redirect URL
+        $redirectTo = $request->session()->get('exact_oauth_redirect_to');
 
-        // Add connection ID to URL if it contains a placeholder
-        if (str_contains($successUrl, '{connection}')) {
-            $successUrl = str_replace('{connection}', (string) $connection->id, $successUrl);
+        if ($redirectTo) {
+            return redirect($redirectTo)->with('success', 'Successfully connected to Exact Online');
         }
 
-        // Flash success message
-        $request->session()->flash('exact_oauth_success', 'Successfully connected to Exact Online');
-        $request->session()->flash('exact_connection_id', $connection->id);
+        // Use configured success URL
+        $successUrl = config('exactonline-laravel-api.oauth.success_url', '/');
 
-        return redirect()->to($successUrl);
+        return redirect($successUrl)
+            ->with('success', 'Successfully connected to Exact Online')
+            ->with('exact_connection_id', $connection->id);
     }
 
     /**
-     * Redirect to failure URL after failed OAuth
+     * Handle OAuth callback error.
      *
-     * @param Request $request
-     * @param \Throwable $exception
-     * @return RedirectResponse
+     * @param string $error
+     * @return RedirectResponse|Response
      */
-    protected function redirectToFailure(Request $request, \Throwable $exception): RedirectResponse
+    protected function handleCallbackError(string $error): RedirectResponse|Response
     {
-        $failureUrl = config('exactonline-laravel-api.oauth.failure_url', '/');
-
-        // Flash error message
-        $errorMessage = 'Failed to connect to Exact Online';
-        
-        if ($exception instanceof TokenRefreshException || $exception instanceof \InvalidArgumentException) {
-            $errorMessage .= ': ' . $exception->getMessage();
+        // Check if we should return JSON for API requests
+        if (request()->expectsJson()) {
+            return response()->json([
+                'error' => 'OAuth authentication failed',
+                'message' => $error,
+            ], 400);
         }
 
-        $request->session()->flash('exact_oauth_error', $errorMessage);
+        // Use configured error URL
+        $errorUrl = config('exactonline-laravel-api.oauth.error_url', '/');
 
-        return redirect()->to($failureUrl);
+        return redirect($errorUrl)
+            ->with('error', 'Failed to connect to Exact Online: ' . $error);
     }
 }

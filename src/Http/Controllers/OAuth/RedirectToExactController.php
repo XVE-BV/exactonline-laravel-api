@@ -28,10 +28,10 @@ class RedirectToExactController extends Controller
     {
         // Generate state for CSRF protection
         $state = $this->generateState();
-        
+
         // Store state in session for verification on callback
         $request->session()->put('exact_oauth_state', $state);
-        
+
         // Store connection ID if re-authorizing existing connection
         if ($connectionId) {
             $request->session()->put('exact_oauth_connection_id', $connectionId);
@@ -39,7 +39,7 @@ class RedirectToExactController extends Controller
 
         // Get or create connection record
         $connection = $this->getOrCreateConnection($request, $connectionId);
-        
+
         // Generate authorization URL
         $authUrl = $this->generateAuthorizationUrl($connection, $state);
 
@@ -123,7 +123,7 @@ class RedirectToExactController extends Controller
     protected function getRedirectUrl(Request $request): string
     {
         $configuredUrl = Config::getRedirectUrl();
-        
+
         // If it's a relative URL, make it absolute
         if (! filter_var($configuredUrl, FILTER_VALIDATE_URL)) {
             return $request->getSchemeAndHttpHost() . $configuredUrl;

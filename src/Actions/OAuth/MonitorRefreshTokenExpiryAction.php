@@ -17,8 +17,8 @@ class MonitorRefreshTokenExpiryAction
      * This action checks all active connections for refresh tokens that are
      * expiring soon and dispatches events at configurable thresholds (7, 14, 28 days).
      *
-     * @param int|null $connectionId Optional specific connection to check
-     * @param array<int> $warningDays Days before expiry to trigger warnings
+     * @param  int|null  $connectionId  Optional specific connection to check
+     * @param  array<int>  $warningDays  Days before expiry to trigger warnings
      * @return Collection<int, ExactConnection>
      */
     public function execute(
@@ -58,7 +58,6 @@ class MonitorRefreshTokenExpiryAction
     /**
      * Get connections to check for token expiry
      *
-     * @param int|null $connectionId
      * @return Collection<int, ExactConnection>
      */
     protected function getConnectionsToCheck(?int $connectionId): Collection
@@ -76,9 +75,6 @@ class MonitorRefreshTokenExpiryAction
 
     /**
      * Calculate days until refresh token expires
-     *
-     * @param ExactConnection $connection
-     * @return int|null
      */
     protected function getDaysUntilExpiry(ExactConnection $connection): ?int
     {
@@ -99,11 +95,6 @@ class MonitorRefreshTokenExpiryAction
 
     /**
      * Handle an expiring refresh token
-     *
-     * @param ExactConnection $connection
-     * @param int $daysUntilExpiry
-     * @param int $warningThreshold
-     * @return void
      */
     protected function handleExpiringToken(
         ExactConnection $connection,

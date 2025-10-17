@@ -15,13 +15,9 @@ class TokenRefreshFailed
 
     /**
      * Create a new event instance.
-     *
-     * @param ExactConnection $connection
-     * @param \Throwable $exception
      */
     public function __construct(
         public ExactConnection $connection,
         public \Throwable $exception
-    ) {
-    }
+    ) {}
 }

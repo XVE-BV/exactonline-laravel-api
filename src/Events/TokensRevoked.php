@@ -15,11 +15,8 @@ class TokensRevoked
 
     /**
      * Create a new event instance.
-     *
-     * @param ExactConnection $connection
      */
     public function __construct(
         public ExactConnection $connection
-    ) {
-    }
+    ) {}
 }
