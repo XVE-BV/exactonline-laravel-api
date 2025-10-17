@@ -29,37 +29,33 @@ class EnsureValidExactConnection
     {
         // Get the connection
         $connection = $this->resolveConnection($request, $connectionId);
-        
+
         if ($connection === null) {
             throw ConnectionException::connectionNotFound();
         }
-        
+
         // Check if connection is active
         if (! $connection->is_active) {
             throw ConnectionException::connectionInactive($connection->id);
         }
-        
+
         // Check and refresh token if needed
         $this->ensureValidToken($connection);
-        
+
         // Attach connection to request for use in controllers
         $request->attributes->set('exactConnection', $connection);
         $request->setUserResolver(function () use ($connection) {
             return $connection;
         });
-        
+
         // Update last used timestamp
         $connection->update(['last_used_at' => now()]);
-        
+
         return $next($request);
     }
-    
+
     /**
      * Resolve the Exact Online connection
-     *
-     * @param  Request  $request
-     * @param  string|null  $connectionId
-     * @return ExactConnection|null
      */
     protected function resolveConnection(Request $request, ?string $connectionId = null): ?ExactConnection
     {
@@ -67,37 +63,35 @@ class EnsureValidExactConnection
         if ($connectionId !== null) {
             return ExactConnection::find($connectionId);
         }
-        
+
         // Priority 2: Connection ID from request (route parameter or query)
-        $requestConnectionId = $request->route('connection_id') 
+        $requestConnectionId = $request->route('connection_id')
             ?? $request->query('connection_id')
             ?? $request->input('connection_id');
-            
+
         if ($requestConnectionId !== null) {
             return ExactConnection::find($requestConnectionId);
         }
-        
+
         // Priority 3: Connection for authenticated user
         if ($request->user() !== null) {
             $userId = $request->user()->getAuthIdentifier();
-            
+
             return ExactConnection::where('user_id', $userId)
                 ->where('is_active', true)
                 ->orderBy('last_used_at', 'desc')
                 ->first();
         }
-        
+
         // Priority 4: Default active connection (single-tenant applications)
         return ExactConnection::where('is_active', true)
             ->orderBy('last_used_at', 'desc')
             ->first();
     }
-    
+
     /**
      * Ensure the connection has a valid access token
      *
-     * @param  ExactConnection  $connection
-     * @return void
      *
      * @throws ConnectionException
      */
@@ -107,7 +101,7 @@ class EnsureValidExactConnection
         if (empty($connection->access_token) || empty($connection->refresh_token)) {
             throw ConnectionException::tokensNotFound($connection->id);
         }
-        
+
         // Check if token needs refresh (proactive at 9 minutes)
         if ($this->tokenNeedsRefresh($connection)) {
             try {
@@ -115,30 +109,27 @@ class EnsureValidExactConnection
                     'refresh_access_token',
                     RefreshAccessTokenAction::class
                 );
-                
+
                 $refreshAction->execute($connection);
-                
+
                 // Refresh the connection to get updated tokens
                 $connection->refresh();
-                
+
             } catch (\Exception $e) {
                 throw ConnectionException::tokenRefreshFailed($connection->id, $e->getMessage());
             }
         }
     }
-    
+
     /**
      * Check if token needs refresh (proactive at 9 minutes)
-     *
-     * @param  ExactConnection  $connection
-     * @return bool
      */
     protected function tokenNeedsRefresh(ExactConnection $connection): bool
     {
         if (empty($connection->token_expires_at)) {
             return true;
         }
-        
+
         // Refresh proactively at 9 minutes (540 seconds before expiry)
         return $connection->token_expires_at < (now()->timestamp + 540);
     }
