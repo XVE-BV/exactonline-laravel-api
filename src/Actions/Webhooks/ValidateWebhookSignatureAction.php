@@ -6,7 +6,6 @@ namespace Skylence\ExactonlineLaravelApi\Actions\Webhooks;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Skylence\ExactonlineLaravelApi\Exceptions\WebhookValidationException;
 use Skylence\ExactonlineLaravelApi\Models\ExactWebhook;
 
 class ValidateWebhookSignatureAction
@@ -41,6 +40,7 @@ class ValidateWebhookSignatureAction
 
             if (empty($topic)) {
                 $result['error'] = 'No webhook topic found in request';
+
                 return $result;
             }
 
@@ -51,6 +51,7 @@ class ValidateWebhookSignatureAction
 
             if ($webhook === null) {
                 $result['error'] = "No registered webhook found for topic: {$topic}";
+
                 return $result;
             }
 
@@ -61,6 +62,7 @@ class ValidateWebhookSignatureAction
 
             if (empty($signature)) {
                 $result['error'] = 'No signature found in request headers';
+
                 return $result;
             }
 
@@ -71,12 +73,12 @@ class ValidateWebhookSignatureAction
             // Compare signatures (timing-safe)
             if (! hash_equals($expectedSignature, $signature)) {
                 $result['error'] = 'Invalid webhook signature';
-                
+
                 Log::warning('Webhook signature validation failed', [
                     'webhook_id' => $webhook->id,
                     'topic' => $topic,
-                    'received_signature' => substr($signature, 0, 10) . '...',
-                    'expected_signature' => substr($expectedSignature, 0, 10) . '...',
+                    'received_signature' => substr($signature, 0, 10).'...',
+                    'expected_signature' => substr($expectedSignature, 0, 10).'...',
                 ]);
 
                 return $result;
@@ -85,6 +87,7 @@ class ValidateWebhookSignatureAction
             // Additional validation: Check timestamp to prevent replay attacks
             if (! $this->validateTimestamp($request)) {
                 $result['error'] = 'Webhook timestamp is too old (possible replay attack)';
+
                 return $result;
             }
 
@@ -103,16 +106,14 @@ class ValidateWebhookSignatureAction
                 'topic' => $result['topic'],
             ]);
 
-            $result['error'] = 'Validation error: ' . $e->getMessage();
+            $result['error'] = 'Validation error: '.$e->getMessage();
+
             return $result;
         }
     }
 
     /**
      * Extract webhook topic from request
-     *
-     * @param  Request  $request
-     * @return string|null
      */
     protected function extractTopic(Request $request): ?string
     {
@@ -140,9 +141,6 @@ class ValidateWebhookSignatureAction
 
     /**
      * Extract signature from request headers
-     *
-     * @param  Request  $request
-     * @return string|null
      */
     protected function extractSignature(Request $request): ?string
     {
@@ -171,10 +169,6 @@ class ValidateWebhookSignatureAction
 
     /**
      * Find webhook by request and topic
-     *
-     * @param  Request  $request
-     * @param  string  $topic
-     * @return ExactWebhook|null
      */
     protected function findWebhook(Request $request, string $topic): ?ExactWebhook
     {
@@ -209,10 +203,6 @@ class ValidateWebhookSignatureAction
 
     /**
      * Calculate HMAC-SHA256 signature
-     *
-     * @param  string  $payload
-     * @param  ExactWebhook  $webhook
-     * @return string
      */
     protected function calculateSignature(string $payload, ExactWebhook $webhook): string
     {
@@ -224,7 +214,7 @@ class ValidateWebhookSignatureAction
         // Exact Online may use base64 encoding
         // Check webhook metadata for encoding type
         $metadata = $webhook->metadata ?? [];
-        
+
         if (isset($metadata['signature_encoding']) && $metadata['signature_encoding'] === 'base64') {
             return base64_encode(hex2bin($signature));
         }
@@ -234,9 +224,6 @@ class ValidateWebhookSignatureAction
 
     /**
      * Validate timestamp to prevent replay attacks
-     *
-     * @param  Request  $request
-     * @return bool
      */
     protected function validateTimestamp(Request $request): bool
     {
@@ -284,11 +271,6 @@ class ValidateWebhookSignatureAction
 
     /**
      * Validate webhook signature (static helper method)
-     *
-     * @param  string  $payload
-     * @param  string  $signature
-     * @param  string  $secret
-     * @return bool
      */
     public static function isValidSignature(string $payload, string $signature, string $secret): bool
     {

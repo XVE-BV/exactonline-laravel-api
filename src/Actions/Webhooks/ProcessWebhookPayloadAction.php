@@ -74,7 +74,6 @@ class ProcessWebhookPayloadAction
      * Extract webhook topic
      *
      * @param  array<string, mixed>  $payload
-     * @return string
      *
      * @throws WebhookValidationException
      */
@@ -93,21 +92,20 @@ class ProcessWebhookPayloadAction
      * Extract webhook action (Created, Updated, Deleted, etc.)
      *
      * @param  array<string, mixed>  $payload
-     * @return string
      */
     protected function extractAction(array $payload): string
     {
         // Try different field names
-        $action = $payload['Action'] ?? 
-                 $payload['action'] ?? 
-                 $payload['EventType'] ?? 
-                 $payload['event_type'] ?? 
+        $action = $payload['Action'] ??
+                 $payload['action'] ??
+                 $payload['EventType'] ??
+                 $payload['event_type'] ??
                  'Unknown';
 
         // If action is embedded in topic (e.g., "AccountsCreated")
         if ($action === 'Unknown' && isset($payload['Topic'])) {
             $topic = $payload['Topic'];
-            
+
             if (str_ends_with($topic, 'Created')) {
                 return 'Created';
             } elseif (str_ends_with($topic, 'Updated')) {
@@ -124,7 +122,6 @@ class ProcessWebhookPayloadAction
      * Extract entity type from webhook
      *
      * @param  array<string, mixed>  $payload
-     * @return string
      */
     protected function extractEntity(array $payload): string
     {
@@ -137,7 +134,7 @@ class ProcessWebhookPayloadAction
 
         // Extract from topic (remove action suffix)
         $topic = $payload['Topic'] ?? '';
-        
+
         $entity = preg_replace('/(Created|Updated|Deleted)$/', '', $topic);
 
         return $entity ?: 'Unknown';
@@ -147,25 +144,24 @@ class ProcessWebhookPayloadAction
      * Extract entity ID
      *
      * @param  array<string, mixed>  $payload
-     * @return string|null
      */
     protected function extractEntityId(array $payload): ?string
     {
         // Try common field names
-        $id = $payload['ID'] ?? 
-              $payload['Id'] ?? 
-              $payload['id'] ?? 
-              $payload['EntityID'] ?? 
-              $payload['entity_id'] ?? 
-              $payload['Key'] ?? 
-              $payload['key'] ?? 
+        $id = $payload['ID'] ??
+              $payload['Id'] ??
+              $payload['id'] ??
+              $payload['EntityID'] ??
+              $payload['entity_id'] ??
+              $payload['Key'] ??
+              $payload['key'] ??
               null;
 
         // If ID is in the data object
         if ($id === null && isset($payload['Data'])) {
-            $id = $payload['Data']['ID'] ?? 
-                  $payload['Data']['Id'] ?? 
-                  $payload['Data']['id'] ?? 
+            $id = $payload['Data']['ID'] ??
+                  $payload['Data']['Id'] ??
+                  $payload['Data']['id'] ??
                   null;
         }
 
@@ -176,14 +172,13 @@ class ProcessWebhookPayloadAction
      * Extract division (administration)
      *
      * @param  array<string, mixed>  $payload
-     * @return string|null
      */
     protected function extractDivision(array $payload): ?string
     {
-        $division = $payload['Division'] ?? 
-                   $payload['division'] ?? 
-                   $payload['Administration'] ?? 
-                   $payload['administration'] ?? 
+        $division = $payload['Division'] ??
+                   $payload['division'] ??
+                   $payload['Administration'] ??
+                   $payload['administration'] ??
                    null;
 
         return $division !== null ? (string) $division : null;
@@ -193,16 +188,15 @@ class ProcessWebhookPayloadAction
      * Extract timestamp
      *
      * @param  array<string, mixed>  $payload
-     * @return int
      */
     protected function extractTimestamp(array $payload): int
     {
-        $timestamp = $payload['Timestamp'] ?? 
-                    $payload['timestamp'] ?? 
-                    $payload['CreatedAt'] ?? 
-                    $payload['created_at'] ?? 
-                    $payload['EventTime'] ?? 
-                    $payload['event_time'] ?? 
+        $timestamp = $payload['Timestamp'] ??
+                    $payload['timestamp'] ??
+                    $payload['CreatedAt'] ??
+                    $payload['created_at'] ??
+                    $payload['EventTime'] ??
+                    $payload['event_time'] ??
                     null;
 
         if ($timestamp === null) {
@@ -215,12 +209,13 @@ class ProcessWebhookPayloadAction
             if ($timestamp > 9999999999) {
                 return (int) ($timestamp / 1000);
             }
+
             return (int) $timestamp;
         }
 
         // Parse string timestamp
         $parsed = strtotime($timestamp);
-        
+
         return $parsed !== false ? $parsed : now()->timestamp;
     }
 

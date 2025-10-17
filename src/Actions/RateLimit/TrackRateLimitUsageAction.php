@@ -19,7 +19,6 @@ class TrackRateLimitUsageAction
      * This action parses rate limit headers from Exact Online API responses
      * and updates the rate limit tracking for the connection.
      *
-     * @param  ExactConnection  $connection
      * @param  \Picqer\Financials\Exact\Connection  $picqerConnection  Picqer connection with headers
      * @return array{
      *     tracked: bool,
@@ -106,7 +105,6 @@ class TrackRateLimitUsageAction
     /**
      * Extract rate limit headers from picqer connection
      *
-     * @param  \Picqer\Financials\Exact\Connection  $picqerConnection
      * @return array<string, string>
      */
     protected function extractRateLimitHeaders(\Picqer\Financials\Exact\Connection $picqerConnection): array
