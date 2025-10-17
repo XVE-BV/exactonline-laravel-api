@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Skylence\ExactonlineLaravelApi;
 
-use Skylence\ExactonlineLaravelApi\Commands\ExactonlineLaravelApiCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -18,8 +19,21 @@ class ExactonlineLaravelApiServiceProvider extends PackageServiceProvider
         $package
             ->name('exactonline-laravel-api')
             ->hasConfigFile('exactonline-laravel-api')
-            ->hasViews()
-            ->hasMigration('create_exactonline_laravel_api_table')
-            ->hasCommand(ExactonlineLaravelApiCommand::class);
+            ->hasMigrations([
+                'create_exact_connections_table',
+                'create_exact_webhooks_table',
+                'create_exact_rate_limits_table',
+            ])
+            ->hasRoute('web');
+    }
+
+    public function packageBooted(): void
+    {
+        // Register any package services here
+    }
+
+    public function packageRegistered(): void
+    {
+        // Register any bindings or singletons here
     }
 }
