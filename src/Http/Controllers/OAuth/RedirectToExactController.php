@@ -20,9 +20,7 @@ class RedirectToExactController extends Controller
      * This controller generates the OAuth authorization URL and redirects
      * the user to Exact Online for authentication and authorization.
      *
-     * @param Request $request
-     * @param int|null $connectionId Optional existing connection to re-authorize
-     * @return RedirectResponse
+     * @param  int|null  $connectionId  Optional existing connection to re-authorize
      */
     public function __invoke(Request $request, ?int $connectionId = null): RedirectResponse
     {
@@ -53,8 +51,6 @@ class RedirectToExactController extends Controller
 
     /**
      * Generate a random state value for CSRF protection
-     *
-     * @return string
      */
     protected function generateState(): string
     {
@@ -63,10 +59,6 @@ class RedirectToExactController extends Controller
 
     /**
      * Get existing connection or create a new one
-     *
-     * @param Request $request
-     * @param int|null $connectionId
-     * @return ExactConnection
      */
     protected function getOrCreateConnection(Request $request, ?int $connectionId): ExactConnection
     {
@@ -91,10 +83,6 @@ class RedirectToExactController extends Controller
 
     /**
      * Generate the OAuth authorization URL
-     *
-     * @param ExactConnection $connection
-     * @param string $state
-     * @return string
      */
     protected function generateAuthorizationUrl(ExactConnection $connection, string $state): string
     {
@@ -116,9 +104,6 @@ class RedirectToExactController extends Controller
 
     /**
      * Get the redirect URL for OAuth callback
-     *
-     * @param Request $request
-     * @return string
      */
     protected function getRedirectUrl(Request $request): string
     {
@@ -126,7 +111,7 @@ class RedirectToExactController extends Controller
 
         // If it's a relative URL, make it absolute
         if (! filter_var($configuredUrl, FILTER_VALIDATE_URL)) {
-            return $request->getSchemeAndHttpHost() . $configuredUrl;
+            return $request->getSchemeAndHttpHost().$configuredUrl;
         }
 
         return $configuredUrl;

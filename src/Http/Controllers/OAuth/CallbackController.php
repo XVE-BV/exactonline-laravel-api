@@ -18,10 +18,6 @@ class CallbackController extends Controller
 {
     /**
      * Handle the OAuth callback from Exact Online.
-     *
-     * @param Request $request
-     * @param AcquireAccessTokenAction $acquireTokenAction
-     * @return RedirectResponse|Response
      */
     public function __invoke(
         Request $request,
@@ -71,8 +67,6 @@ class CallbackController extends Controller
     /**
      * Validate the OAuth callback request.
      *
-     * @param Request $request
-     * @return void
      * @throws \Exception
      */
     protected function validateCallback(Request $request): void
@@ -101,9 +95,6 @@ class CallbackController extends Controller
 
     /**
      * Get existing connection or create a new one.
-     *
-     * @param Request $request
-     * @return ExactConnection
      */
     protected function getOrCreateConnection(Request $request): ExactConnection
     {
@@ -123,13 +114,10 @@ class CallbackController extends Controller
 
     /**
      * Create a new Exact Online connection.
-     *
-     * @param Request $request
-     * @return ExactConnection
      */
     protected function createNewConnection(Request $request): ExactConnection
     {
-        $connection = new ExactConnection();
+        $connection = new ExactConnection;
 
         // Set OAuth configuration
         $connection->client_id = Config::getClientId();
@@ -148,7 +136,7 @@ class CallbackController extends Controller
         }
 
         // Set a default name
-        $connection->name = 'Exact Online Connection ' . now()->format('Y-m-d H:i');
+        $connection->name = 'Exact Online Connection '.now()->format('Y-m-d H:i');
 
         $connection->save();
 
@@ -157,9 +145,6 @@ class CallbackController extends Controller
 
     /**
      * Clear OAuth session data.
-     *
-     * @param Request $request
-     * @return void
      */
     protected function clearOAuthSession(Request $request): void
     {
@@ -172,10 +157,6 @@ class CallbackController extends Controller
 
     /**
      * Handle successful OAuth callback.
-     *
-     * @param Request $request
-     * @param ExactConnection $connection
-     * @return RedirectResponse
      */
     protected function handleCallbackSuccess(Request $request, ExactConnection $connection): RedirectResponse
     {
@@ -196,9 +177,6 @@ class CallbackController extends Controller
 
     /**
      * Handle OAuth callback error.
-     *
-     * @param string $error
-     * @return RedirectResponse|Response
      */
     protected function handleCallbackError(string $error): RedirectResponse|Response
     {
@@ -214,6 +192,6 @@ class CallbackController extends Controller
         $errorUrl = config('exactonline-laravel-api.oauth.error_url', '/');
 
         return redirect($errorUrl)
-            ->with('error', 'Failed to connect to Exact Online: ' . $error);
+            ->with('error', 'Failed to connect to Exact Online: '.$error);
     }
 }

@@ -22,7 +22,7 @@ Route::prefix('exact')->name('exact.')->group(function () {
         // Redirect to Exact Online for authorization
         Route::get('redirect/{connection?}', RedirectToExactController::class)
             ->name('redirect');
-        
+
         // Handle OAuth callback from Exact Online
         Route::get('callback', CallbackController::class)
             ->name('callback');
