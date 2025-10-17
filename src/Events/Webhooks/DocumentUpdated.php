@@ -8,8 +8,6 @@ class DocumentUpdated extends BaseWebhookEvent
 {
     /**
      * Get the event name for logging/tagging
-     *
-     * @return string
      */
     public function getEventName(): string
     {
@@ -18,8 +16,6 @@ class DocumentUpdated extends BaseWebhookEvent
 
     /**
      * Get the entity type for this event
-     *
-     * @return string
      */
     public function getEntityType(): string
     {
@@ -28,8 +24,6 @@ class DocumentUpdated extends BaseWebhookEvent
 
     /**
      * Get the action type for this event
-     *
-     * @return string
      */
     public function getActionType(): string
     {

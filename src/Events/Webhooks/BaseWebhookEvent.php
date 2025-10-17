@@ -23,29 +23,21 @@ abstract class BaseWebhookEvent implements ShouldQueue
 
     /**
      * The webhook model (if available)
-     *
-     * @var ExactWebhook|null
      */
     public ?ExactWebhook $webhook;
 
     /**
      * The entity ID from the webhook
-     *
-     * @var string|null
      */
     public ?string $entityId;
 
     /**
      * The division (administration) ID
-     *
-     * @var string|null
      */
     public ?string $division;
 
     /**
      * The timestamp of the webhook event
-     *
-     * @var int
      */
     public int $timestamp;
 
@@ -76,7 +68,6 @@ abstract class BaseWebhookEvent implements ShouldQueue
      *     data: array<string, mixed>,
      *     metadata: array<string, mixed>
      * }  $payload
-     * @param  ExactWebhook|null  $webhook
      */
     public function __construct(array $payload, ?ExactWebhook $webhook = null)
     {
@@ -103,15 +94,15 @@ abstract class BaseWebhookEvent implements ShouldQueue
         ];
 
         if ($this->entityId !== null) {
-            $tags[] = 'entity:' . $this->entityId;
+            $tags[] = 'entity:'.$this->entityId;
         }
 
         if ($this->division !== null) {
-            $tags[] = 'division:' . $this->division;
+            $tags[] = 'division:'.$this->division;
         }
 
         if ($this->webhook !== null) {
-            $tags[] = 'webhook:' . $this->webhook->id;
+            $tags[] = 'webhook:'.$this->webhook->id;
         }
 
         return $tags;
@@ -119,22 +110,16 @@ abstract class BaseWebhookEvent implements ShouldQueue
 
     /**
      * Get the event name for logging/tagging
-     *
-     * @return string
      */
     abstract public function getEventName(): string;
 
     /**
      * Get the entity type for this event
-     *
-     * @return string
      */
     abstract public function getEntityType(): string;
 
     /**
      * Get the action type for this event (Created, Updated, Deleted)
-     *
-     * @return string
      */
     abstract public function getActionType(): string;
 }

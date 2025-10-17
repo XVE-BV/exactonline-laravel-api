@@ -23,50 +23,36 @@ class GenericWebhookReceived implements ShouldQueue
 
     /**
      * The webhook model (if available)
-     *
-     * @var ExactWebhook|null
      */
     public ?ExactWebhook $webhook;
 
     /**
      * The webhook topic
-     *
-     * @var string
      */
     public string $topic;
 
     /**
      * The webhook action
-     *
-     * @var string
      */
     public string $action;
 
     /**
      * The entity type
-     *
-     * @var string
      */
     public string $entity;
 
     /**
      * The entity ID from the webhook
-     *
-     * @var string|null
      */
     public ?string $entityId;
 
     /**
      * The division (administration) ID
-     *
-     * @var string|null
      */
     public ?string $division;
 
     /**
      * The timestamp of the webhook event
-     *
-     * @var int
      */
     public int $timestamp;
 
@@ -97,7 +83,6 @@ class GenericWebhookReceived implements ShouldQueue
      *     data: array<string, mixed>,
      *     metadata: array<string, mixed>
      * }  $payload
-     * @param  ExactWebhook|null  $webhook
      */
     public function __construct(array $payload, ?ExactWebhook $webhook = null)
     {
@@ -128,15 +113,15 @@ class GenericWebhookReceived implements ShouldQueue
         ];
 
         if ($this->entityId !== null) {
-            $tags[] = 'entity:' . $this->entityId;
+            $tags[] = 'entity:'.$this->entityId;
         }
 
         if ($this->division !== null) {
-            $tags[] = 'division:' . $this->division;
+            $tags[] = 'division:'.$this->division;
         }
 
         if ($this->webhook !== null) {
-            $tags[] = 'webhook:' . $this->webhook->id;
+            $tags[] = 'webhook:'.$this->webhook->id;
         }
 
         return $tags;
@@ -144,8 +129,6 @@ class GenericWebhookReceived implements ShouldQueue
 
     /**
      * Get the event name for logging/tagging
-     *
-     * @return string
      */
     public function getEventName(): string
     {

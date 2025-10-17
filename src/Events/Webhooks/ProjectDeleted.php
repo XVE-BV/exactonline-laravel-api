@@ -6,5 +6,8 @@ namespace Skylence\ExactonlineLaravelApi\Events\Webhooks;
 
 class ProjectDeleted extends BaseWebhookEvent
 {
-    public function getProjectId(): ?string { return $this->getEntityId(); }
+    public function getProjectId(): ?string
+    {
+        return $this->getEntityId();
+    }
 }
