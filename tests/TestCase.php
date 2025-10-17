@@ -15,6 +15,9 @@ class TestCase extends Orchestra
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Skylence\\ExactonlineLaravelApi\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
+
+        // Load package migrations for tests
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }
 
     protected function getPackageProviders($app)
@@ -26,12 +29,18 @@ class TestCase extends Orchestra
 
     public function getEnvironmentSetUp($app)
     {
-        config()->set('database.default', 'testing');
+        // Database
+        $app['config']->set('database.default', 'testing');
+        $app['config']->set('database.connections.testing', [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+        ]);
 
-        /*
-         foreach (\Illuminate\Support\Facades\File::allFiles(__DIR__ . '/../database/migrations') as $migration) {
-            (include $migration->getRealPath())->up();
-         }
-         */
+        // Application key required for encryption
+        $app['config']->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
+
+        // Use array session driver for feature tests
+        $app['config']->set('session.driver', 'array');
     }
 }

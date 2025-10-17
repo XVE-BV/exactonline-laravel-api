@@ -16,7 +16,7 @@ use Skylence\ExactonlineLaravelApi\Http\Controllers\OAuth\RedirectToExactControl
 |
 */
 
-Route::prefix('exact')->name('exact.')->group(function () {
+Route::middleware('web')->prefix('exact')->name('exact.')->group(function () {
     // OAuth routes
     Route::prefix('oauth')->name('oauth.')->group(function () {
         // Redirect to Exact Online for authorization
