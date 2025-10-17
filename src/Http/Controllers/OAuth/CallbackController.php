@@ -22,9 +22,6 @@ class CallbackController extends Controller
      * This controller receives the authorization code from Exact Online,
      * validates the state parameter for CSRF protection, and exchanges
      * the code for access and refresh tokens.
-     *
-     * @param Request $request
-     * @return RedirectResponse|JsonResponse
      */
     public function __invoke(Request $request): RedirectResponse|JsonResponse
     {
@@ -37,7 +34,7 @@ class CallbackController extends Controller
 
             // Get authorization code
             $authorizationCode = $request->input('code');
-            
+
             if (! $authorizationCode) {
                 throw new \InvalidArgumentException('No authorization code received from Exact Online');
             }
@@ -87,8 +84,6 @@ class CallbackController extends Controller
     /**
      * Validate the state parameter for CSRF protection
      *
-     * @param Request $request
-     * @return void
      * @throws \RuntimeException
      */
     protected function validateState(Request $request): void
@@ -108,8 +103,6 @@ class CallbackController extends Controller
     /**
      * Check for OAuth error response from Exact Online
      *
-     * @param Request $request
-     * @return void
      * @throws \RuntimeException
      */
     protected function checkForOAuthError(Request $request): void
@@ -117,7 +110,7 @@ class CallbackController extends Controller
         if ($request->has('error')) {
             $error = $request->input('error');
             $errorDescription = $request->input('error_description', 'Unknown error');
-            
+
             // Common OAuth error codes
             $errorMessages = [
                 'access_denied' => 'User denied access to Exact Online',
@@ -130,7 +123,7 @@ class CallbackController extends Controller
             ];
 
             $message = $errorMessages[$error] ?? $errorDescription;
-            
+
             throw new \RuntimeException("OAuth error: {$error} - {$message}");
         }
     }
@@ -138,27 +131,25 @@ class CallbackController extends Controller
     /**
      * Get the connection for this OAuth flow
      *
-     * @param Request $request
-     * @return ExactConnection
      * @throws \RuntimeException
      */
     protected function getConnection(Request $request): ExactConnection
     {
         // Get connection ID from session
         $connectionId = $request->session()->get('exact_oauth_connection_id');
-        
+
         if (! $connectionId) {
             throw new \RuntimeException(
-                'No connection ID found in session. ' .
+                'No connection ID found in session. '.
                 'The OAuth flow may have expired or been initiated from another browser.'
             );
         }
 
         $connection = ExactConnection::find($connectionId);
-        
+
         if (! $connection) {
             throw new \RuntimeException(
-                'Connection not found. ' .
+                'Connection not found. '.
                 'The connection may have been deleted during the OAuth flow.'
             );
         }
@@ -184,9 +175,6 @@ class CallbackController extends Controller
 
     /**
      * Clean up OAuth session data
-     *
-     * @param Request $request
-     * @return void
      */
     protected function cleanupSession(Request $request): void
     {
@@ -200,10 +188,6 @@ class CallbackController extends Controller
 
     /**
      * Handle successful OAuth callback
-     *
-     * @param Request $request
-     * @param ExactConnection $connection
-     * @return RedirectResponse|JsonResponse
      */
     protected function handleSuccess(Request $request, ExactConnection $connection): RedirectResponse|JsonResponse
     {
@@ -219,9 +203,10 @@ class CallbackController extends Controller
 
         // Check for custom redirect URL stored in session
         $redirectTo = $request->session()->get('exact_oauth_redirect_to');
-        
+
         if ($redirectTo) {
             $request->session()->forget('exact_oauth_redirect_to');
+
             return redirect($redirectTo)
                 ->with('exact_oauth_success', 'Successfully connected to Exact Online')
                 ->with('exact_connection_id', $connection->id);
@@ -242,21 +227,17 @@ class CallbackController extends Controller
 
     /**
      * Handle failed OAuth callback
-     *
-     * @param Request $request
-     * @param \Throwable $exception
-     * @return RedirectResponse|JsonResponse
      */
     protected function handleFailure(Request $request, \Throwable $exception): RedirectResponse|JsonResponse
     {
         // Prepare error message
         $errorMessage = 'Failed to connect to Exact Online';
-        
+
         // Add more detail for certain exception types
-        if ($exception instanceof TokenRefreshException || 
+        if ($exception instanceof TokenRefreshException ||
             $exception instanceof \InvalidArgumentException ||
             $exception instanceof \RuntimeException) {
-            $errorMessage .= ': ' . $exception->getMessage();
+            $errorMessage .= ': '.$exception->getMessage();
         } else {
             // For other exceptions, be more generic in user-facing message
             $errorMessage .= '. Please try again.';

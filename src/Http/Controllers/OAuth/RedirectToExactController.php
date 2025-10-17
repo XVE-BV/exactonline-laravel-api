@@ -21,9 +21,8 @@ class RedirectToExactController extends Controller
      * This controller generates the OAuth authorization URL and redirects
      * the user to Exact Online for authentication and authorization.
      *
-     * @param Request $request
-     * @param int|null $connectionId Optional existing connection to re-authorize
-     * @return RedirectResponse
+     * @param  int|null  $connectionId  Optional existing connection to re-authorize
+     *
      * @throws ConnectionException
      */
     public function __invoke(Request $request, ?int $connectionId = null): RedirectResponse
@@ -34,13 +33,13 @@ class RedirectToExactController extends Controller
 
             // Generate state for CSRF protection
             $state = $this->generateState();
-            
+
             // Store OAuth session data
             $this->storeOAuthSession($request, $state, $connectionId);
 
             // Get or create connection record
             $connection = $this->getOrCreateConnection($request, $connectionId);
-            
+
             // Store connection ID in session for callback
             $request->session()->put('exact_oauth_connection_id', $connection->id);
 
@@ -63,16 +62,15 @@ class RedirectToExactController extends Controller
 
             // Redirect to failure URL with error message
             $failureUrl = config('exactonline-laravel-api.oauth.failure_url', '/');
-            
+
             return redirect($failureUrl)
-                ->with('error', 'Failed to initiate Exact Online connection: ' . $e->getMessage());
+                ->with('error', 'Failed to initiate Exact Online connection: '.$e->getMessage());
         }
     }
 
     /**
      * Validate that OAuth configuration is properly set
      *
-     * @return void
      * @throws ConnectionException
      */
     protected function validateOAuthConfiguration(): void
@@ -82,7 +80,7 @@ class RedirectToExactController extends Controller
 
         if (empty($clientId) || empty($clientSecret)) {
             throw ConnectionException::invalidConfiguration(
-                'OAuth client ID and secret must be configured. ' .
+                'OAuth client ID and secret must be configured. '.
                 'Please set EXACT_CLIENT_ID and EXACT_CLIENT_SECRET in your .env file.'
             );
         }
@@ -90,7 +88,7 @@ class RedirectToExactController extends Controller
         $redirectUrl = Config::getRedirectUrl();
         if (empty($redirectUrl)) {
             throw ConnectionException::invalidConfiguration(
-                'OAuth redirect URL must be configured. ' .
+                'OAuth redirect URL must be configured. '.
                 'Please set EXACT_REDIRECT_URL in your .env file or config.'
             );
         }
@@ -98,8 +96,6 @@ class RedirectToExactController extends Controller
 
     /**
      * Generate a random state value for CSRF protection
-     *
-     * @return string
      */
     protected function generateState(): string
     {
@@ -108,16 +104,11 @@ class RedirectToExactController extends Controller
 
     /**
      * Store OAuth session data
-     *
-     * @param Request $request
-     * @param string $state
-     * @param int|null $connectionId
-     * @return void
      */
     protected function storeOAuthSession(Request $request, string $state, ?int $connectionId): void
     {
         $request->session()->put('exact_oauth_state', $state);
-        
+
         if ($connectionId) {
             $request->session()->put('exact_oauth_connection_id', $connectionId);
         }
@@ -138,16 +129,13 @@ class RedirectToExactController extends Controller
     /**
      * Get existing connection or create a new one
      *
-     * @param Request $request
-     * @param int|null $connectionId
-     * @return ExactConnection
      * @throws ConnectionException
      */
     protected function getOrCreateConnection(Request $request, ?int $connectionId): ExactConnection
     {
         if ($connectionId) {
             $connection = ExactConnection::find($connectionId);
-            
+
             if (! $connection) {
                 throw ConnectionException::notFound((string) $connectionId);
             }
@@ -173,21 +161,18 @@ class RedirectToExactController extends Controller
 
     /**
      * Create a new connection record
-     *
-     * @param Request $request
-     * @return ExactConnection
      */
     protected function createNewConnection(Request $request): ExactConnection
     {
         $userId = $request->user()?->id;
         $tenantId = $request->session()->get('exact_oauth_tenant_id');
-        
+
         // Generate a descriptive name
         $name = 'Exact Online';
         if ($userId && $request->user()->name) {
-            $name .= ' - ' . $request->user()->name;
+            $name .= ' - '.$request->user()->name;
         }
-        $name .= ' (' . now()->format('Y-m-d H:i') . ')';
+        $name .= ' ('.now()->format('Y-m-d H:i').')';
 
         return ExactConnection::create([
             'user_id' => $userId,
@@ -207,10 +192,6 @@ class RedirectToExactController extends Controller
 
     /**
      * Generate the OAuth authorization URL
-     *
-     * @param ExactConnection $connection
-     * @param string $state
-     * @return string
      */
     protected function generateAuthorizationUrl(ExactConnection $connection, string $state): string
     {
@@ -233,17 +214,14 @@ class RedirectToExactController extends Controller
 
     /**
      * Get the redirect URL for OAuth callback
-     *
-     * @param Request $request
-     * @return string
      */
     protected function getRedirectUrl(Request $request): string
     {
         $configuredUrl = Config::getRedirectUrl();
-        
+
         // If it's a relative URL, make it absolute
         if (! filter_var($configuredUrl, FILTER_VALIDATE_URL)) {
-            return $request->getSchemeAndHttpHost() . $configuredUrl;
+            return $request->getSchemeAndHttpHost().$configuredUrl;
         }
 
         return $configuredUrl;
