@@ -63,7 +63,7 @@ class RedirectToExactController extends Controller
             // Redirect to failure URL with error message
             $failureUrl = config('exactonline-laravel-api.oauth.failure_url', '/');
 
-            return redirect($failureUrl)
+            return redirect()->to($failureUrl)
                 ->with('error', 'Failed to initiate Exact Online connection: '.$e->getMessage());
         }
     }

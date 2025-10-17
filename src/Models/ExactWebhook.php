@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -16,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $callback_url
  * @property string|null $webhook_secret
  * @property bool $is_active
- * @property array|null $metadata
+ * @property array<string, mixed>|null $metadata
  * @property \Illuminate\Support\Carbon|null $last_received_at
  * @property int $events_received
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -25,7 +24,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ExactWebhook extends Model
 {
-    use HasFactory;
 
     /**
      * The table associated with the model.
@@ -100,6 +98,8 @@ class ExactWebhook extends Model
 
     /**
      * Get the connection that owns the webhook.
+     *
+     * @return BelongsTo<ExactConnection, $this>
      */
     public function connection(): BelongsTo
     {

@@ -56,7 +56,9 @@ class ValidateConnectionAction
         $result['token_valid'] = $tokenValidation['valid'];
 
         if (! $tokenValidation['valid']) {
-            $result['errors'][] = $tokenValidation['error'];
+            if (is_string($tokenValidation['error']) && $tokenValidation['error'] !== '') {
+                $result['errors'][] = $tokenValidation['error'];
+            }
 
             // If tokens are invalid and we can't refresh, stop here
             if (! $refreshTokenIfNeeded || ! $tokenValidation['refreshed']) {
@@ -69,7 +71,9 @@ class ValidateConnectionAction
         $result['api_reachable'] = $apiTest['reachable'];
 
         if (! $apiTest['reachable']) {
-            $result['errors'][] = $apiTest['error'];
+            if (is_string($apiTest['error']) && $apiTest['error'] !== '') {
+                $result['errors'][] = $apiTest['error'];
+            }
 
             return $result;
         }
@@ -79,7 +83,9 @@ class ValidateConnectionAction
         $result['division_accessible'] = $divisionTest['accessible'];
 
         if (! $divisionTest['accessible']) {
-            $result['errors'][] = $divisionTest['error'];
+            if (is_string($divisionTest['error']) && $divisionTest['error'] !== '') {
+                $result['errors'][] = $divisionTest['error'];
+            }
         }
 
         // Connection is valid if all checks pass

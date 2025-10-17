@@ -147,7 +147,7 @@ class CallbackController extends Controller
 
         $connection = ExactConnection::find($connectionId);
 
-        if (! $connection) {
+        if (! ($connection instanceof ExactConnection)) {
             throw new \RuntimeException(
                 'Connection not found. '.
                 'The connection may have been deleted during the OAuth flow.'
@@ -220,7 +220,7 @@ class CallbackController extends Controller
             $successUrl = str_replace('{connection}', (string) $connection->id, $successUrl);
         }
 
-        return redirect($successUrl)
+        return redirect()->to($successUrl)
             ->with('exact_oauth_success', 'Successfully connected to Exact Online')
             ->with('exact_connection_id', $connection->id);
     }
@@ -261,7 +261,7 @@ class CallbackController extends Controller
         // Use configured failure URL
         $failureUrl = config('exactonline-laravel-api.oauth.failure_url', '/');
 
-        return redirect($failureUrl)
+        return redirect()->to($failureUrl)
             ->with('exact_oauth_error', $errorMessage);
     }
 }

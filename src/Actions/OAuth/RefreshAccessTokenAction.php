@@ -106,7 +106,7 @@ class RefreshAccessTokenAction
         }
 
         // Refresh proactively at 9 minutes (540 seconds before expiry)
-        return $connection->token_expires_at < (now()->timestamp + 540);
+        return $connection->token_expires_at < (now()->getTimestamp() + 540);
     }
 
     /**
@@ -166,7 +166,7 @@ class RefreshAccessTokenAction
     {
         // Check if refresh token is expired (30 days)
         if ($connection->refresh_token_expires_at &&
-            $connection->refresh_token_expires_at < now()->timestamp) {
+            $connection->refresh_token_expires_at < now()->getTimestamp()) {
             throw TokenRefreshException::refreshTokenExpired((string) $connection->id);
         }
 

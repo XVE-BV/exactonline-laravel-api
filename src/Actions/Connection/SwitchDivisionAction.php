@@ -70,7 +70,9 @@ class SwitchDivisionAction
             'new_division' => $divisionId,
         ]);
 
-        return $connection->fresh();
+        $connection->refresh();
+
+        return $connection;
     }
 
     /**

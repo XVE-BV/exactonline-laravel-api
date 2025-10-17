@@ -100,11 +100,11 @@ class AcquireAccessTokenAction
             $picqerConnection->connect();
 
             // Get the tokens
-            $accessToken = $picqerConnection->getAccessToken();
-            $refreshToken = $picqerConnection->getRefreshToken();
-            $expiresAt = $picqerConnection->getTokenExpires();
+            $accessToken = (string) $picqerConnection->getAccessToken();
+            $refreshToken = (string) $picqerConnection->getRefreshToken();
+            $expiresAt = (int) $picqerConnection->getTokenExpires();
 
-            if (! $accessToken || ! $refreshToken) {
+            if ($accessToken === '' || $refreshToken === '') {
                 throw TokenRefreshException::invalidTokenResponse((string) $connection->id);
             }
 
@@ -127,7 +127,7 @@ class AcquireAccessTokenAction
             return [
                 'access_token' => $accessToken,
                 'refresh_token' => $refreshToken,
-                'expires_at' => $expiresAt ?: now()->addMinutes(10)->timestamp,
+                'expires_at' => $expiresAt > 0 ? $expiresAt : now()->addMinutes(10)->getTimestamp(),
             ];
 
         } catch (\Picqer\Financials\Exact\ApiException $e) {
@@ -172,7 +172,7 @@ class AcquireAccessTokenAction
             'token_expires_at' => $tokens['expires_at'],
             'last_token_refresh_at' => now(),
             // Refresh token is valid for 30 days from acquisition
-            'refresh_token_expires_at' => now()->addDays(30)->timestamp,
+            'refresh_token_expires_at' => now()->addDays(30)->getTimestamp(),
             'is_active' => true,
         ]);
     }

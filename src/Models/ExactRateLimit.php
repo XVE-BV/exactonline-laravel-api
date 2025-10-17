@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -25,7 +24,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ExactRateLimit extends Model
 {
-    use HasFactory;
 
     /**
      * The table associated with the model.
@@ -69,6 +67,8 @@ class ExactRateLimit extends Model
 
     /**
      * Get the connection that owns the rate limit.
+     *
+     * @return BelongsTo<ExactConnection, $this>
      */
     public function connection(): BelongsTo
     {
@@ -108,7 +108,7 @@ class ExactRateLimit extends Model
             return null;
         }
 
-        $secondsRemaining = $this->daily_reset_at - now()->timestamp;
+        $secondsRemaining = $this->daily_reset_at - now()->getTimestamp();
 
         return max(0, $secondsRemaining);
     }
@@ -122,7 +122,7 @@ class ExactRateLimit extends Model
             return null;
         }
 
-        $secondsRemaining = $this->minutely_reset_at - now()->timestamp;
+        $secondsRemaining = $this->minutely_reset_at - now()->getTimestamp();
 
         return max(0, $secondsRemaining);
     }

@@ -43,7 +43,9 @@ class StoreTokensAction
             'refresh_token_expires_at' => $refreshTokenExpiresAt,
         ]);
 
-        return $connection->fresh();
+        $connection->refresh();
+
+        return $connection;
     }
 
     /**
@@ -84,12 +86,12 @@ class StoreTokensAction
     protected function calculateTokenExpiration(array $tokens): int
     {
         // If expires_at is provided, use it
-        if (isset($tokens['expires_at']) && $tokens['expires_at'] > 0) {
-            return $tokens['expires_at'];
+        if (isset($tokens['expires_at']) && (int) $tokens['expires_at'] > 0) {
+            return (int) $tokens['expires_at'];
         }
 
         // Default to 10 minutes from now (Exact Online standard)
-        return now()->addMinutes(10)->timestamp;
+        return now()->addMinutes(10)->getTimestamp();
     }
 
     /**
@@ -99,6 +101,6 @@ class StoreTokensAction
      */
     protected function calculateRefreshTokenExpiration(): int
     {
-        return now()->addDays(30)->timestamp;
+        return now()->addDays(30)->getTimestamp();
     }
 }

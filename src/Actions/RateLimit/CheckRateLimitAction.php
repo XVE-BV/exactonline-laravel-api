@@ -119,7 +119,7 @@ class CheckRateLimitAction
             'minutely_limit' => $rateLimit->minutely_limit,
             'minutely_remaining' => $rateLimit->minutely_remaining,
             'minutely_reset_at' => $rateLimit->minutely_reset_at,
-            'updated_at' => now()->timestamp,
+            'updated_at' => now()->getTimestamp(),
         ], $ttl);
     }
 
@@ -213,10 +213,11 @@ class CheckRateLimitAction
         // Warn if approaching daily limit (90% used)
         if ($rateLimit->isApproachingDailyLimit(0.9)) {
             $percentage = $rateLimit->getDailyUsagePercentage();
+            $usagePercentage = $percentage !== null ? round($percentage, 2) : null;
 
             Log::warning('Approaching daily rate limit', [
                 'connection_id' => $rateLimit->connection_id,
-                'usage_percentage' => round($percentage, 2),
+                'usage_percentage' => $usagePercentage,
                 'remaining' => $rateLimit->daily_remaining,
             ]);
         }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -28,15 +27,14 @@ use Picqer\Financials\Exact\Connection;
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $last_used_at
  * @property string|null $name
- * @property array|null $metadata
+ * @property array<string, mixed>|null $metadata
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<ExactWebhook> $webhooks
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, ExactWebhook> $webhooks
  * @property-read ExactRateLimit|null $rateLimit
  */
 class ExactConnection extends Model
 {
-    use HasFactory;
 
     /**
      * The table associated with the model.
@@ -198,7 +196,7 @@ class ExactConnection extends Model
         }
 
         // Refresh proactively at 9 minutes (540 seconds before expiry)
-        return $this->token_expires_at < (now()->timestamp + 540);
+        return $this->token_expires_at < (now()->getTimestamp() + 540);
     }
 
     /**
