@@ -19,7 +19,8 @@ class TrackRateLimitUsageAction
      * This action parses rate limit headers from Exact Online API responses
      * and updates the rate limit tracking for the connection.
      *
-     * @param  array<string, string>  $headers  Response headers from Exact Online
+     * @param  ExactConnection  $connection
+     * @param  \Picqer\Financials\Exact\Connection  $picqerConnection  Picqer connection with headers
      * @return array{
      *     tracked: bool,
      *     daily_usage: float|null,
@@ -27,7 +28,7 @@ class TrackRateLimitUsageAction
      *     warnings: array<string>
      * }
      */
-    public function execute(ExactConnection $connection, array $headers): array
+    public function execute(ExactConnection $connection, \Picqer\Financials\Exact\Connection $picqerConnection): array
     {
         $result = [
             'tracked' => false,
@@ -35,6 +36,17 @@ class TrackRateLimitUsageAction
             'minutely_usage' => null,
             'warnings' => [],
         ];
+
+        // Get rate limit headers from picqer connection
+        $headers = $this->extractRateLimitHeaders($picqerConnection);
+
+        if (empty($headers)) {
+            Log::debug('No rate limit headers found in response', [
+                'connection_id' => $connection->id,
+            ]);
+
+            return $result;
+        }
 
         // Parse rate limit headers
         $rateLimits = $this->parseRateLimitHeaders($headers);
@@ -89,6 +101,40 @@ class TrackRateLimitUsageAction
         ]);
 
         return $result;
+    }
+
+    /**
+     * Extract rate limit headers from picqer connection
+     *
+     * @param  \Picqer\Financials\Exact\Connection  $picqerConnection
+     * @return array<string, string>
+     */
+    protected function extractRateLimitHeaders(\Picqer\Financials\Exact\Connection $picqerConnection): array
+    {
+        $headers = [];
+
+        // Get rate limit data from picqer connection
+        // These methods are available in picqer's Connection class
+        if (method_exists($picqerConnection, 'getDailyLimit')) {
+            $headers['X-RateLimit-Limit'] = (string) $picqerConnection->getDailyLimit();
+        }
+        if (method_exists($picqerConnection, 'getDailyLimitRemaining')) {
+            $headers['X-RateLimit-Remaining'] = (string) $picqerConnection->getDailyLimitRemaining();
+        }
+        if (method_exists($picqerConnection, 'getDailyLimitReset')) {
+            $headers['X-RateLimit-Reset'] = (string) $picqerConnection->getDailyLimitReset();
+        }
+        if (method_exists($picqerConnection, 'getMinutelyLimit')) {
+            $headers['X-RateLimit-Minutely-Limit'] = (string) $picqerConnection->getMinutelyLimit();
+        }
+        if (method_exists($picqerConnection, 'getMinutelyLimitRemaining')) {
+            $headers['X-RateLimit-Minutely-Remaining'] = (string) $picqerConnection->getMinutelyLimitRemaining();
+        }
+        if (method_exists($picqerConnection, 'getMinutelyLimitReset')) {
+            $headers['X-RateLimit-Minutely-Reset'] = (string) $picqerConnection->getMinutelyLimitReset();
+        }
+
+        return array_filter($headers);
     }
 
     /**
