@@ -17,21 +17,16 @@ class RateLimitApproaching
     /**
      * Create a new event instance.
      *
-     * @param ExactConnection $connection
-     * @param ExactRateLimit $rateLimit
-     * @param array<string> $warnings
+     * @param  array<string>  $warnings
      */
     public function __construct(
         public ExactConnection $connection,
         public ExactRateLimit $rateLimit,
         public array $warnings
-    ) {
-    }
+    ) {}
 
     /**
      * Get the most critical warning.
-     *
-     * @return string|null
      */
     public function getMostCriticalWarning(): ?string
     {
@@ -40,8 +35,6 @@ class RateLimitApproaching
 
     /**
      * Check if this is a critical warning (daily limit >90% or minutely <10 remaining).
-     *
-     * @return bool
      */
     public function isCritical(): bool
     {
@@ -60,8 +53,6 @@ class RateLimitApproaching
 
     /**
      * Get a formatted message about the rate limit status.
-     *
-     * @return string
      */
     public function getMessage(): string
     {
@@ -83,6 +74,6 @@ class RateLimitApproaching
             );
         }
 
-        return 'Rate limit approaching for connection ' . $this->connection->name . ': ' . implode(', ', $parts);
+        return 'Rate limit approaching for connection '.$this->connection->name.': '.implode(', ', $parts);
     }
 }

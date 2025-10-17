@@ -7,7 +7,6 @@ namespace Skylence\ExactonlineLaravelApi\Actions\Connection;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\ApiException;
 use Skylence\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
-use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 use Skylence\ExactonlineLaravelApi\Support\Config;
 
@@ -19,8 +18,7 @@ class ValidateConnectionAction
      * This action checks if a connection is properly configured and can
      * successfully communicate with the Exact Online API.
      *
-     * @param ExactConnection $connection
-     * @param bool $refreshTokenIfNeeded Whether to refresh token if it's expired
+     * @param  bool  $refreshTokenIfNeeded  Whether to refresh token if it's expired
      * @return array{
      *     valid: bool,
      *     active: bool,
@@ -49,16 +47,17 @@ class ValidateConnectionAction
         // Check if tokens exist
         if (! $connection->access_token || ! $connection->refresh_token) {
             $result['errors'][] = 'No tokens available - OAuth authorization required';
+
             return $result;
         }
 
         // Check token validity
         $tokenValidation = $this->validateTokens($connection, $refreshTokenIfNeeded);
         $result['token_valid'] = $tokenValidation['valid'];
-        
+
         if (! $tokenValidation['valid']) {
             $result['errors'][] = $tokenValidation['error'];
-            
+
             // If tokens are invalid and we can't refresh, stop here
             if (! $refreshTokenIfNeeded || ! $tokenValidation['refreshed']) {
                 return $result;
@@ -68,24 +67,25 @@ class ValidateConnectionAction
         // Test API connectivity
         $apiTest = $this->testApiConnectivity($connection);
         $result['api_reachable'] = $apiTest['reachable'];
-        
+
         if (! $apiTest['reachable']) {
             $result['errors'][] = $apiTest['error'];
+
             return $result;
         }
 
         // Verify division access
         $divisionTest = $this->verifyDivisionAccess($connection);
         $result['division_accessible'] = $divisionTest['accessible'];
-        
+
         if (! $divisionTest['accessible']) {
             $result['errors'][] = $divisionTest['error'];
         }
 
         // Connection is valid if all checks pass
-        $result['valid'] = $result['active'] && 
-                          $result['token_valid'] && 
-                          $result['api_reachable'] && 
+        $result['valid'] = $result['active'] &&
+                          $result['token_valid'] &&
+                          $result['api_reachable'] &&
                           $result['division_accessible'];
 
         Log::info('Connection validation completed', [
@@ -100,8 +100,6 @@ class ValidateConnectionAction
     /**
      * Validate tokens and refresh if needed
      *
-     * @param ExactConnection $connection
-     * @param bool $refreshIfNeeded
      * @return array{valid: bool, refreshed: bool, error: string|null}
      */
     protected function validateTokens(ExactConnection $connection, bool $refreshIfNeeded): array
@@ -122,7 +120,7 @@ class ValidateConnectionAction
                     'refresh_access_token',
                     RefreshAccessTokenAction::class
                 );
-                
+
                 $refreshAction->execute($connection);
 
                 return [
@@ -140,7 +138,7 @@ class ValidateConnectionAction
                 return [
                     'valid' => false,
                     'refreshed' => false,
-                    'error' => 'Failed to refresh access token: ' . $e->getMessage(),
+                    'error' => 'Failed to refresh access token: '.$e->getMessage(),
                 ];
             }
         }
@@ -163,14 +161,13 @@ class ValidateConnectionAction
     /**
      * Test API connectivity
      *
-     * @param ExactConnection $connection
      * @return array{reachable: bool, error: string|null}
      */
     protected function testApiConnectivity(ExactConnection $connection): array
     {
         try {
             $picqerConnection = $connection->getPicqerConnection();
-            
+
             // Try to get the current user info (lightweight API call)
             $me = new \Picqer\Financials\Exact\Me($picqerConnection);
             $currentUser = $me->get();
@@ -200,7 +197,7 @@ class ValidateConnectionAction
 
             return [
                 'reachable' => false,
-                'error' => 'Exact Online API error: ' . $e->getMessage(),
+                'error' => 'Exact Online API error: '.$e->getMessage(),
             ];
 
         } catch (\Exception $e) {
@@ -211,7 +208,7 @@ class ValidateConnectionAction
 
             return [
                 'reachable' => false,
-                'error' => 'Failed to connect to Exact Online: ' . $e->getMessage(),
+                'error' => 'Failed to connect to Exact Online: '.$e->getMessage(),
             ];
         }
     }
@@ -219,7 +216,6 @@ class ValidateConnectionAction
     /**
      * Verify division access
      *
-     * @param ExactConnection $connection
      * @return array{accessible: bool, error: string|null}
      */
     protected function verifyDivisionAccess(ExactConnection $connection): array
@@ -234,10 +230,10 @@ class ValidateConnectionAction
 
         try {
             $picqerConnection = $connection->getPicqerConnection();
-            
+
             // Set the division
             $picqerConnection->setDivision($connection->division);
-            
+
             // Try to access division-specific data (SystemDivisions is a good test)
             $division = new \Picqer\Financials\Exact\Division($picqerConnection);
             $divisionData = $division->find($connection->division);
@@ -265,13 +261,13 @@ class ValidateConnectionAction
 
             return [
                 'accessible' => false,
-                'error' => 'Division access error: ' . $e->getMessage(),
+                'error' => 'Division access error: '.$e->getMessage(),
             ];
 
         } catch (\Exception $e) {
             return [
                 'accessible' => false,
-                'error' => 'Failed to verify division access: ' . $e->getMessage(),
+                'error' => 'Failed to verify division access: '.$e->getMessage(),
             ];
         }
     }

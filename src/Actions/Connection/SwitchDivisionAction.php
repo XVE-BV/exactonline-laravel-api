@@ -17,10 +17,9 @@ class SwitchDivisionAction
      * This action updates the active division for a connection and verifies
      * that the user has access to the new division.
      *
-     * @param ExactConnection $connection
-     * @param int|string $divisionId The division ID to switch to
-     * @param bool $verifyAccess Whether to verify access to the division
-     * @return ExactConnection
+     * @param  int|string  $divisionId  The division ID to switch to
+     * @param  bool  $verifyAccess  Whether to verify access to the division
+     *
      * @throws ConnectionException
      */
     public function execute(
@@ -42,7 +41,7 @@ class SwitchDivisionAction
                 'connection_id' => $connection->id,
                 'division' => $divisionId,
             ]);
-            
+
             return $connection;
         }
 
@@ -77,13 +76,13 @@ class SwitchDivisionAction
     /**
      * Get list of available divisions for the connection
      *
-     * @param ExactConnection $connection
      * @return array<array{
      *     id: int,
      *     code: string,
      *     description: string,
      *     current: bool
      * }>
+     *
      * @throws ConnectionException
      */
     public function getAvailableDivisions(ExactConnection $connection): array
@@ -94,13 +93,13 @@ class SwitchDivisionAction
 
         try {
             $picqerConnection = $connection->getPicqerConnection();
-            
+
             // Get list of divisions
             $divisionsApi = new \Picqer\Financials\Exact\Division($picqerConnection);
             $divisions = $divisionsApi->get();
 
             $availableDivisions = [];
-            
+
             foreach ($divisions as $division) {
                 $availableDivisions[] = [
                     'id' => $division->Code,
@@ -119,7 +118,7 @@ class SwitchDivisionAction
             ]);
 
             throw ConnectionException::apiError(
-                'Failed to retrieve divisions: ' . $e->getMessage(),
+                'Failed to retrieve divisions: '.$e->getMessage(),
                 $e->getCode()
             );
         }
@@ -128,20 +127,17 @@ class SwitchDivisionAction
     /**
      * Verify access to a division
      *
-     * @param ExactConnection $connection
-     * @param string $divisionId
-     * @return void
      * @throws ConnectionException
      */
     protected function verifyDivisionAccess(ExactConnection $connection, string $divisionId): void
     {
         try {
             $picqerConnection = $connection->getPicqerConnection();
-            
+
             // Temporarily set the division to test access
             $originalDivision = $picqerConnection->getDivision();
             $picqerConnection->setDivision($divisionId);
-            
+
             try {
                 // Try to access division-specific data
                 $division = new \Picqer\Financials\Exact\Division($picqerConnection);
@@ -170,17 +166,17 @@ class SwitchDivisionAction
             ]);
 
             // Check for specific error codes
-            if (str_contains($e->getMessage(), '403') || 
+            if (str_contains($e->getMessage(), '403') ||
                 str_contains($e->getMessage(), 'Forbidden') ||
                 str_contains($e->getMessage(), 'division')) {
                 throw ConnectionException::divisionNotAccessible($divisionId);
             }
 
             throw ConnectionException::apiError(
-                'Failed to verify division access: ' . $e->getMessage(),
+                'Failed to verify division access: '.$e->getMessage(),
                 $e->getCode()
             );
-            
+
         } catch (\Exception $e) {
             if ($e instanceof ConnectionException) {
                 throw $e;

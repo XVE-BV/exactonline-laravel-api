@@ -16,20 +16,14 @@ class RateLimitUpdated
 
     /**
      * Create a new event instance.
-     *
-     * @param ExactConnection $connection
-     * @param ExactRateLimit $rateLimit
      */
     public function __construct(
         public ExactConnection $connection,
         public ExactRateLimit $rateLimit
-    ) {
-    }
+    ) {}
 
     /**
      * Get the daily usage percentage.
-     *
-     * @return float|null
      */
     public function getDailyUsagePercentage(): ?float
     {
@@ -38,12 +32,11 @@ class RateLimitUpdated
 
     /**
      * Check if daily limit is critical (>90% used).
-     *
-     * @return bool
      */
     public function isDailyCritical(): bool
     {
         $usage = $this->getDailyUsagePercentage();
+
         return $usage !== null && $usage > 90;
     }
 }

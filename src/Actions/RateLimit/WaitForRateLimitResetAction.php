@@ -17,9 +17,8 @@ class WaitForRateLimitResetAction
      * minutely limits. Daily limits should typically throw an exception
      * rather than waiting (as configured).
      *
-     * @param ExactRateLimit $rateLimit
-     * @param string $limitType 'daily' or 'minutely'
-     * @return void
+     * @param  string  $limitType  'daily' or 'minutely'
+     *
      * @throws RateLimitExceededException
      */
     public function execute(ExactRateLimit $rateLimit, string $limitType = 'minutely'): void
@@ -36,9 +35,6 @@ class WaitForRateLimitResetAction
     /**
      * Handle daily rate limit
      *
-     * @param ExactRateLimit $rateLimit
-     * @param int $maxWaitSeconds
-     * @return void
      * @throws RateLimitExceededException
      */
     protected function handleDailyLimit(ExactRateLimit $rateLimit, int $maxWaitSeconds): void
@@ -66,9 +62,6 @@ class WaitForRateLimitResetAction
     /**
      * Handle minutely rate limit
      *
-     * @param ExactRateLimit $rateLimit
-     * @param int $maxWaitSeconds
-     * @return void
      * @throws RateLimitExceededException
      */
     protected function handleMinutelyLimit(ExactRateLimit $rateLimit, int $maxWaitSeconds): void
@@ -93,11 +86,6 @@ class WaitForRateLimitResetAction
 
     /**
      * Wait for rate limit to reset
-     *
-     * @param ExactRateLimit $rateLimit
-     * @param int $secondsToWait
-     * @param string $limitType
-     * @return void
      */
     protected function waitForReset(ExactRateLimit $rateLimit, int $secondsToWait, string $limitType): void
     {
@@ -117,7 +105,7 @@ class WaitForRateLimitResetAction
 
             for ($i = 0; $i < $chunks; $i++) {
                 $sleepSeconds = min(10, $remainingSeconds);
-                
+
                 Log::debug('Rate limit wait progress', [
                     'connection_id' => $rateLimit->connection_id,
                     'chunk' => $i + 1,
@@ -147,10 +135,6 @@ class WaitForRateLimitResetAction
 
     /**
      * Reset limit counter after waiting
-     *
-     * @param ExactRateLimit $rateLimit
-     * @param string $limitType
-     * @return void
      */
     protected function resetLimitCounter(ExactRateLimit $rateLimit, string $limitType): void
     {

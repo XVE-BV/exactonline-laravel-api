@@ -27,7 +27,7 @@ class CreateConnectionAction
      *     redirect_url?: string|null,
      *     base_url?: string
      * } $data
-     * @return ExactConnection
+     *
      * @throws ConnectionException
      */
     public function execute(array $data): ExactConnection
@@ -58,7 +58,7 @@ class CreateConnectionAction
             ]);
 
             throw ConnectionException::invalidConfiguration(
-                'Failed to create connection: ' . $e->getMessage()
+                'Failed to create connection: '.$e->getMessage()
             );
         }
     }
@@ -66,8 +66,8 @@ class CreateConnectionAction
     /**
      * Validate connection data
      *
-     * @param array<string, mixed> $data
-     * @return void
+     * @param  array<string, mixed>  $data
+     *
      * @throws ConnectionException
      */
     protected function validateConnectionData(array $data): void
@@ -78,7 +78,7 @@ class CreateConnectionAction
 
         if (empty($clientId) || empty($clientSecret)) {
             throw ConnectionException::invalidConfiguration(
-                'OAuth client ID and secret are required. ' .
+                'OAuth client ID and secret are required. '.
                 'Please provide them in the data array or set them in your configuration.'
             );
         }
@@ -87,7 +87,7 @@ class CreateConnectionAction
         $redirectUrl = $data['redirect_url'] ?? Config::getRedirectUrl();
         if (empty($redirectUrl)) {
             throw ConnectionException::invalidConfiguration(
-                'OAuth redirect URL is required. ' .
+                'OAuth redirect URL is required. '.
                 'Please provide it in the data array or set it in your configuration.'
             );
         }
@@ -103,7 +103,7 @@ class CreateConnectionAction
     /**
      * Prepare connection data with defaults
      *
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
     protected function prepareConnectionData(array $data): array
@@ -128,8 +128,7 @@ class CreateConnectionAction
     /**
      * Generate a default connection name
      *
-     * @param array<string, mixed> $data
-     * @return string
+     * @param  array<string, mixed>  $data
      */
     protected function generateConnectionName(array $data): string
     {

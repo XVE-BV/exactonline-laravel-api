@@ -19,8 +19,7 @@ class TrackRateLimitUsageAction
      * This action parses rate limit headers from Exact Online API responses
      * and updates the rate limit tracking for the connection.
      *
-     * @param ExactConnection $connection
-     * @param array<string, string> $headers Response headers from Exact Online
+     * @param  array<string, string>  $headers  Response headers from Exact Online
      * @return array{
      *     tracked: bool,
      *     daily_usage: float|null,
@@ -44,6 +43,7 @@ class TrackRateLimitUsageAction
             Log::debug('No rate limit headers found in response', [
                 'connection_id' => $connection->id,
             ]);
+
             return $result;
         }
 
@@ -94,7 +94,7 @@ class TrackRateLimitUsageAction
     /**
      * Parse rate limit headers from Exact Online response
      *
-     * @param array<string, string> $headers
+     * @param  array<string, string>  $headers
      * @return array<string, int>
      */
     protected function parseRateLimitHeaders(array $headers): array
@@ -113,10 +113,10 @@ class TrackRateLimitUsageAction
 
         foreach ($headers as $key => $value) {
             $lowerKey = strtolower($key);
-            
+
             if (isset($headerMap[$lowerKey])) {
                 $field = $headerMap[$lowerKey];
-                
+
                 // Reset times are in milliseconds, convert to seconds
                 if (str_contains($field, 'reset_at')) {
                     $rateLimits[$field] = (int) ($value / 1000);
@@ -131,9 +131,6 @@ class TrackRateLimitUsageAction
 
     /**
      * Get or create rate limit record for connection
-     *
-     * @param ExactConnection $connection
-     * @return ExactRateLimit
      */
     protected function getRateLimit(ExactConnection $connection): ExactRateLimit
     {
@@ -153,9 +150,7 @@ class TrackRateLimitUsageAction
     /**
      * Update rate limit record with parsed headers
      *
-     * @param ExactRateLimit $rateLimit
-     * @param array<string, int> $rateLimits
-     * @return void
+     * @param  array<string, int>  $rateLimits
      */
     protected function updateRateLimitRecord(ExactRateLimit $rateLimit, array $rateLimits): void
     {
@@ -172,10 +167,6 @@ class TrackRateLimitUsageAction
 
     /**
      * Calculate usage percentage
-     *
-     * @param int $limit
-     * @param int $remaining
-     * @return float
      */
     protected function calculateUsagePercentage(int $limit, int $remaining): float
     {
@@ -184,14 +175,14 @@ class TrackRateLimitUsageAction
         }
 
         $used = $limit - $remaining;
+
         return ($used / $limit) * 100;
     }
 
     /**
      * Check for rate limit warnings
      *
-     * @param ExactRateLimit $rateLimit
-     * @param array<string, mixed> $result
+     * @param  array<string, mixed>  $result
      * @return array<string>
      */
     protected function checkForWarnings(ExactRateLimit $rateLimit, array $result): array
@@ -241,10 +232,6 @@ class TrackRateLimitUsageAction
 
     /**
      * Cache rate limits for quick access
-     *
-     * @param ExactConnection $connection
-     * @param ExactRateLimit $rateLimit
-     * @return void
      */
     protected function cacheRateLimits(ExactConnection $connection, ExactRateLimit $rateLimit): void
     {
@@ -265,10 +252,7 @@ class TrackRateLimitUsageAction
     /**
      * Dispatch relevant events
      *
-     * @param ExactConnection $connection
-     * @param ExactRateLimit $rateLimit
-     * @param array<string, mixed> $result
-     * @return void
+     * @param  array<string, mixed>  $result
      */
     protected function dispatchEvents(ExactConnection $connection, ExactRateLimit $rateLimit, array $result): void
     {

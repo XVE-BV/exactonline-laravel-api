@@ -18,8 +18,7 @@ class CheckRateLimitAction
      * This action checks both daily and minutely rate limits and throws
      * an exception if limits are exceeded (based on configuration).
      *
-     * @param ExactConnection $connection
-     * @param array<string, string>|null $headers Optional response headers to update limits
+     * @param  array<string, string>|null  $headers  Optional response headers to update limits
      * @return array{
      *     daily_limit: int|null,
      *     daily_remaining: int|null,
@@ -29,6 +28,7 @@ class CheckRateLimitAction
      *     minutely_reset_at: int|null,
      *     can_proceed: bool
      * }
+     *
      * @throws RateLimitExceededException
      */
     public function execute(ExactConnection $connection, ?array $headers = null): array
@@ -76,9 +76,6 @@ class CheckRateLimitAction
 
     /**
      * Get or create rate limit record for connection
-     *
-     * @param ExactConnection $connection
-     * @return ExactRateLimit
      */
     protected function getRateLimit(ExactConnection $connection): ExactRateLimit
     {
@@ -98,21 +95,17 @@ class CheckRateLimitAction
     /**
      * Get cached rate limits
      *
-     * @param ExactConnection $connection
      * @return array<string, mixed>|null
      */
     protected function getCachedRateLimits(ExactConnection $connection): ?array
     {
         $cacheKey = "exact_rate_limits:{$connection->id}";
+
         return Cache::get($cacheKey);
     }
 
     /**
      * Cache rate limits
-     *
-     * @param ExactConnection $connection
-     * @param ExactRateLimit $rateLimit
-     * @return void
      */
     protected function cacheRateLimits(ExactConnection $connection, ExactRateLimit $rateLimit): void
     {
@@ -133,20 +126,18 @@ class CheckRateLimitAction
     /**
      * Merge cached limits with database record
      *
-     * @param ExactRateLimit $rateLimit
-     * @param array<string, mixed> $cachedLimits
-     * @return void
+     * @param  array<string, mixed>  $cachedLimits
      */
     protected function mergeCachedLimits(ExactRateLimit $rateLimit, array $cachedLimits): void
     {
         // Use the most restrictive (lowest) remaining counts
-        if (isset($cachedLimits['daily_remaining']) && 
+        if (isset($cachedLimits['daily_remaining']) &&
             ($rateLimit->daily_remaining === null || $cachedLimits['daily_remaining'] < $rateLimit->daily_remaining)) {
             $rateLimit->daily_remaining = $cachedLimits['daily_remaining'];
             $rateLimit->daily_reset_at = $cachedLimits['daily_reset_at'];
         }
 
-        if (isset($cachedLimits['minutely_remaining']) && 
+        if (isset($cachedLimits['minutely_remaining']) &&
             ($rateLimit->minutely_remaining === null || $cachedLimits['minutely_remaining'] < $rateLimit->minutely_remaining)) {
             $rateLimit->minutely_remaining = $cachedLimits['minutely_remaining'];
             $rateLimit->minutely_reset_at = $cachedLimits['minutely_reset_at'];
@@ -156,17 +147,15 @@ class CheckRateLimitAction
     /**
      * Handle daily limit exceeded
      *
-     * @param ExactRateLimit $rateLimit
-     * @return void
      * @throws RateLimitExceededException
      */
     protected function handleDailyLimitExceeded(ExactRateLimit $rateLimit): void
     {
         $shouldThrow = config('exactonline-laravel-api.rate_limiting.throw_on_daily_limit', true);
-        
+
         if ($shouldThrow) {
             $resetInSeconds = $rateLimit->secondsUntilDailyReset() ?? 86400; // Default to 24 hours
-            
+
             Log::error('Daily rate limit exceeded', [
                 'connection_id' => $rateLimit->connection_id,
                 'limit' => $rateLimit->daily_limit,
@@ -188,8 +177,6 @@ class CheckRateLimitAction
     /**
      * Handle minutely limit exceeded
      *
-     * @param ExactRateLimit $rateLimit
-     * @return void
      * @throws RateLimitExceededException
      */
     protected function handleMinutelyLimitExceeded(ExactRateLimit $rateLimit): void
@@ -220,16 +207,13 @@ class CheckRateLimitAction
 
     /**
      * Log warnings when approaching limits
-     *
-     * @param ExactRateLimit $rateLimit
-     * @return void
      */
     protected function logLimitWarnings(ExactRateLimit $rateLimit): void
     {
         // Warn if approaching daily limit (90% used)
         if ($rateLimit->isApproachingDailyLimit(0.9)) {
             $percentage = $rateLimit->getDailyUsagePercentage();
-            
+
             Log::warning('Approaching daily rate limit', [
                 'connection_id' => $rateLimit->connection_id,
                 'usage_percentage' => round($percentage, 2),
