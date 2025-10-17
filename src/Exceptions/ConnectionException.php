@@ -8,19 +8,35 @@ use Exception;
 
 class ConnectionException extends Exception
 {
-    public static function notFound(string $connectionId): self
+    public static function connectionNotFound(): self
     {
         return new self(
-            "Exact Online connection with ID '{$connectionId}' not found. ".
-            'Please ensure the connection exists and is properly configured.'
+            'No active Exact Online connection found. '.
+            'Please ensure a connection is configured and authenticated.'
         );
     }
 
-    public static function inactive(string $connectionId): self
+    public static function connectionInactive(string $connectionId): self
     {
         return new self(
             "Exact Online connection '{$connectionId}' is marked as inactive. ".
-            'Please reactivate the connection or use a different one.'
+            'Please reactivate the connection or complete the OAuth flow.'
+        );
+    }
+
+    public static function tokensNotFound(string $connectionId): self
+    {
+        return new self(
+            "No access or refresh tokens found for connection '{$connectionId}'. ".
+            'Please complete the OAuth flow to authenticate with Exact Online.'
+        );
+    }
+
+    public static function tokenRefreshFailed(string $connectionId, string $reason): self
+    {
+        return new self(
+            "Failed to refresh access token for connection '{$connectionId}': {$reason}. ".
+            'The user may need to re-authenticate with Exact Online.'
         );
     }
 

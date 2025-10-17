@@ -12,32 +12,40 @@ class RateLimitExceededException extends Exception
 
     protected string $limitType;
 
-    public function __construct(string $message, int $retryAfterSeconds, string $limitType)
+    protected int $resetAt;
+
+    public function __construct(string $message, int $retryAfterSeconds, string $limitType, ?int $resetAt = null)
     {
         parent::__construct($message);
         $this->retryAfterSeconds = $retryAfterSeconds;
         $this->limitType = $limitType;
+        $this->resetAt = $resetAt ?? (now()->timestamp + $retryAfterSeconds);
     }
 
     public static function dailyLimitExceeded(int $limit, int $resetInSeconds): self
     {
         $hours = round($resetInSeconds / 3600, 1);
+        $resetAt = now()->timestamp + $resetInSeconds;
 
         return new self(
             "Daily API rate limit of {$limit} requests exceeded. ".
             "Limit will reset in {$hours} hours.",
             $resetInSeconds,
-            'daily'
+            'daily',
+            $resetAt
         );
     }
 
     public static function minutelyLimitExceeded(int $limit, int $resetInSeconds): self
     {
+        $resetAt = now()->timestamp + $resetInSeconds;
+
         return new self(
             "Minutely API rate limit of {$limit} requests exceeded. ".
             "Please wait {$resetInSeconds} seconds before retrying.",
             $resetInSeconds,
-            'minutely'
+            'minutely',
+            $resetAt
         );
     }
 
@@ -51,13 +59,28 @@ class RateLimitExceededException extends Exception
         return $this->limitType;
     }
 
+    public function getResetAt(): int
+    {
+        return $this->resetAt;
+    }
+
     public function isDaily(): bool
     {
         return $this->limitType === 'daily';
     }
 
+    public function isDailyLimit(): bool
+    {
+        return $this->isDaily();
+    }
+
     public function isMinutely(): bool
     {
         return $this->limitType === 'minutely';
+    }
+
+    public function isMinutelyLimit(): bool
+    {
+        return $this->isMinutely();
     }
 }
