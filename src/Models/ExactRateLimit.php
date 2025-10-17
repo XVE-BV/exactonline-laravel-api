@@ -77,8 +77,6 @@ class ExactRateLimit extends Model
 
     /**
      * Check if the daily limit has been exceeded.
-     *
-     * @return bool
      */
     public function isDailyLimitExceeded(): bool
     {
@@ -91,8 +89,6 @@ class ExactRateLimit extends Model
 
     /**
      * Check if the minutely limit has been exceeded.
-     *
-     * @return bool
      */
     public function isMinutelyLimitExceeded(): bool
     {
@@ -105,8 +101,6 @@ class ExactRateLimit extends Model
 
     /**
      * Get seconds until daily limit resets.
-     *
-     * @return int|null
      */
     public function secondsUntilDailyReset(): ?int
     {
@@ -115,14 +109,12 @@ class ExactRateLimit extends Model
         }
 
         $secondsRemaining = $this->daily_reset_at - now()->timestamp;
-        
+
         return max(0, $secondsRemaining);
     }
 
     /**
      * Get seconds until minutely limit resets.
-     *
-     * @return int|null
      */
     public function secondsUntilMinutelyReset(): ?int
     {
@@ -131,15 +123,14 @@ class ExactRateLimit extends Model
         }
 
         $secondsRemaining = $this->minutely_reset_at - now()->timestamp;
-        
+
         return max(0, $secondsRemaining);
     }
 
     /**
      * Update rate limits from API response headers.
      *
-     * @param array<string, string> $headers
-     * @return void
+     * @param  array<string, string>  $headers
      */
     public function updateFromHeaders(array $headers): void
     {
@@ -180,8 +171,6 @@ class ExactRateLimit extends Model
 
     /**
      * Increment the call counter.
-     *
-     * @return void
      */
     public function incrementCallCounter(): void
     {
@@ -195,8 +184,6 @@ class ExactRateLimit extends Model
 
     /**
      * Check if the daily counter should be reset.
-     *
-     * @return bool
      */
     protected function shouldResetDailyCounter(): bool
     {
@@ -210,8 +197,7 @@ class ExactRateLimit extends Model
     /**
      * Check if we're approaching the rate limit.
      *
-     * @param float $threshold Percentage threshold (e.g., 0.9 for 90%)
-     * @return bool
+     * @param  float  $threshold  Percentage threshold (e.g., 0.9 for 90%)
      */
     public function isApproachingDailyLimit(float $threshold = 0.9): bool
     {
@@ -220,14 +206,12 @@ class ExactRateLimit extends Model
         }
 
         $usedPercentage = 1 - ($this->daily_remaining / $this->daily_limit);
-        
+
         return $usedPercentage >= $threshold;
     }
 
     /**
      * Get percentage of daily limit used.
-     *
-     * @return float|null
      */
     public function getDailyUsagePercentage(): ?float
     {
@@ -236,7 +220,7 @@ class ExactRateLimit extends Model
         }
 
         $used = $this->daily_limit - $this->daily_remaining;
-        
+
         return ($used / $this->daily_limit) * 100;
     }
 }

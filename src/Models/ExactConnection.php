@@ -113,7 +113,7 @@ class ExactConnection extends Model
     /**
      * Scope a query to only include active connections.
      *
-     * @param \Illuminate\Database\Eloquent\Builder<ExactConnection> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<ExactConnection>  $query
      * @return \Illuminate\Database\Eloquent\Builder<ExactConnection>
      */
     public function scopeActive($query)
@@ -124,7 +124,7 @@ class ExactConnection extends Model
     /**
      * Scope a query to only include connections with expired tokens.
      *
-     * @param \Illuminate\Database\Eloquent\Builder<ExactConnection> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<ExactConnection>  $query
      * @return \Illuminate\Database\Eloquent\Builder<ExactConnection>
      */
     public function scopeExpired($query)
@@ -136,13 +136,13 @@ class ExactConnection extends Model
      * Scope a query to only include connections that need token refresh.
      * Proactive refresh at 9 minutes (540 seconds before expiry).
      *
-     * @param \Illuminate\Database\Eloquent\Builder<ExactConnection> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<ExactConnection>  $query
      * @return \Illuminate\Database\Eloquent\Builder<ExactConnection>
      */
     public function scopeNeedsRefresh($query)
     {
         $thresholdTimestamp = now()->addSeconds(540)->timestamp;
-        
+
         return $query->where('is_active', true)
             ->where(function ($q) use ($thresholdTimestamp) {
                 $q->whereNull('token_expires_at')
@@ -152,75 +152,66 @@ class ExactConnection extends Model
 
     /**
      * Get a picqer Connection instance for this Exact connection.
-     *
-     * @return Connection
      */
     public function getPicqerConnection(): Connection
     {
-        $connection = new Connection();
-        
+        $connection = new Connection;
+
         $connection->setBaseUrl($this->base_url);
-        
+
         if ($this->division) {
             $connection->setDivision($this->division);
         }
-        
+
         if ($this->access_token) {
             $connection->setAccessToken($this->getDecryptedAccessToken());
         }
-        
+
         if ($this->refresh_token) {
             $connection->setRefreshToken($this->getDecryptedRefreshToken());
         }
-        
+
         if ($this->token_expires_at) {
             $connection->setTokenExpires($this->token_expires_at);
         }
-        
+
         // Set OAuth client credentials
         $connection->setClient($this->client_id, $this->getDecryptedClientSecret());
         $connection->setRedirectUrl($this->redirect_url);
-        
+
         return $connection;
     }
 
     /**
      * Check if the access token needs refresh.
      * Proactive refresh at 9 minutes (540 seconds before expiry).
-     *
-     * @return bool
      */
     public function tokenNeedsRefresh(): bool
     {
         if (! $this->token_expires_at) {
             return true;
         }
-        
+
         // Refresh proactively at 9 minutes (540 seconds before expiry)
         return $this->token_expires_at < (now()->timestamp + 540);
     }
 
     /**
      * Check if the refresh token is expiring soon.
-     *
-     * @param int $daysThreshold
-     * @return bool
      */
     public function refreshTokenExpiringSoon(int $daysThreshold = 7): bool
     {
         if (! $this->refresh_token_expires_at) {
             return false;
         }
-        
+
         $thresholdTimestamp = now()->addDays($daysThreshold)->timestamp;
-        
+
         return $this->refresh_token_expires_at < $thresholdTimestamp;
     }
 
     /**
      * Mark this connection as used.
-     *
-     * @return void
      */
     public function markAsUsed(): void
     {
@@ -229,15 +220,13 @@ class ExactConnection extends Model
 
     /**
      * Get decrypted access token.
-     *
-     * @return string|null
      */
     public function getDecryptedAccessToken(): ?string
     {
         if (! $this->access_token) {
             return null;
         }
-        
+
         try {
             return Crypt::decryptString($this->access_token);
         } catch (\Exception $e) {
@@ -248,15 +237,13 @@ class ExactConnection extends Model
 
     /**
      * Get decrypted refresh token.
-     *
-     * @return string|null
      */
     public function getDecryptedRefreshToken(): ?string
     {
         if (! $this->refresh_token) {
             return null;
         }
-        
+
         try {
             return Crypt::decryptString($this->refresh_token);
         } catch (\Exception $e) {
@@ -267,15 +254,13 @@ class ExactConnection extends Model
 
     /**
      * Get decrypted client secret.
-     *
-     * @return string|null
      */
     public function getDecryptedClientSecret(): ?string
     {
         if (! $this->client_secret) {
             return null;
         }
-        
+
         try {
             return Crypt::decryptString($this->client_secret);
         } catch (\Exception $e) {
@@ -286,9 +271,6 @@ class ExactConnection extends Model
 
     /**
      * Set and encrypt the access token.
-     *
-     * @param string|null $token
-     * @return void
      */
     public function setAccessTokenAttribute(?string $token): void
     {
@@ -297,9 +279,6 @@ class ExactConnection extends Model
 
     /**
      * Set and encrypt the refresh token.
-     *
-     * @param string|null $token
-     * @return void
      */
     public function setRefreshTokenAttribute(?string $token): void
     {
@@ -308,9 +287,6 @@ class ExactConnection extends Model
 
     /**
      * Set and encrypt the client secret.
-     *
-     * @param string|null $secret
-     * @return void
      */
     public function setClientSecretAttribute(?string $secret): void
     {
