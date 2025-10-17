@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi;
 
+use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Routing\Router;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Skylence\ExactonlineLaravelApi\Http\Middleware\CheckExactRateLimit;
+use Skylence\ExactonlineLaravelApi\Http\Middleware\EnsureValidExactConnection;
 
 class ExactonlineLaravelApiServiceProvider extends PackageServiceProvider
 {
@@ -29,11 +33,30 @@ class ExactonlineLaravelApiServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        // Register any package services here
+        // Register middleware aliases
+        $this->registerMiddleware();
     }
 
     public function packageRegistered(): void
     {
         // Register any bindings or singletons here
+    }
+
+    /**
+     * Register the package middleware
+     */
+    protected function registerMiddleware(): void
+    {
+        $router = $this->app->make(Router::class);
+
+        // Register middleware aliases for easy use in routes
+        $router->aliasMiddleware('exact.connection', EnsureValidExactConnection::class);
+        $router->aliasMiddleware('exact.rate_limit', CheckExactRateLimit::class);
+
+        // Register middleware groups
+        $router->middlewareGroup('exact', [
+            'exact.connection',
+            'exact.rate_limit',
+        ]);
     }
 }
