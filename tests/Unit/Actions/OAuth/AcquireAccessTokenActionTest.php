@@ -29,7 +29,7 @@ it('exchanges authorization code and stores tokens', function () {
         'is_active' => false,
     ]);
 
-    $action = new TestableAcquireAccessTokenAction();
+    $action = new TestableAcquireAccessTokenAction;
 
     // Act
     $tokens = $action->execute($connection, 'abc123authorization-longer');

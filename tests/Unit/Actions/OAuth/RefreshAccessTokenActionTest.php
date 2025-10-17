@@ -10,7 +10,9 @@ uses(RefreshDatabase::class);
 class TestableRefreshAccessTokenAction extends RefreshAccessTokenAction
 {
     public int $attempts = 0;
+
     public bool $alwaysFail = false;
+
     public ?array $nextTokens = null;
 
     public function tokenNeedsRefreshPublic(ExactConnection $connection): bool
@@ -59,7 +61,7 @@ it('determines token refresh need at 9-minute threshold', function () {
         'token_expires_at' => now()->addSeconds(541)->timestamp,
     ]);
 
-    $action = new TestableRefreshAccessTokenAction();
+    $action = new TestableRefreshAccessTokenAction;
 
     expect($action->tokenNeedsRefreshPublic($connection))->toBeFalse();
 
@@ -77,7 +79,7 @@ it('retries with exponential backoff and eventually succeeds', function () {
         'refresh_token' => 'refresh-existing',
     ]);
 
-    $action = new TestableRefreshAccessTokenAction();
+    $action = new TestableRefreshAccessTokenAction;
 
     $tokens = $action->performTokenRefreshWithRetryPublic($connection, 3);
 
@@ -96,7 +98,7 @@ it('throws after max retries are exceeded', function () {
         'refresh_token' => 'refresh-existing',
     ]);
 
-    $action = new TestableRefreshAccessTokenAction();
+    $action = new TestableRefreshAccessTokenAction;
     $action->alwaysFail = true;
 
     $action->performTokenRefreshWithRetryPublic($connection, 2);
@@ -115,7 +117,7 @@ it('waits for other process and returns tokens when already refreshed', function
         'token_expires_at' => now()->addMinutes(10)->timestamp,
     ]);
 
-    $action = new TestableRefreshAccessTokenAction();
+    $action = new TestableRefreshAccessTokenAction;
 
     $result = $action->waitForRefreshAndReturnTokensPublic($connection, 200);
 
@@ -136,7 +138,7 @@ it('throws a lock timeout when token remains stale beyond wait time', function (
         'token_expires_at' => now()->subMinute()->timestamp,
     ]);
 
-    $action = new TestableRefreshAccessTokenAction();
+    $action = new TestableRefreshAccessTokenAction;
 
     $action->waitForRefreshAndReturnTokensPublic($connection, 200);
 })->throws(TokenRefreshException::class);
