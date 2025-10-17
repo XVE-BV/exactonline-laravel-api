@@ -87,7 +87,7 @@ class RegisterWebhookAction
             ]);
 
             throw new ConnectionException(
-                'Failed to register webhook: ' . $e->getMessage(),
+                'Failed to register webhook: '.$e->getMessage(),
                 $e->getCode(),
                 $e
             );
@@ -97,7 +97,6 @@ class RegisterWebhookAction
     /**
      * Validate webhook topic
      *
-     * @param  string  $topic
      *
      * @throws ConnectionException
      */
@@ -107,7 +106,7 @@ class RegisterWebhookAction
 
         if (! empty($allowedTopics) && ! in_array($topic, $allowedTopics, true)) {
             throw ConnectionException::invalidConfiguration(
-                "Invalid webhook topic '{$topic}'. Allowed topics: " . implode(', ', $allowedTopics)
+                "Invalid webhook topic '{$topic}'. Allowed topics: ".implode(', ', $allowedTopics)
             );
         }
 
@@ -146,23 +145,17 @@ class RegisterWebhookAction
 
     /**
      * Get default callback URL from configuration
-     *
-     * @return string
      */
     protected function getDefaultCallbackUrl(): string
     {
         $path = config('exactonline-laravel-api.webhooks.path', '/exact/webhooks');
-        
+
         return url($path);
     }
 
     /**
      * Register webhook with Exact Online API
      *
-     * @param  ExactConnection  $connection
-     * @param  string  $topic
-     * @param  string  $callbackUrl
-     * @param  string  $webhookSecret
      * @return array<string, mixed>
      *
      * @throws \Exception
@@ -187,7 +180,7 @@ class RegisterWebhookAction
         // Make API call to register webhook
         // Note: The exact endpoint and method may vary based on Exact Online's webhook API
         // This is a generic implementation that may need adjustment
-        $url = $picqerConnection->getApiUrl() . '/webhooks/WebhookSubscriptions';
+        $url = $picqerConnection->getApiUrl().'/webhooks/WebhookSubscriptions';
 
         $response = Http::withToken(decrypt($connection->access_token))
             ->withHeaders([
@@ -198,7 +191,7 @@ class RegisterWebhookAction
 
         if (! $response->successful()) {
             throw new \Exception(
-                'Webhook registration failed: ' . $response->body(),
+                'Webhook registration failed: '.$response->body(),
                 $response->status()
             );
         }

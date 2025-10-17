@@ -6,8 +6,6 @@ namespace Skylence\ExactonlineLaravelApi\Actions\Webhooks;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use Skylence\ExactonlineLaravelApi\Exceptions\WebhookValidationException;
 use Skylence\ExactonlineLaravelApi\Models\ExactWebhook;
 
 class DispatchWebhookEventAction
@@ -22,51 +20,51 @@ class DispatchWebhookEventAction
         'AccountsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\AccountCreated::class,
         'AccountsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\AccountUpdated::class,
         'AccountsDeleted' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\AccountDeleted::class,
-        
+
         // Sales Invoice events
         'SalesInvoicesCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceCreated::class,
         'SalesInvoicesUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceUpdated::class,
         'SalesInvoicesDeleted' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceDeleted::class,
-        
+
         // Contact events
         'ContactsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ContactCreated::class,
         'ContactsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ContactUpdated::class,
         'ContactsDeleted' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ContactDeleted::class,
-        
+
         // Document events
         'DocumentsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\DocumentCreated::class,
         'DocumentsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\DocumentUpdated::class,
         'DocumentsDeleted' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\DocumentDeleted::class,
-        
+
         // GL Account events
         'GLAccountsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\GLAccountCreated::class,
         'GLAccountsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\GLAccountUpdated::class,
-        
+
         // Financial Transaction events
         'FinancialTransactionsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\FinancialTransactionCreated::class,
         'FinancialTransactionsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\FinancialTransactionUpdated::class,
-        
+
         // Item events
         'ItemsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ItemCreated::class,
         'ItemsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ItemUpdated::class,
         'ItemsDeleted' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ItemDeleted::class,
-        
+
         // Project events
         'ProjectsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ProjectCreated::class,
         'ProjectsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ProjectUpdated::class,
         'ProjectsDeleted' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ProjectDeleted::class,
-        
+
         // Purchase Invoice events
         'PurchaseInvoicesCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\PurchaseInvoiceCreated::class,
         'PurchaseInvoicesUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\PurchaseInvoiceUpdated::class,
-        
+
         // Sales Order events
         'SalesOrdersCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesOrderCreated::class,
         'SalesOrdersUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesOrderUpdated::class,
-        
+
         // Stock Position events
         'StockPositionsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\StockPositionUpdated::class,
-        
+
         // Subscription events
         'SubscriptionsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\SubscriptionCreated::class,
         'SubscriptionsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\SubscriptionUpdated::class,
@@ -98,7 +96,7 @@ class DispatchWebhookEventAction
     public function execute(
         array $processedPayload,
         ?ExactWebhook $webhook = null,
-        bool $shouldQueue = null
+        ?bool $shouldQueue = null
     ): array {
         $result = [
             'dispatched' => false,
@@ -110,7 +108,7 @@ class DispatchWebhookEventAction
         try {
             // Determine event class
             $eventClass = $this->determineEventClass($processedPayload);
-            
+
             if ($eventClass === null) {
                 // Dispatch generic webhook event as fallback
                 $eventClass = \Skylence\ExactonlineLaravelApi\Events\Webhooks\GenericWebhookReceived::class;
@@ -164,7 +162,6 @@ class DispatchWebhookEventAction
      * Determine the event class based on webhook topic and action
      *
      * @param  array<string, mixed>  $processedPayload
-     * @return string|null
      */
     protected function determineEventClass(array $processedPayload): ?string
     {
@@ -178,7 +175,7 @@ class DispatchWebhookEventAction
 
         // Try to construct event name from entity and action
         $entity = $processedPayload['entity'];
-        $constructedTopic = $entity . $action;
+        $constructedTopic = $entity.$action;
 
         if (isset($this->eventMap[$constructedTopic])) {
             return $this->eventMap[$constructedTopic];
@@ -186,10 +183,10 @@ class DispatchWebhookEventAction
 
         // Try custom event map from config
         $customMap = config('exactonline-laravel-api.webhooks.event_map', []);
-        
+
         if (isset($customMap[$topic])) {
             $eventClass = $customMap[$topic];
-            
+
             if (class_exists($eventClass)) {
                 return $eventClass;
             }
@@ -213,10 +210,7 @@ class DispatchWebhookEventAction
     /**
      * Create event instance
      *
-     * @param  string  $eventClass
      * @param  array<string, mixed>  $processedPayload
-     * @param  ExactWebhook|null  $webhook
-     * @return object
      */
     protected function createEvent(string $eventClass, array $processedPayload, ?ExactWebhook $webhook): object
     {
@@ -225,7 +219,7 @@ class DispatchWebhookEventAction
         $constructor = $reflection->getConstructor();
 
         if ($constructor === null) {
-            return new $eventClass();
+            return new $eventClass;
         }
 
         $parameters = $constructor->getParameters();
@@ -236,8 +230,8 @@ class DispatchWebhookEventAction
         } elseif (count($parameters) === 1) {
             return new $eventClass($processedPayload);
         } else {
-            $event = new $eventClass();
-            
+            $event = new $eventClass;
+
             // Try to set properties if they exist
             if ($reflection->hasProperty('payload')) {
                 $property = $reflection->getProperty('payload');
@@ -245,7 +239,7 @@ class DispatchWebhookEventAction
                     $event->payload = $processedPayload;
                 }
             }
-            
+
             if ($webhook !== null && $reflection->hasProperty('webhook')) {
                 $property = $reflection->getProperty('webhook');
                 if ($property->isPublic()) {
@@ -261,8 +255,6 @@ class DispatchWebhookEventAction
      * Determine if event should be queued
      *
      * @param  array<string, mixed>  $processedPayload
-     * @param  ExactWebhook|null  $webhook
-     * @return bool
      */
     protected function shouldQueueEvent(array $processedPayload, ?ExactWebhook $webhook): bool
     {
@@ -276,7 +268,7 @@ class DispatchWebhookEventAction
 
         // Check global webhook queue configuration
         $queueConfig = config('exactonline-laravel-api.webhooks.queue');
-        
+
         if ($queueConfig !== null) {
             return (bool) $queueConfig;
         }
@@ -287,9 +279,6 @@ class DispatchWebhookEventAction
 
     /**
      * Check if event implements ShouldQueue
-     *
-     * @param  object  $event
-     * @return bool
      */
     protected function isQueueable(object $event): bool
     {
@@ -301,7 +290,6 @@ class DispatchWebhookEventAction
      *
      * @param  string  $topic  The webhook topic
      * @param  string  $eventClass  The event class to dispatch
-     * @return void
      */
     public function registerEventMapping(string $topic, string $eventClass): void
     {
