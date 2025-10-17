@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi;
 
-use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Routing\Router;
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Skylence\ExactonlineLaravelApi\Http\Middleware\CheckExactRateLimit;
 use Skylence\ExactonlineLaravelApi\Http\Middleware\EnsureValidExactConnection;
+use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class ExactonlineLaravelApiServiceProvider extends PackageServiceProvider
 {
