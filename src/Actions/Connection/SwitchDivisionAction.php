@@ -149,7 +149,7 @@ class SwitchDivisionAction
 
                 // Also try a simple API call to ensure full access
                 $accounts = new \Picqer\Financials\Exact\Account($picqerConnection);
-                $accounts->get([], false, 1); // Get just 1 account to test
+                $accounts->get(); // Fetch accounts to verify access
 
             } finally {
                 // Restore original division

@@ -169,8 +169,9 @@ class RedirectToExactController extends Controller
 
         // Generate a descriptive name
         $name = 'Exact Online';
-        if ($userId && $request->user()->name) {
-            $name .= ' - '.$request->user()->name;
+        $userName = data_get($request->user(), 'name');
+        if ($userId && is_string($userName) && $userName !== '') {
+            $name .= ' - '.$userName;
         }
         $name .= ' ('.now()->format('Y-m-d H:i').')';
 

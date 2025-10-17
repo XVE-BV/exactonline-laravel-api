@@ -37,7 +37,7 @@ class ExactRateLimit extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<string>
+     * @var list<string>
      */
     protected $fillable = [
         'connection_id',
@@ -149,7 +149,8 @@ class ExactRateLimit extends Model
 
         if (isset($headers['X-RateLimit-Reset'])) {
             // Exact Online returns reset time in milliseconds
-            $updates['daily_reset_at'] = (int) ($headers['X-RateLimit-Reset'] / 1000);
+            $ms = (int) $headers['X-RateLimit-Reset'];
+            $updates['daily_reset_at'] = (int) ($ms / 1000);
         }
 
         // Minutely limits
@@ -163,7 +164,8 @@ class ExactRateLimit extends Model
 
         if (isset($headers['X-RateLimit-Minutely-Reset'])) {
             // Exact Online returns reset time in milliseconds
-            $updates['minutely_reset_at'] = (int) ($headers['X-RateLimit-Minutely-Reset'] / 1000);
+            $ms = (int) $headers['X-RateLimit-Minutely-Reset'];
+            $updates['minutely_reset_at'] = (int) ($ms / 1000);
         }
 
         $this->update($updates);

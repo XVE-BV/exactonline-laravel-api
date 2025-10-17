@@ -48,7 +48,7 @@ class ExactConnection extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<string>
+     * @var list<string>
      */
     protected $fillable = [
         'user_id',
@@ -96,6 +96,8 @@ class ExactConnection extends Model
 
     /**
      * Get the webhooks for this connection.
+     *
+     * @return HasMany<ExactWebhook, $this>
      */
     public function webhooks(): HasMany
     {
@@ -104,6 +106,8 @@ class ExactConnection extends Model
 
     /**
      * Get the rate limit record for this connection.
+     *
+     * @return HasOne<ExactRateLimit, $this>
      */
     public function rateLimit(): HasOne
     {
@@ -176,7 +180,8 @@ class ExactConnection extends Model
         }
 
         // Set OAuth client credentials
-        $connection->setClient($this->client_id, $this->getDecryptedClientSecret());
+        $connection->setExactClientId($this->client_id);
+        $connection->setExactClientSecret($this->getDecryptedClientSecret());
         $connection->setRedirectUrl($this->redirect_url);
 
         return $connection;

@@ -119,7 +119,8 @@ class TrackRateLimitUsageAction
 
                 // Reset times are in milliseconds, convert to seconds
                 if (str_contains($field, 'reset_at')) {
-                    $rateLimits[$field] = (int) ($value / 1000);
+                    $ms = (int) $value;
+                    $rateLimits[$field] = (int) ($ms / 1000);
                 } else {
                     $rateLimits[$field] = (int) $value;
                 }

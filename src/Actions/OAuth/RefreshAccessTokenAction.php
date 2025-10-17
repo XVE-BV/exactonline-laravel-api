@@ -92,7 +92,7 @@ class RefreshAccessTokenAction
             );
         } finally {
             // Always release the lock
-            $lock?->release();
+            $lock->release();
         }
     }
 
