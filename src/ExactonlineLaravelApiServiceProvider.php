@@ -2,9 +2,9 @@
 
 namespace Skylence\ExactonlineLaravelApi;
 
+use Skylence\ExactonlineLaravelApi\Commands\ExactonlineLaravelApiCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Skylence\ExactonlineLaravelApi\Commands\ExactonlineLaravelApiCommand;
 
 class ExactonlineLaravelApiServiceProvider extends PackageServiceProvider
 {
