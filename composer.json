@@ -1,17 +1,17 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "skylence/exactonline-laravel-api",
+    "description": "This is my package exactonline-laravel-api",
     "keywords": [
-        ":vendor_name",
+        "skylence",
         "laravel",
-        ":package_slug"
+        "exactonline-laravel-api"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/skylence/exactonline-laravel-api",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Jonas Vanderhaegen",
+            "email": "jonas.vanderhaegen@skylence.be",
             "role": "Developer"
         }
     ],
@@ -35,13 +35,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "Skylence\\ExactonlineLaravelApi\\": "src/",
+            "Skylence\\ExactonlineLaravelApi\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/",
+            "Skylence\\ExactonlineLaravelApi\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -63,10 +63,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Skylence\\ExactonlineLaravelApi\\ExactonlineLaravelApiServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "ExactonlineLaravelApi": "Skylence\\ExactonlineLaravelApi\\Facades\\ExactonlineLaravelApi"
             }
         }
     },
