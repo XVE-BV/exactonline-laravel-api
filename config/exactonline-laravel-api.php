@@ -359,4 +359,26 @@ return [
         // Sandbox URL
         'sandbox_url' => env('EXACT_SANDBOX_URL', 'https://start.exactonline.nl'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Payload Validation
+    |--------------------------------------------------------------------------
+    |
+    | Configure pre-flight validation of payloads before sending to Exact
+    | Online API. Validation is based on JSON schemas that define field
+    | types, required fields, and constraints.
+    |
+    */
+    'validation' => [
+        // Enable/disable payload validation globally
+        'enabled' => env('EXACT_VALIDATION_ENABLED', true),
+
+        // Strict mode: fail on unknown fields not defined in schema
+        'strict' => env('EXACT_VALIDATION_STRICT', false),
+
+        // Custom schema path (override package schemas)
+        // Set to a path containing your own JSON schema files
+        'schema_path' => null,
+    ],
 ];
