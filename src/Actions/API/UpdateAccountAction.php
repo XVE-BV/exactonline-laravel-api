@@ -9,12 +9,15 @@ use Picqer\Financials\Exact\Account;
 use Skylence\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\TrackRateLimitUsageAction;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 use Skylence\ExactonlineLaravelApi\Support\Config;
 
 class UpdateAccountAction
 {
+    use ValidatesPayload;
+
     /**
      * Update an existing account in Exact Online
      *
@@ -56,6 +59,9 @@ class UpdateAccountAction
      */
     public function execute(ExactConnection $connection, string $accountId, array $data): array
     {
+        // Validate against schema
+        $this->validateUpdatePayload('Account', $data);
+
         // Validate update data
         $this->validateUpdateData($data);
 

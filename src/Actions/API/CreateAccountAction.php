@@ -9,12 +9,15 @@ use Picqer\Financials\Exact\Account;
 use Skylence\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\TrackRateLimitUsageAction;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 use Skylence\ExactonlineLaravelApi\Support\Config;
 
 class CreateAccountAction
 {
+    use ValidatesPayload;
+
     /**
      * Create a new account in Exact Online
      *
@@ -55,6 +58,9 @@ class CreateAccountAction
      */
     public function execute(ExactConnection $connection, array $data): array
     {
+        // Validate against schema
+        $this->validateCreatePayload('Account', $data);
+
         // Validate required fields
         $this->validateAccountData($data);
 

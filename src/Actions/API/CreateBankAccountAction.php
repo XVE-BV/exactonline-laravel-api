@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\BankAccount;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class CreateBankAccountAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Create a new bank account in Exact Online.
@@ -36,6 +38,7 @@ class CreateBankAccountAction
      */
     public function execute(ExactConnection $connection, array $data): array
     {
+        $this->validateCreatePayload('BankAccount', $data);
         $this->validateBankAccountData($data);
 
         $picqerConnection = $this->prepareConnection($connection);

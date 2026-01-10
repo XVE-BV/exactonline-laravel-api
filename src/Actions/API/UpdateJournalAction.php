@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Journal;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class UpdateJournalAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Update an existing journal in Exact Online.
@@ -38,7 +40,7 @@ class UpdateJournalAction
      */
     public function execute(ExactConnection $connection, string $journalId, array $data): array
     {
-        $this->validateUpdateData($data);
+        $this->validateUpdatePayload('Journal', $data);
 
         $picqerConnection = $this->prepareConnection($connection);
 
@@ -79,22 +81,6 @@ class UpdateJournalAction
                 'Failed to update journal: '.$e->getMessage(),
                 $e->getCode(),
                 $e
-            );
-        }
-    }
-
-    /**
-     * Validate update data.
-     *
-     * @param  array<string, mixed>  $data
-     *
-     * @throws ConnectionException
-     */
-    protected function validateUpdateData(array $data): void
-    {
-        if (empty($data)) {
-            throw ConnectionException::invalidConfiguration(
-                'No data provided for journal update'
             );
         }
     }

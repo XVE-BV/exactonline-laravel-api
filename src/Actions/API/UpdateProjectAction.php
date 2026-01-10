@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Project;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class UpdateProjectAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Update an existing project in Exact Online.
@@ -25,6 +27,8 @@ class UpdateProjectAction
      */
     public function execute(ExactConnection $connection, string $projectId, array $data): array
     {
+        $this->validateUpdatePayload('Project', $data);
+
         $picqerConnection = $this->prepareConnection($connection);
 
         try {

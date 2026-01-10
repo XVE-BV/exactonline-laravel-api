@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Quotation;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class UpdateQuotationAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Update an existing quotation in Exact Online.
@@ -25,6 +27,8 @@ class UpdateQuotationAction
      */
     public function execute(ExactConnection $connection, string $quotationId, array $data): array
     {
+        $this->validateUpdatePayload('Quotation', $data);
+
         $picqerConnection = $this->prepareConnection($connection);
 
         try {

@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Address;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class UpdateAddressAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Update an existing address in Exact Online.
@@ -25,6 +27,8 @@ class UpdateAddressAction
      */
     public function execute(ExactConnection $connection, string $addressId, array $data): array
     {
+        $this->validateUpdatePayload('Address', $data);
+
         $picqerConnection = $this->prepareConnection($connection);
 
         try {

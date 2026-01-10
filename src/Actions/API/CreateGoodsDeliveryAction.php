@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\GoodsDelivery;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class CreateGoodsDeliveryAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Create a new goods delivery in Exact Online.
@@ -45,6 +47,8 @@ class CreateGoodsDeliveryAction
      */
     public function execute(ExactConnection $connection, array $data): array
     {
+        $this->validateCreatePayload('GoodsDelivery', $data);
+
         $picqerConnection = $this->prepareConnection($connection);
 
         try {

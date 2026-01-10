@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Project;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class CreateProjectAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Create a new project in Exact Online.
@@ -42,7 +44,7 @@ class CreateProjectAction
      */
     public function execute(ExactConnection $connection, array $data): array
     {
-        $this->validateData($data);
+        $this->validateCreatePayload('Project', $data);
 
         $picqerConnection = $this->prepareConnection($connection);
 
@@ -75,26 +77,6 @@ class CreateProjectAction
                 'Failed to create project: '.$e->getMessage(),
                 $e->getCode(),
                 $e
-            );
-        }
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     *
-     * @throws ConnectionException
-     */
-    protected function validateData(array $data): void
-    {
-        if (empty($data['Code'])) {
-            throw ConnectionException::invalidConfiguration(
-                'Project code is required'
-            );
-        }
-
-        if (empty($data['Description'])) {
-            throw ConnectionException::invalidConfiguration(
-                'Project description is required'
             );
         }
     }

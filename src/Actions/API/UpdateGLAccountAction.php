@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\GLAccount;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class UpdateGLAccountAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Update an existing GL account in Exact Online.
@@ -25,6 +27,8 @@ class UpdateGLAccountAction
      */
     public function execute(ExactConnection $connection, string $glAccountId, array $data): array
     {
+        $this->validateUpdatePayload('GLAccount', $data);
+
         $picqerConnection = $this->prepareConnection($connection);
 
         try {

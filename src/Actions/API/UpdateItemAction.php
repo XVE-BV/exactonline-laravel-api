@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Item;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class UpdateItemAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Update an existing item in Exact Online.
@@ -26,6 +28,8 @@ class UpdateItemAction
      */
     public function execute(ExactConnection $connection, string $itemId, array $data): array
     {
+        $this->validateUpdatePayload('Item', $data);
+
         $picqerConnection = $this->prepareConnection($connection);
 
         try {

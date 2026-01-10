@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\SalesOrder;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class UpdateSalesOrderAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Update an existing sales order in Exact Online.
@@ -25,6 +27,8 @@ class UpdateSalesOrderAction
      */
     public function execute(ExactConnection $connection, string $orderId, array $data): array
     {
+        $this->validateUpdatePayload('SalesOrder', $data);
+
         $picqerConnection = $this->prepareConnection($connection);
 
         try {

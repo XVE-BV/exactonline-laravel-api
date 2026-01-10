@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Warehouse;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class CreateWarehouseAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Create a new warehouse in Exact Online.
@@ -31,6 +33,7 @@ class CreateWarehouseAction
      */
     public function execute(ExactConnection $connection, array $data): array
     {
+        $this->validateCreatePayload('Warehouse', $data);
         $this->validateWarehouseData($data);
 
         $picqerConnection = $this->prepareConnection($connection);

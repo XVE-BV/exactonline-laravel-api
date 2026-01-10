@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\WebhookSubscription;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class CreateWebhookSubscriptionAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Create a new webhook subscription in Exact Online.
@@ -29,6 +31,7 @@ class CreateWebhookSubscriptionAction
      */
     public function execute(ExactConnection $connection, array $data): array
     {
+        $this->validateCreatePayload('WebhookSubscription', $data);
         $this->validateSubscriptionData($data);
 
         $picqerConnection = $this->prepareConnection($connection);

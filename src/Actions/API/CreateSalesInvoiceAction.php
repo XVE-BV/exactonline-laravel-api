@@ -9,12 +9,15 @@ use Picqer\Financials\Exact\SalesInvoice;
 use Skylence\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\TrackRateLimitUsageAction;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 use Skylence\ExactonlineLaravelApi\Support\Config;
 
 class CreateSalesInvoiceAction
 {
+    use ValidatesPayload;
+
     /**
      * Create a new sales invoice in Exact Online
      *
@@ -61,6 +64,9 @@ class CreateSalesInvoiceAction
      */
     public function execute(ExactConnection $connection, array $invoiceData): array
     {
+        // Validate payload against schema
+        $this->validateCreatePayload('SalesInvoice', $invoiceData);
+
         // Validate required fields
         $this->validateInvoiceData($invoiceData);
 

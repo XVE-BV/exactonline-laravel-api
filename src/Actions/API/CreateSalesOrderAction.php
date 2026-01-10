@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\SalesOrder;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class CreateSalesOrderAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Create a new sales order in Exact Online.
@@ -43,7 +45,7 @@ class CreateSalesOrderAction
      */
     public function execute(ExactConnection $connection, array $data): array
     {
-        $this->validateData($data);
+        $this->validateCreatePayload('SalesOrder', $data);
 
         $picqerConnection = $this->prepareConnection($connection);
 
@@ -76,20 +78,6 @@ class CreateSalesOrderAction
                 'Failed to create sales order: '.$e->getMessage(),
                 $e->getCode(),
                 $e
-            );
-        }
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     *
-     * @throws ConnectionException
-     */
-    protected function validateData(array $data): void
-    {
-        if (empty($data['OrderedBy'])) {
-            throw ConnectionException::invalidConfiguration(
-                'OrderedBy (Account ID) is required for sales orders'
             );
         }
     }

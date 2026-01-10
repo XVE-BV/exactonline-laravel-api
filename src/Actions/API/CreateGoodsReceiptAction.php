@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\GoodsReceipt;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class CreateGoodsReceiptAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Create a new goods receipt in Exact Online.
@@ -43,6 +45,8 @@ class CreateGoodsReceiptAction
      */
     public function execute(ExactConnection $connection, array $data): array
     {
+        $this->validateCreatePayload('GoodsReceipt', $data);
+
         $picqerConnection = $this->prepareConnection($connection);
 
         try {

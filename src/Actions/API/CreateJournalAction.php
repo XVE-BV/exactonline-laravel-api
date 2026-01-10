@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Journal;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class CreateJournalAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Create a new journal in Exact Online.
@@ -37,6 +39,7 @@ class CreateJournalAction
      */
     public function execute(ExactConnection $connection, array $data): array
     {
+        $this->validateCreatePayload('Journal', $data);
         $this->validateJournalData($data);
 
         $picqerConnection = $this->prepareConnection($connection);

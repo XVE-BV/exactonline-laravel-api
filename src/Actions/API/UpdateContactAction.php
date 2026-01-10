@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Contact;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class UpdateContactAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Update an existing contact in Exact Online.
@@ -26,6 +28,8 @@ class UpdateContactAction
      */
     public function execute(ExactConnection $connection, string $contactId, array $data): array
     {
+        $this->validateUpdatePayload('Contact', $data);
+
         $picqerConnection = $this->prepareConnection($connection);
 
         try {

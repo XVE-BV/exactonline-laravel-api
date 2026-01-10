@@ -9,12 +9,15 @@ use Picqer\Financials\Exact\Payment;
 use Skylence\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\TrackRateLimitUsageAction;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 use Skylence\ExactonlineLaravelApi\Support\Config;
 
 class UpdatePaymentAction
 {
+    use ValidatesPayload;
+
     /**
      * Update an existing payment in Exact Online
      *
@@ -98,8 +101,7 @@ class UpdatePaymentAction
      */
     public function execute(ExactConnection $connection, string $paymentId, array $data): array
     {
-        // Validate update data
-        $this->validateUpdateData($data);
+        $this->validateUpdatePayload('Payment', $data);
 
         // Ensure we have a valid access token
         $this->ensureValidToken($connection);
@@ -153,23 +155,6 @@ class UpdatePaymentAction
                 'Failed to update payment: '.$e->getMessage(),
                 $e->getCode(),
                 $e
-            );
-        }
-    }
-
-    /**
-     * Validate update data
-     *
-     * @param  array<string, mixed>  $data
-     *
-     * @throws ConnectionException
-     */
-    protected function validateUpdateData(array $data): void
-    {
-        // Ensure we have at least one field to update
-        if (empty($data)) {
-            throw ConnectionException::invalidConfiguration(
-                'No data provided for payment update'
             );
         }
     }

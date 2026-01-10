@@ -9,12 +9,15 @@ use Picqer\Financials\Exact\Document;
 use Skylence\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\TrackRateLimitUsageAction;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 use Skylence\ExactonlineLaravelApi\Support\Config;
 
 class CreateDocumentAction
 {
+    use ValidatesPayload;
+
     /**
      * Create a new document in Exact Online
      *
@@ -43,6 +46,8 @@ class CreateDocumentAction
      */
     public function execute(ExactConnection $connection, array $data): array
     {
+        $this->validateCreatePayload('Document', $data);
+
         // Validate required fields
         $this->validateDocumentData($data);
 

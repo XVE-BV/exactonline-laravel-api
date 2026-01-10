@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\VATCode;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class UpdateVATCodeAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Update an existing VAT code in Exact Online.
@@ -47,7 +49,7 @@ class UpdateVATCodeAction
      */
     public function execute(ExactConnection $connection, string $vatCodeId, array $data): array
     {
-        $this->validateUpdateData($data);
+        $this->validateUpdatePayload('VATCode', $data);
 
         $picqerConnection = $this->prepareConnection($connection);
 
@@ -88,22 +90,6 @@ class UpdateVATCodeAction
                 'Failed to update VAT code: '.$e->getMessage(),
                 $e->getCode(),
                 $e
-            );
-        }
-    }
-
-    /**
-     * Validate update data.
-     *
-     * @param  array<string, mixed>  $data
-     *
-     * @throws ConnectionException
-     */
-    protected function validateUpdateData(array $data): void
-    {
-        if (empty($data)) {
-            throw ConnectionException::invalidConfiguration(
-                'No data provided for VAT code update'
             );
         }
     }

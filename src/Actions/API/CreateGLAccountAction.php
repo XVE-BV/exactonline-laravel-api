@@ -7,12 +7,14 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\GLAccount;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
 class CreateGLAccountAction
 {
     use HandlesExactConnection;
+    use ValidatesPayload;
 
     /**
      * Create a new GL account in Exact Online.
@@ -49,7 +51,7 @@ class CreateGLAccountAction
      */
     public function execute(ExactConnection $connection, array $data): array
     {
-        $this->validateData($data);
+        $this->validateCreatePayload('GLAccount', $data);
 
         $picqerConnection = $this->prepareConnection($connection);
 
@@ -82,26 +84,6 @@ class CreateGLAccountAction
                 'Failed to create GL account: '.$e->getMessage(),
                 $e->getCode(),
                 $e
-            );
-        }
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     *
-     * @throws ConnectionException
-     */
-    protected function validateData(array $data): void
-    {
-        if (empty($data['Code'])) {
-            throw ConnectionException::invalidConfiguration(
-                'GL account code is required'
-            );
-        }
-
-        if (empty($data['Description'])) {
-            throw ConnectionException::invalidConfiguration(
-                'GL account description is required'
             );
         }
     }
