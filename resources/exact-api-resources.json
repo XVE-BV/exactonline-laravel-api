@@ -1,0 +1,273 @@
+{
+  "_generated": "2026-01-10",
+  "_source": "https://start.exactonline.nl/docs/HlpRestAPIResources.aspx",
+  "resources": {
+    "Accountancy": {
+      "AccountInvolvedAccounts": ["GET", "POST", "PUT", "DELETE"],
+      "AccountOwners": ["GET", "POST", "PUT", "DELETE"],
+      "InvolvedUserRoles": ["GET", "POST", "PUT", "DELETE"],
+      "InvolvedUsers": ["GET", "POST", "PUT", "DELETE"],
+      "SolutionLinks": ["GET", "POST", "PUT", "DELETE"],
+      "TaskTypes": ["GET", "POST", "PUT", "DELETE"]
+    },
+    "Activities": {
+      "CommunicationNotes": ["GET", "POST"],
+      "Complaints": ["GET", "POST"],
+      "Events": ["GET", "POST"],
+      "ServiceRequests": ["GET", "POST"],
+      "Tasks": ["GET", "POST"]
+    },
+    "Assets": {
+      "AssetGroups": ["GET"],
+      "Assets": ["GET"],
+      "CommercialBuildingValues": ["GET"],
+      "DepreciationMethods": ["GET", "POST", "PUT", "DELETE"]
+    },
+    "Budget": {
+      "Budgets": ["GET"],
+      "BudgetScenarios": ["GET"]
+    },
+    "Cashflow": {
+      "AllocationRule": ["GET", "POST", "PUT", "DELETE"],
+      "Banks": ["GET"],
+      "DirectDebitMandates": ["GET", "POST", "PUT", "DELETE"],
+      "PaymentConditions": ["GET", "POST"],
+      "Payments": ["GET", "PUT"],
+      "ProcessPayments": ["POST"],
+      "Receivables": ["GET", "PUT"]
+    },
+    "CRM": {
+      "AcceptQuotation": ["POST"],
+      "AccountClasses": ["GET"],
+      "AccountClassificationNames": ["GET"],
+      "AccountClassifications": ["GET"],
+      "Accounts": ["GET", "POST", "PUT", "DELETE"],
+      "Addresses": ["GET", "POST", "PUT", "DELETE"],
+      "AddressStates": ["GET"],
+      "BankAccounts": ["GET", "POST", "PUT", "DELETE"],
+      "Contacts": ["GET", "POST", "PUT", "DELETE"],
+      "EmailWithSignOffQuotation": ["POST"],
+      "LeadPurposes": ["GET"],
+      "LeadSources": ["GET"],
+      "Opportunities": ["GET", "POST", "PUT", "DELETE"],
+      "OptionalQuotationLineID": ["POST"],
+      "PrintQuotation": ["POST"],
+      "QuotationLines": ["GET", "POST", "PUT", "DELETE"],
+      "QuotationOrderChargeLines": ["GET", "POST", "PUT", "DELETE"],
+      "Quotations": ["GET", "POST", "PUT", "DELETE"],
+      "ReasonCodes": ["GET"],
+      "RejectQuotation": ["POST"],
+      "ReopenQuotation": ["POST"],
+      "ReviewQuotation": ["POST"]
+    },
+    "Documents": {
+      "DocumentAttachments": ["GET", "POST", "DELETE"],
+      "DocumentCategories": ["GET"],
+      "DocumentFolders": ["GET", "POST", "PUT", "DELETE"],
+      "Documents": ["GET", "POST", "PUT", "DELETE"],
+      "DocumentTypeCategories": ["GET"],
+      "DocumentTypeFolders": ["GET", "POST", "PUT", "DELETE"],
+      "DocumentTypes": ["GET"]
+    },
+    "Financial": {
+      "DeductibilityPercentages": ["GET"],
+      "ExchangeRates": ["GET", "POST", "PUT", "DELETE"],
+      "FinancialPeriods": ["GET"],
+      "GLAccountClassificationMappings": ["GET", "POST", "PUT", "DELETE"],
+      "GLAccounts": ["GET", "POST", "PUT", "DELETE"],
+      "GLClassifications": ["GET"],
+      "GLSchemes": ["GET"],
+      "GLTransactionSources": ["GET"],
+      "GLTransactionTypes": ["GET"],
+      "Journals": ["GET", "POST", "PUT", "DELETE"],
+      "OfficialReturns": ["GET", "POST"],
+      "ProcessReturn": ["POST"],
+      "ReportingBalance": ["GET"]
+    },
+    "FinancialTransaction": {
+      "BankEntries": ["GET", "POST", "DELETE"],
+      "BankEntryLines": ["GET", "POST"],
+      "CashEntries": ["GET", "POST", "DELETE"],
+      "CashEntryLines": ["GET", "POST"],
+      "TransactionLines": ["GET"]
+    },
+    "General": {
+      "Currencies": ["GET"],
+      "Layouts": ["GET"]
+    },
+    "GeneralJournalEntry": {
+      "GeneralJournalEntries": ["GET", "POST", "DELETE"],
+      "GeneralJournalEntryLines": ["GET", "POST"]
+    },
+    "HRM": {
+      "AbsenceRegistrations": ["GET"],
+      "AbsenceRegistrationTransactions": ["GET"],
+      "Costcenters": ["GET", "POST", "PUT", "DELETE"],
+      "Costunits": ["GET", "POST", "PUT", "DELETE"],
+      "Departments": ["GET"],
+      "DivisionClasses": ["GET"],
+      "DivisionClassNames": ["GET"],
+      "DivisionClassValues": ["GET"],
+      "Divisions": ["GET"],
+      "JobGroups": ["GET"],
+      "JobTitles": ["GET"],
+      "LeaveAbsenceHoursByDay": ["GET"],
+      "LeaveBuildUpRegistrations": ["GET"],
+      "LeaveRegistrations": ["GET"],
+      "Schedules": ["GET"]
+    },
+    "Inventory": {
+      "AssemblyBillOfMaterialHeader": ["GET", "POST", "PUT", "DELETE"],
+      "AssemblyBillOfMaterialMaterials": ["GET", "POST", "PUT", "DELETE"],
+      "AssemblyOrders": ["GET"],
+      "BatchNumbers": ["GET"],
+      "FinishAssemblyOrder": ["POST"],
+      "ItemWarehousePlanningDetails": ["GET"],
+      "ItemWarehouses": ["GET", "POST", "PUT", "DELETE"],
+      "ItemWarehouseStorageLocations": ["GET"],
+      "ProcessStockCount": ["POST"],
+      "ProcessWarehouseTransfer": ["POST"],
+      "SerialNumbers": ["GET"],
+      "StockBatchNumbers": ["GET", "POST", "PUT", "DELETE"],
+      "StockCountLines": ["GET", "POST", "PUT", "DELETE"],
+      "StockCounts": ["GET", "POST", "PUT", "DELETE"],
+      "StockSerialNumbers": ["GET", "POST", "PUT", "DELETE"],
+      "StorageLocations": ["GET"],
+      "Warehouses": ["GET", "POST", "PUT", "DELETE"],
+      "WarehouseTransferLines": ["GET", "POST", "PUT", "DELETE"],
+      "WarehouseTransfers": ["GET", "POST", "PUT", "DELETE"]
+    },
+    "Logistics": {
+      "CustomerItems": ["GET", "POST", "PUT", "DELETE"],
+      "Incoterms": ["GET"],
+      "ItemAssortment": ["GET"],
+      "ItemAssortmentProperty": ["GET"],
+      "ItemChargeRelation": ["GET"],
+      "ItemGroups": ["GET"],
+      "Items": ["GET", "POST", "PUT", "DELETE"],
+      "ItemVersions": ["GET"],
+      "ReasonCodes": ["GET"],
+      "ReasonCodesLinkTypes": ["GET"],
+      "SalesItemPrices": ["GET", "POST", "PUT", "DELETE"],
+      "SelectionCodes": ["GET"],
+      "SupplierItem": ["GET", "POST", "PUT", "DELETE"],
+      "Units": ["GET"]
+    },
+    "Payroll": {
+      "ActiveEmployments": ["GET"],
+      "Employees": ["GET"],
+      "EmploymentConditionGroups": ["GET"],
+      "EmploymentContractFlexPhases": ["GET"],
+      "EmploymentContracts": ["GET"],
+      "EmploymentEndReasons": ["GET"],
+      "EmploymentOrganizations": ["GET"],
+      "Employments": ["GET"],
+      "EmploymentSalaries": ["GET"],
+      "EmploymentTaxAuthoritiesGeneral": ["GET"],
+      "TaxEmploymentEndFlexCodes": ["GET"],
+      "VariableMutations": ["GET", "POST", "PUT"]
+    },
+    "Project": {
+      "CostTransactions": ["GET", "POST", "PUT", "DELETE"],
+      "EmployeeRestrictionItems": ["GET", "POST", "PUT", "DELETE"],
+      "EmploymentInternalRates": ["GET"],
+      "InvoiceTerms": ["GET", "POST", "PUT", "DELETE"],
+      "ProjectAccountMutations": ["GET", "POST", "PUT", "DELETE"],
+      "ProjectBudgetTypes": ["GET"],
+      "ProjectClassifications": ["GET", "POST", "PUT", "DELETE"],
+      "ProjectHourBudgets": ["GET", "POST", "PUT", "DELETE"],
+      "ProjectPlanning": ["GET", "POST", "PUT", "DELETE"],
+      "ProjectPlanningRecurring": ["GET", "POST", "PUT", "DELETE"],
+      "ProjectRestrictionEmployeeItems": ["GET", "POST", "PUT", "DELETE"],
+      "ProjectRestrictionEmployees": ["GET", "POST", "PUT", "DELETE"],
+      "ProjectRestrictionItems": ["GET", "POST", "PUT", "DELETE"],
+      "ProjectRestrictionRebillings": ["GET", "POST", "PUT", "DELETE"],
+      "Projects": ["GET", "POST", "PUT", "DELETE"],
+      "TimeCorrections": ["GET", "POST", "PUT", "DELETE"],
+      "TimeTransactions": ["GET", "POST", "PUT", "DELETE"],
+      "WBSActivities": ["GET", "POST", "PUT", "DELETE"],
+      "WBSDeliverables": ["GET", "POST", "PUT", "DELETE"],
+      "WBSExpenses": ["GET", "POST", "PUT", "DELETE"]
+    },
+    "Purchase": {
+      "PurchaseInvoiceLines": ["GET", "POST"],
+      "PurchaseInvoices": ["GET", "POST", "PUT", "DELETE"]
+    },
+    "PurchaseEntry": {
+      "PurchaseEntries": ["GET", "POST", "PUT", "DELETE"],
+      "PurchaseEntryLines": ["GET", "POST", "PUT", "DELETE"]
+    },
+    "PurchaseOrder": {
+      "GoodsReceiptLines": ["GET", "POST"],
+      "GoodsReceipts": ["GET", "POST", "PUT"],
+      "PurchaseOrderLines": ["GET", "POST", "PUT", "DELETE"],
+      "PurchaseOrders": ["GET", "POST", "PUT", "DELETE"],
+      "PurchaseReturnLines": ["GET", "POST", "PUT"],
+      "PurchaseReturns": ["GET", "POST", "PUT"]
+    },
+    "Sales": {
+      "OrderCharges": ["GET"],
+      "SalesChannels": ["GET", "POST", "PUT", "DELETE"],
+      "SalesPriceListLinkedAccounts": ["GET"],
+      "SalesPriceListPeriods": ["GET"],
+      "SalesPriceLists": ["GET"],
+      "SalesPriceListVolumeDiscounts": ["GET"],
+      "ShippingMethods": ["GET"]
+    },
+    "SalesEntry": {
+      "SalesEntries": ["GET", "POST", "PUT", "DELETE"],
+      "SalesEntryLines": ["GET", "POST", "PUT", "DELETE"]
+    },
+    "SalesInvoice": {
+      "InvoiceSalesOrders": ["POST"],
+      "Layouts": ["GET"],
+      "PrintedSalesInvoices": ["POST"],
+      "SalesInvoiceLines": ["GET", "POST", "PUT", "DELETE"],
+      "SalesInvoiceOrderChargeLines": ["GET", "POST", "PUT", "DELETE"],
+      "SalesInvoices": ["GET", "POST", "PUT", "DELETE"],
+      "SalesOrderID": ["POST"]
+    },
+    "SalesOrder": {
+      "CompleteSalesOrder": ["POST"],
+      "CompleteSalesOrderLine": ["POST"],
+      "DropShipmentLines": ["GET", "POST", "PUT"],
+      "DropShipments": ["GET", "POST", "PUT"],
+      "GoodsDeliveries": ["GET", "POST", "PUT"],
+      "GoodsDeliveryLines": ["GET", "POST", "PUT"],
+      "PlannedSalesReturnLines": ["GET", "POST", "PUT", "DELETE"],
+      "PlannedSalesReturns": ["GET", "POST", "PUT", "DELETE"],
+      "PrintedSalesOrders": ["POST"],
+      "SalesOrderLines": ["GET", "POST", "PUT", "DELETE"],
+      "SalesOrderOrderChargeLines": ["GET", "POST", "PUT", "DELETE"],
+      "SalesOrders": ["GET", "POST", "PUT", "DELETE"]
+    },
+    "Subscription": {
+      "SubscriptionLines": ["GET", "POST", "PUT", "DELETE"],
+      "SubscriptionLineTypes": ["GET"],
+      "SubscriptionReasonCodes": ["GET"],
+      "SubscriptionRestrictionEmployees": ["GET", "POST", "DELETE"],
+      "SubscriptionRestrictionItems": ["GET", "POST", "DELETE"],
+      "Subscriptions": ["GET", "POST", "PUT", "DELETE"],
+      "SubscriptionTypes": ["GET"]
+    },
+    "System": {
+      "AccountantInfo": ["GET"],
+      "AllDivisions": ["GET"],
+      "AvailableFeatures": ["GET"],
+      "Divisions": ["GET", "DELETE"],
+      "GetMostRecentlyUsedDivisions": ["GET"],
+      "Me": ["GET"]
+    },
+    "Users": {
+      "UserRoles": ["GET"],
+      "UserRolesPerDivision": ["GET"]
+    },
+    "VAT": {
+      "VATCodes": ["GET", "POST", "PUT", "DELETE"],
+      "VatPercentages": ["GET"]
+    },
+    "Webhooks": {
+      "WebhookSubscriptions": ["GET", "POST", "PUT", "DELETE"]
+    }
+  }
+}

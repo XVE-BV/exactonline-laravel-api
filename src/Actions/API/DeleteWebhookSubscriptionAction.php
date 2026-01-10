@@ -5,57 +5,52 @@ declare(strict_types=1);
 namespace Skylence\ExactonlineLaravelApi\Actions\API;
 
 use Illuminate\Support\Facades\Log;
-use Picqer\Financials\Exact\Employee;
+use Picqer\Financials\Exact\WebhookSubscription;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
-class UpdateEmployeeAction
+class DeleteWebhookSubscriptionAction
 {
     use HandlesExactConnection;
 
     /**
-     * Update an existing employee in Exact Online.
+     * Delete a webhook subscription from Exact Online.
      *
      * @param  ExactConnection  $connection  The Exact Online connection
-     * @param  string  $employeeId  The Exact Online employee ID (GUID)
-     * @param  array<string, mixed>  $data  Employee data to update
-     * @return array<string, mixed> The updated employee data
+     * @param  string  $subscriptionId  The Exact Online webhook subscription ID (GUID)
+     * @return bool True if the subscription was successfully deleted
      *
      * @throws ConnectionException
      */
-    public function execute(ExactConnection $connection, string $employeeId, array $data): array
+    public function execute(ExactConnection $connection, string $subscriptionId): bool
     {
         $picqerConnection = $this->prepareConnection($connection);
 
         try {
-            $employee = new Employee($picqerConnection);
-            $employee->ID = $employeeId;
+            $webhookSubscription = new WebhookSubscription($picqerConnection);
+            $webhookSubscription->ID = $subscriptionId;
 
-            foreach ($data as $key => $value) {
-                $employee->{$key} = $value;
-            }
-
-            $employee->save();
+            $webhookSubscription->delete();
 
             $this->completeRequest($connection, $picqerConnection);
 
-            Log::info('Updated employee in Exact Online', [
+            Log::info('Deleted webhook subscription from Exact Online', [
                 'connection_id' => $connection->id,
-                'employee_id' => $employeeId,
+                'subscription_id' => $subscriptionId,
             ]);
 
-            return $employee->attributes();
+            return true;
 
         } catch (\Exception $e) {
-            Log::error('Failed to update employee in Exact Online', [
+            Log::error('Failed to delete webhook subscription from Exact Online', [
                 'connection_id' => $connection->id,
-                'employee_id' => $employeeId,
+                'subscription_id' => $subscriptionId,
                 'error' => $e->getMessage(),
             ]);
 
             throw new ConnectionException(
-                'Failed to update employee: '.$e->getMessage(),
+                'Failed to delete webhook subscription: '.$e->getMessage(),
                 $e->getCode(),
                 $e
             );

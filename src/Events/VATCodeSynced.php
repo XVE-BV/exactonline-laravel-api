@@ -12,7 +12,7 @@ use Skylence\ExactonlineLaravelApi\Contracts\HasExactMapping;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 use Skylence\ExactonlineLaravelApi\Support\Results\SyncResult;
 
-class EmployeeSynced
+class VATCodeSynced
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

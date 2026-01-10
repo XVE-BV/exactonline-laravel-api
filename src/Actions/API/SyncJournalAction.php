@@ -7,29 +7,29 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Skylence\ExactonlineLaravelApi\Contracts\HasExactMapping;
-use Skylence\ExactonlineLaravelApi\Events\EmployeeSynced;
+use Skylence\ExactonlineLaravelApi\Events\JournalSynced;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 use Skylence\ExactonlineLaravelApi\Support\Config;
 use Skylence\ExactonlineLaravelApi\Support\Results\SyncResult;
 
 /**
- * Sync a local model to Exact Online as an Employee.
+ * Sync a local model to Exact Online as a Journal.
  * Creates or updates based on existing mapping.
  */
-class SyncEmployeeAction
+class SyncJournalAction
 {
     /**
-     * Sync a model to Exact Online as an Employee.
+     * Sync a model to Exact Online.
      *
      * @param  Model&HasExactMapping  $model  The local model to sync
-     * @param  array<string, mixed>  $data  The employee data (FirstName and LastName required)
+     * @param  array<string, mixed>  $data  The journal data
      * @param  string  $referenceType  The mapping reference type
      */
     public function execute(
         ExactConnection $connection,
         Model&HasExactMapping $model,
         array $data,
-        string $referenceType = 'employee'
+        string $referenceType = 'primary'
     ): SyncResult {
         try {
             $existingId = $model->getExactId($connection, $referenceType);
@@ -40,7 +40,7 @@ class SyncEmployeeAction
 
             return $this->create($connection, $model, $data, $referenceType);
         } catch (\Exception $e) {
-            Log::error('Failed to sync employee to Exact Online', [
+            Log::error('Failed to sync journal to Exact Online', [
                 'connection_id' => $connection->id,
                 'model_type' => get_class($model),
                 'model_id' => $model->getKey(),
@@ -54,7 +54,7 @@ class SyncEmployeeAction
     }
 
     /**
-     * Create a new employee in Exact.
+     * Create a new journal in Exact.
      *
      * @param  array<string, mixed>  $data
      */
@@ -64,34 +64,36 @@ class SyncEmployeeAction
         array $data,
         string $referenceType
     ): SyncResult {
-        $createAction = Config::getAction('create_employee', CreateEmployeeAction::class);
+        $createAction = Config::getAction('create_journal', CreateJournalAction::class);
 
         $response = $createAction->execute($connection, $data);
 
         $exactId = $response['ID'] ?? null;
+        $exactCode = $response['Code'] ?? null;
 
         if (! $exactId) {
             return SyncResult::failed('No ID returned from Exact Online');
         }
 
-        $model->setExactId($connection, $exactId, $referenceType);
+        // Store the mapping
+        $model->setExactId($connection, $exactId, $referenceType, $exactCode);
 
-        Log::info('Created employee mapping', [
+        Log::info('Created journal mapping', [
             'connection_id' => $connection->id,
             'model_type' => get_class($model),
             'model_id' => $model->getKey(),
             'exact_id' => $exactId,
         ]);
 
-        $result = SyncResult::created($exactId);
+        $result = SyncResult::created($exactId, $exactCode);
 
-        EmployeeSynced::dispatch($connection, $model, $result);
+        JournalSynced::dispatch($connection, $model, $result);
 
         return $result;
     }
 
     /**
-     * Update an existing employee in Exact.
+     * Update an existing journal in Exact.
      *
      * @param  array<string, mixed>  $data
      */
@@ -102,22 +104,25 @@ class SyncEmployeeAction
         array $data,
         string $referenceType
     ): SyncResult {
-        $updateAction = Config::getAction('update_employee', UpdateEmployeeAction::class);
+        $updateAction = Config::getAction('update_journal', UpdateJournalAction::class);
 
-        $updateAction->execute($connection, $exactId, $data);
+        $response = $updateAction->execute($connection, $exactId, $data);
 
-        $model->setExactId($connection, $exactId, $referenceType);
+        $exactCode = $response['Code'] ?? $model->getExactCode($connection, $referenceType);
 
-        Log::info('Updated employee in Exact', [
+        // Update the mapping
+        $model->setExactId($connection, $exactId, $referenceType, $exactCode);
+
+        Log::info('Updated journal in Exact', [
             'connection_id' => $connection->id,
             'model_type' => get_class($model),
             'model_id' => $model->getKey(),
             'exact_id' => $exactId,
         ]);
 
-        $result = SyncResult::updated($exactId);
+        $result = SyncResult::updated($exactId, $exactCode);
 
-        EmployeeSynced::dispatch($connection, $model, $result);
+        JournalSynced::dispatch($connection, $model, $result);
 
         return $result;
     }

@@ -146,16 +146,42 @@ return [
         'create_document' => Actions\API\CreateDocumentAction::class,
         'sync_document' => Actions\API\SyncDocumentAction::class,
 
-        // API Operations - Employees
+        // API Operations - Employees (read-only)
         'get_employees' => Actions\API\GetEmployeesAction::class,
         'get_employee' => Actions\API\GetEmployeeAction::class,
-        'create_employee' => Actions\API\CreateEmployeeAction::class,
-        'update_employee' => Actions\API\UpdateEmployeeAction::class,
-        'sync_employee' => Actions\API\SyncEmployeeAction::class,
 
         // API Operations - Journals
         'get_journals' => Actions\API\GetJournalsAction::class,
         'get_journal' => Actions\API\GetJournalAction::class,
+        'create_journal' => Actions\API\CreateJournalAction::class,
+        'update_journal' => Actions\API\UpdateJournalAction::class,
+        'sync_journal' => Actions\API\SyncJournalAction::class,
+
+        // API Operations - Item Groups (read-only)
+        'get_item_groups' => Actions\API\GetItemGroupsAction::class,
+        'get_item_group' => Actions\API\GetItemGroupAction::class,
+
+        // API Operations - Units (read-only)
+        'get_units' => Actions\API\GetUnitsAction::class,
+        'get_unit' => Actions\API\GetUnitAction::class,
+
+        // API Operations - VAT Codes
+        'get_vat_codes' => Actions\API\GetVATCodesAction::class,
+        'get_vat_code' => Actions\API\GetVATCodeAction::class,
+        'create_vat_code' => Actions\API\CreateVATCodeAction::class,
+        'update_vat_code' => Actions\API\UpdateVATCodeAction::class,
+        'sync_vat_code' => Actions\API\SyncVATCodeAction::class,
+
+        // API Operations - Payments (no create, no delete)
+        'get_payments' => Actions\API\GetPaymentsAction::class,
+        'get_payment' => Actions\API\GetPaymentAction::class,
+        'update_payment' => Actions\API\UpdatePaymentAction::class,
+
+        // API Operations - Webhook Subscriptions
+        'get_webhook_subscriptions' => Actions\API\GetWebhookSubscriptionsAction::class,
+        'get_webhook_subscription' => Actions\API\GetWebhookSubscriptionAction::class,
+        'create_webhook_subscription' => Actions\API\CreateWebhookSubscriptionAction::class,
+        'delete_webhook_subscription' => Actions\API\DeleteWebhookSubscriptionAction::class,
 
         // API Operations - Other
         'download_document' => Actions\API\DownloadDocumentAction::class,
