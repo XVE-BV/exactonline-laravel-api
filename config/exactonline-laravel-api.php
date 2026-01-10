@@ -39,13 +39,75 @@ return [
         'revoke_tokens' => Actions\OAuth\RevokeTokensAction::class,
         'monitor_refresh_token_expiry' => Actions\OAuth\MonitorRefreshTokenExpiryAction::class,
 
-        // API Operations
-        'create_sales_invoice' => Actions\API\CreateSalesInvoiceAction::class,
-        'update_account' => Actions\API\UpdateAccountAction::class,
-        'get_sales_invoices' => Actions\API\GetSalesInvoicesAction::class,
+        // API Operations - Accounts
         'get_accounts' => Actions\API\GetAccountsAction::class,
         'get_account' => Actions\API\GetAccountAction::class,
         'create_account' => Actions\API\CreateAccountAction::class,
+        'update_account' => Actions\API\UpdateAccountAction::class,
+        'sync_account' => Actions\API\SyncAccountAction::class,
+
+        // API Operations - Contacts
+        'get_contacts' => Actions\API\GetContactsAction::class,
+        'get_contact' => Actions\API\GetContactAction::class,
+        'create_contact' => Actions\API\CreateContactAction::class,
+        'update_contact' => Actions\API\UpdateContactAction::class,
+        'sync_contact' => Actions\API\SyncContactAction::class,
+
+        // API Operations - Items
+        'get_items' => Actions\API\GetItemsAction::class,
+        'get_item' => Actions\API\GetItemAction::class,
+        'create_item' => Actions\API\CreateItemAction::class,
+        'update_item' => Actions\API\UpdateItemAction::class,
+        'sync_item' => Actions\API\SyncItemAction::class,
+
+        // API Operations - Sales Orders
+        'get_sales_orders' => Actions\API\GetSalesOrdersAction::class,
+        'get_sales_order' => Actions\API\GetSalesOrderAction::class,
+        'create_sales_order' => Actions\API\CreateSalesOrderAction::class,
+        'update_sales_order' => Actions\API\UpdateSalesOrderAction::class,
+        'sync_sales_order' => Actions\API\SyncSalesOrderAction::class,
+
+        // API Operations - Sales Invoices
+        'get_sales_invoices' => Actions\API\GetSalesInvoicesAction::class,
+        'get_sales_invoice' => Actions\API\GetSalesInvoiceAction::class,
+        'create_sales_invoice' => Actions\API\CreateSalesInvoiceAction::class,
+        'sync_sales_invoice' => Actions\API\SyncSalesInvoiceAction::class,
+
+        // API Operations - Purchase Orders
+        'get_purchase_orders' => Actions\API\GetPurchaseOrdersAction::class,
+        'get_purchase_order' => Actions\API\GetPurchaseOrderAction::class,
+        'create_purchase_order' => Actions\API\CreatePurchaseOrderAction::class,
+        'update_purchase_order' => Actions\API\UpdatePurchaseOrderAction::class,
+        'sync_purchase_order' => Actions\API\SyncPurchaseOrderAction::class,
+
+        // API Operations - Purchase Invoices
+        'get_purchase_invoices' => Actions\API\GetPurchaseInvoicesAction::class,
+        'get_purchase_invoice' => Actions\API\GetPurchaseInvoiceAction::class,
+        'create_purchase_invoice' => Actions\API\CreatePurchaseInvoiceAction::class,
+        'sync_purchase_invoice' => Actions\API\SyncPurchaseInvoiceAction::class,
+
+        // API Operations - Quotations
+        'get_quotations' => Actions\API\GetQuotationsAction::class,
+        'get_quotation' => Actions\API\GetQuotationAction::class,
+        'create_quotation' => Actions\API\CreateQuotationAction::class,
+        'update_quotation' => Actions\API\UpdateQuotationAction::class,
+        'sync_quotation' => Actions\API\SyncQuotationAction::class,
+
+        // API Operations - Projects
+        'get_projects' => Actions\API\GetProjectsAction::class,
+        'get_project' => Actions\API\GetProjectAction::class,
+        'create_project' => Actions\API\CreateProjectAction::class,
+        'update_project' => Actions\API\UpdateProjectAction::class,
+        'sync_project' => Actions\API\SyncProjectAction::class,
+
+        // API Operations - GL Accounts
+        'get_gl_accounts' => Actions\API\GetGLAccountsAction::class,
+        'get_gl_account' => Actions\API\GetGLAccountAction::class,
+        'create_gl_account' => Actions\API\CreateGLAccountAction::class,
+        'update_gl_account' => Actions\API\UpdateGLAccountAction::class,
+        'sync_gl_account' => Actions\API\SyncGLAccountAction::class,
+
+        // API Operations - Other
         'download_document' => Actions\API\DownloadDocumentAction::class,
         'batch_sync_entities' => Actions\API\BatchSyncEntitiesAction::class,
 
@@ -77,8 +139,25 @@ return [
     */
     'models' => [
         'connection' => \Skylence\ExactonlineLaravelApi\Models\ExactConnection::class,
+        'mapping' => \Skylence\ExactonlineLaravelApi\Models\ExactMapping::class,
         'webhook' => \Skylence\ExactonlineLaravelApi\Models\ExactWebhook::class,
         'rate_limit' => \Skylence\ExactonlineLaravelApi\Models\ExactRateLimit::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mapping Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configure how the package handles polymorphic mappings between local
+    | models and Exact Online entities. Environment isolation ensures that
+    | mappings created in development don't conflict with production.
+    |
+    */
+    'mapping' => [
+        // Environment identifier for mappings (local, staging, production)
+        // Used to isolate mappings between environments
+        'environment' => env('APP_ENV', 'production'),
     ],
 
     /*

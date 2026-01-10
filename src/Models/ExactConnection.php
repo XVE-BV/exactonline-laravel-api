@@ -32,6 +32,7 @@ use Picqer\Financials\Exact\Connection;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, ExactWebhook> $webhooks
  * @property-read ExactRateLimit|null $rateLimit
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, ExactMapping> $mappings
  */
 class ExactConnection extends Model
 {
@@ -109,6 +110,16 @@ class ExactConnection extends Model
     public function rateLimit(): HasOne
     {
         return $this->hasOne(ExactRateLimit::class, 'connection_id');
+    }
+
+    /**
+     * Get all mappings for this connection.
+     *
+     * @return HasMany<ExactMapping, $this>
+     */
+    public function mappings(): HasMany
+    {
+        return $this->hasMany(ExactMapping::class, 'connection_id');
     }
 
     /**

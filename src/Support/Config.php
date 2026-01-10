@@ -107,4 +107,19 @@ class Config
     {
         return config('exactonline-laravel-api.rate_limiting.throw_on_daily_limit', true);
     }
+
+    public static function getMappingModel(): string
+    {
+        return config('exactonline-laravel-api.models.mapping', \Skylence\ExactonlineLaravelApi\Models\ExactMapping::class);
+    }
+
+    public static function getMappingEnvironment(): string
+    {
+        return config('exactonline-laravel-api.mapping.environment', config('app.env', 'production'));
+    }
+
+    public static function getRateLimitModel(): string
+    {
+        return config('exactonline-laravel-api.models.rate_limit', \Skylence\ExactonlineLaravelApi\Models\ExactRateLimit::class);
+    }
 }
