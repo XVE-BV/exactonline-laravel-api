@@ -107,6 +107,56 @@ return [
         'update_gl_account' => Actions\API\UpdateGLAccountAction::class,
         'sync_gl_account' => Actions\API\SyncGLAccountAction::class,
 
+        // API Operations - Addresses
+        'get_addresses' => Actions\API\GetAddressesAction::class,
+        'get_address' => Actions\API\GetAddressAction::class,
+        'create_address' => Actions\API\CreateAddressAction::class,
+        'update_address' => Actions\API\UpdateAddressAction::class,
+        'sync_address' => Actions\API\SyncAddressAction::class,
+
+        // API Operations - Bank Accounts
+        'get_bank_accounts' => Actions\API\GetBankAccountsAction::class,
+        'get_bank_account' => Actions\API\GetBankAccountAction::class,
+        'create_bank_account' => Actions\API\CreateBankAccountAction::class,
+        'update_bank_account' => Actions\API\UpdateBankAccountAction::class,
+        'sync_bank_account' => Actions\API\SyncBankAccountAction::class,
+
+        // API Operations - Warehouses
+        'get_warehouses' => Actions\API\GetWarehousesAction::class,
+        'get_warehouse' => Actions\API\GetWarehouseAction::class,
+        'create_warehouse' => Actions\API\CreateWarehouseAction::class,
+        'update_warehouse' => Actions\API\UpdateWarehouseAction::class,
+        'sync_warehouse' => Actions\API\SyncWarehouseAction::class,
+
+        // API Operations - Goods Deliveries
+        'get_goods_deliveries' => Actions\API\GetGoodsDeliveriesAction::class,
+        'get_goods_delivery' => Actions\API\GetGoodsDeliveryAction::class,
+        'create_goods_delivery' => Actions\API\CreateGoodsDeliveryAction::class,
+        'sync_goods_delivery' => Actions\API\SyncGoodsDeliveryAction::class,
+
+        // API Operations - Goods Receipts
+        'get_goods_receipts' => Actions\API\GetGoodsReceiptsAction::class,
+        'get_goods_receipt' => Actions\API\GetGoodsReceiptAction::class,
+        'create_goods_receipt' => Actions\API\CreateGoodsReceiptAction::class,
+        'sync_goods_receipt' => Actions\API\SyncGoodsReceiptAction::class,
+
+        // API Operations - Documents
+        'get_documents' => Actions\API\GetDocumentsAction::class,
+        'get_document' => Actions\API\GetDocumentAction::class,
+        'create_document' => Actions\API\CreateDocumentAction::class,
+        'sync_document' => Actions\API\SyncDocumentAction::class,
+
+        // API Operations - Employees
+        'get_employees' => Actions\API\GetEmployeesAction::class,
+        'get_employee' => Actions\API\GetEmployeeAction::class,
+        'create_employee' => Actions\API\CreateEmployeeAction::class,
+        'update_employee' => Actions\API\UpdateEmployeeAction::class,
+        'sync_employee' => Actions\API\SyncEmployeeAction::class,
+
+        // API Operations - Journals
+        'get_journals' => Actions\API\GetJournalsAction::class,
+        'get_journal' => Actions\API\GetJournalAction::class,
+
         // API Operations - Other
         'download_document' => Actions\API\DownloadDocumentAction::class,
         'batch_sync_entities' => Actions\API\BatchSyncEntitiesAction::class,
