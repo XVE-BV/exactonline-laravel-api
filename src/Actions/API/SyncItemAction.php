@@ -56,7 +56,6 @@ class SyncItemAction
     /**
      * Create a new item in Exact.
      *
-     * @param  Model&HasExactMapping  $model
      * @param  array<string, mixed>  $data
      */
     protected function create(
@@ -96,7 +95,6 @@ class SyncItemAction
     /**
      * Update an existing item in Exact.
      *
-     * @param  Model&HasExactMapping  $model
      * @param  array<string, mixed>  $data
      */
     protected function update(

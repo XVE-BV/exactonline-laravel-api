@@ -56,7 +56,6 @@ class SyncAccountAction
     /**
      * Create a new account in Exact.
      *
-     * @param  Model&HasExactMapping  $model
      * @param  array<string, mixed>  $data
      */
     protected function create(
@@ -96,7 +95,6 @@ class SyncAccountAction
     /**
      * Update an existing account in Exact.
      *
-     * @param  Model&HasExactMapping  $model
      * @param  array<string, mixed>  $data
      */
     protected function update(

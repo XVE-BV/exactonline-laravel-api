@@ -56,7 +56,6 @@ class SyncContactAction
     /**
      * Create a new contact in Exact.
      *
-     * @param  Model&HasExactMapping  $model
      * @param  array<string, mixed>  $data
      */
     protected function create(
@@ -94,7 +93,6 @@ class SyncContactAction
     /**
      * Update an existing contact in Exact.
      *
-     * @param  Model&HasExactMapping  $model
      * @param  array<string, mixed>  $data
      */
     protected function update(

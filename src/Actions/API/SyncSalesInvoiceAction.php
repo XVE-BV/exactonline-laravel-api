@@ -22,7 +22,6 @@ use Skylence\ExactonlineLaravelApi\Support\Results\SyncResult;
 class SyncSalesInvoiceAction
 {
     /**
-     * @param  Model&HasExactMapping  $model
      * @param  array<string, mixed>  $data
      */
     public function execute(
@@ -65,7 +64,6 @@ class SyncSalesInvoiceAction
     }
 
     /**
-     * @param  Model&HasExactMapping  $model
      * @param  array<string, mixed>  $data
      */
     protected function create(
