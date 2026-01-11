@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi\Exceptions;
 
-use Exception;
-
-class RateLimitExceededException extends Exception
+/**
+ * Exception thrown when API rate limits are exceeded.
+ *
+ * Provides information about the rate limit type (daily/minutely)
+ * and when the limit will reset.
+ */
+class RateLimitExceededException extends ApiException
 {
     protected int $retryAfterSeconds;
 
@@ -16,10 +20,16 @@ class RateLimitExceededException extends Exception
 
     public function __construct(string $message, int $retryAfterSeconds, string $limitType, ?int $resetAt = null)
     {
-        parent::__construct($message);
+        parent::__construct($message, 429);
         $this->retryAfterSeconds = $retryAfterSeconds;
         $this->limitType = $limitType;
         $this->resetAt = $resetAt ?? (now()->timestamp + $retryAfterSeconds);
+
+        $this->setContext([
+            'retry_after_seconds' => $retryAfterSeconds,
+            'limit_type' => $limitType,
+            'reset_at' => $this->resetAt,
+        ]);
     }
 
     public static function dailyLimitExceeded(int $limit, int $resetInSeconds): self

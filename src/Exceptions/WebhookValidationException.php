@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi\Exceptions;
 
-use Exception;
-
-class WebhookValidationException extends Exception
+/**
+ * Exception for webhook validation failures.
+ *
+ * Thrown when webhook signature validation fails, the payload is invalid,
+ * or the webhook topic is unknown.
+ */
+class WebhookValidationException extends ExactOnlineException
 {
     public static function invalidSignature(string $expectedSignature, string $actualSignature): self
     {

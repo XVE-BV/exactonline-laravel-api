@@ -33,6 +33,7 @@ use Picqer\Financials\Exact\Connection;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, ExactWebhook> $webhooks
  * @property-read ExactRateLimit|null $rateLimit
  * @property-read \Illuminate\Database\Eloquent\Collection<int, ExactMapping> $mappings
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, ExactDivision> $divisions
  */
 class ExactConnection extends Model
 {
@@ -120,6 +121,16 @@ class ExactConnection extends Model
     public function mappings(): HasMany
     {
         return $this->hasMany(ExactMapping::class, 'connection_id');
+    }
+
+    /**
+     * Get all divisions for this connection.
+     *
+     * @return HasMany<ExactDivision, $this>
+     */
+    public function divisions(): HasMany
+    {
+        return $this->hasMany(ExactDivision::class, 'connection_id');
     }
 
     /**

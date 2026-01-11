@@ -24,7 +24,6 @@ Route::middleware('web')->prefix('exact')->name('exact.')->group(function () {
             ->name('redirect');
 
         // Handle OAuth callback from Exact Online
-        Route::get('callback', CallbackController::class)
-            ->name('callback');
+        Route::get('callback', CallbackController::class)->name('callback');
     });
 });

@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
+use Skylence\ExactonlineLaravelApi\Actions\API\SyncDivisionsAction;
 use Skylence\ExactonlineLaravelApi\Actions\OAuth\AcquireAccessTokenAction;
 use Skylence\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
@@ -25,9 +26,30 @@ class CallbackController extends Controller
      */
     public function __invoke(Request $request): RedirectResponse|JsonResponse
     {
+        $debug = (bool) config('exactonline-laravel-api.logging.debug', false);
+
+        if ($debug) {
+            Log::info('OAuth callback received', [
+                'session_id' => $request->session()->getId(),
+                'has_code' => $request->has('code'),
+                'has_state' => $request->has('state'),
+                'has_error' => $request->has('error'),
+                'error' => $request->input('error'),
+                'error_description' => $request->input('error_description'),
+                'request_state' => $request->input('state') ? substr($request->input('state'), 0, 10).'...' : null,
+                'session_state' => $request->session()->get('exact_oauth_state') ? substr($request->session()->get('exact_oauth_state'), 0, 10).'...' : null,
+                'session_connection_id' => $request->session()->get('exact_oauth_connection_id'),
+                'all_session_keys' => array_keys($request->session()->all()),
+            ]);
+        }
+
         try {
             // Validate state parameter for CSRF protection
             $this->validateState($request);
+
+            if ($debug) {
+                Log::debug('OAuth state validated successfully');
+            }
 
             // Check for OAuth errors from Exact Online
             $this->checkForOAuthError($request);
@@ -39,8 +61,21 @@ class CallbackController extends Controller
                 throw new \InvalidArgumentException('No authorization code received from Exact Online');
             }
 
+            if ($debug) {
+                Log::debug('OAuth authorization code received', [
+                    'code_length' => strlen($authorizationCode),
+                ]);
+            }
+
             // Get the connection
             $connection = $this->getConnection($request);
+
+            if ($debug) {
+                Log::debug('OAuth connection retrieved for token exchange', [
+                    'connection_id' => $connection->id,
+                    'has_client_secret' => ! empty($connection->getDecryptedClientSecret()),
+                ]);
+            }
 
             // Exchange authorization code for tokens
             $action = Config::getAction(
@@ -50,17 +85,25 @@ class CallbackController extends Controller
 
             $tokens = $action->execute($connection, $authorizationCode);
 
-            Log::info('OAuth callback successful', [
-                'connection_id' => $connection->id,
-                'user_id' => $connection->user_id,
-                'token_expires_at' => $tokens['expires_at'],
-            ]);
+            if ($debug) {
+                Log::info('OAuth callback successful', [
+                    'connection_id' => $connection->id,
+                    'user_id' => $connection->user_id,
+                    'token_expires_at' => $tokens['expires_at'],
+                ]);
+            }
+
+            // Sync available divisions after successful authentication
+            $this->syncDivisions($connection, $debug);
+
+            // Get redirect URL before cleanup
+            $redirectTo = $request->session()->get('exact_oauth_redirect_to');
 
             // Clean up session
             $this->cleanupSession($request);
 
             // Return success response
-            return $this->handleSuccess($request, $connection);
+            return $this->handleSuccess($request, $connection, $redirectTo);
 
         } catch (\Throwable $e) {
             Log::error('OAuth callback failed', [
@@ -73,11 +116,14 @@ class CallbackController extends Controller
                 ],
             ]);
 
+            // Get redirect URL before cleanup
+            $redirectTo = $request->session()->get('exact_oauth_redirect_to');
+
             // Clean up session
             $this->cleanupSession($request);
 
             // Return failure response
-            return $this->handleFailure($request, $e);
+            return $this->handleFailure($request, $e, $redirectTo);
         }
     }
 
@@ -187,9 +233,39 @@ class CallbackController extends Controller
     }
 
     /**
+     * Sync available divisions after successful OAuth
+     */
+    protected function syncDivisions(ExactConnection $connection, bool $debug): void
+    {
+        try {
+            $syncAction = Config::getAction(
+                'sync_divisions',
+                SyncDivisionsAction::class
+            );
+
+            $result = $syncAction->execute($connection);
+
+            if ($debug) {
+                Log::info('Synced divisions after OAuth', [
+                    'connection_id' => $connection->id,
+                    'created' => $result['created'],
+                    'updated' => $result['updated'],
+                    'total' => $result['total'],
+                ]);
+            }
+        } catch (\Throwable $e) {
+            // Log but don't fail OAuth - divisions can be synced later
+            Log::warning('Failed to sync divisions after OAuth', [
+                'connection_id' => $connection->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
      * Handle successful OAuth callback
      */
-    protected function handleSuccess(Request $request, ExactConnection $connection): RedirectResponse|JsonResponse
+    protected function handleSuccess(Request $request, ExactConnection $connection, ?string $redirectTo = null): RedirectResponse|JsonResponse
     {
         // For API requests, return JSON
         if ($request->expectsJson()) {
@@ -201,12 +277,8 @@ class CallbackController extends Controller
             ]);
         }
 
-        // Check for custom redirect URL stored in session
-        $redirectTo = $request->session()->get('exact_oauth_redirect_to');
-
+        // Use provided redirect URL or fall back to configured success URL
         if ($redirectTo) {
-            $request->session()->forget('exact_oauth_redirect_to');
-
             return redirect($redirectTo)
                 ->with('exact_oauth_success', 'Successfully connected to Exact Online')
                 ->with('exact_connection_id', $connection->id);
@@ -228,7 +300,7 @@ class CallbackController extends Controller
     /**
      * Handle failed OAuth callback
      */
-    protected function handleFailure(Request $request, \Throwable $exception): RedirectResponse|JsonResponse
+    protected function handleFailure(Request $request, \Throwable $exception, ?string $redirectTo = null): RedirectResponse|JsonResponse
     {
         // Prepare error message
         $errorMessage = 'Failed to connect to Exact Online';
@@ -258,8 +330,8 @@ class CallbackController extends Controller
             ], $statusCode);
         }
 
-        // Use configured failure URL
-        $failureUrl = config('exactonline-laravel-api.oauth.failure_url', '/');
+        // Use session redirect URL or configured failure URL
+        $failureUrl = $redirectTo ?? config('exactonline-laravel-api.oauth.failure_url', '/');
 
         return redirect()->to($failureUrl)
             ->with('exact_oauth_error', $errorMessage);

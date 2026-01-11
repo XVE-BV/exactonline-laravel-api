@@ -202,6 +202,10 @@ return [
         'create_connection' => Actions\Connection\CreateConnectionAction::class,
         'switch_division' => Actions\Connection\SwitchDivisionAction::class,
         'validate_connection' => Actions\Connection\ValidateConnectionAction::class,
+
+        // API Operations - Divisions
+        'get_divisions' => Actions\API\GetDivisionsAction::class,
+        'sync_divisions' => Actions\API\SyncDivisionsAction::class,
     ],
 
     /*
@@ -333,6 +337,9 @@ return [
     'logging' => [
         // Log channel to use
         'channel' => env('EXACT_LOG_CHANNEL', 'daily'),
+
+        // Enable debug logging (verbose OAuth flow, API calls, etc.)
+        'debug' => env('EXACT_LOG_DEBUG', false),
 
         // Log API requests and responses
         'log_requests' => env('EXACT_LOG_REQUESTS', false),

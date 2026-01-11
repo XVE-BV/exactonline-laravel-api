@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi\Http\Controllers\OAuth;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -25,14 +26,28 @@ class RedirectToExactController extends Controller
      *
      * @throws ConnectionException
      */
-    public function __invoke(Request $request, ?int $connectionId = null): RedirectResponse
+    public function __invoke(Request $request, ?int $connectionId = null): RedirectResponse|JsonResponse
     {
         try {
-            // Validate OAuth configuration
-            $this->validateOAuthConfiguration();
+            $debug = config('exactonline-laravel-api.logging.debug', false);
+
+            if ($debug) {
+                Log::info('OAuth redirect initiated', [
+                    'connection_id' => $connectionId,
+                    'user_id' => $request->user()?->id,
+                    'session_id' => $request->session()->getId(),
+                    'is_ajax' => $request->ajax(),
+                ]);
+            }
 
             // Generate state for CSRF protection
             $state = $this->generateState();
+
+            if ($debug) {
+                Log::debug('OAuth state generated', [
+                    'state' => substr($state, 0, 10).'...',
+                ]);
+            }
 
             // Store OAuth session data
             $this->storeOAuthSession($request, $state, $connectionId);
@@ -40,17 +55,43 @@ class RedirectToExactController extends Controller
             // Get or create connection record
             $connection = $this->getOrCreateConnection($request, $connectionId);
 
+            if ($debug) {
+                Log::debug('OAuth connection retrieved', [
+                    'connection_id' => $connection->id,
+                    'has_client_id' => ! empty($connection->client_id),
+                    'has_client_secret' => ! empty($connection->client_secret),
+                    'redirect_url' => $connection->redirect_url,
+                    'base_url' => $connection->base_url,
+                ]);
+            }
+
+            // Validate connection has required OAuth credentials
+            $this->validateConnectionCredentials($connection);
+
             // Store connection ID in session for callback
             $request->session()->put('exact_oauth_connection_id', $connection->id);
 
             // Generate authorization URL
             $authUrl = $this->generateAuthorizationUrl($connection, $state);
 
-            Log::info('Redirecting to Exact Online for OAuth authorization', [
-                'connection_id' => $connection->id,
-                'user_id' => $request->user()?->id,
-                'force_login' => config('exactonline-laravel-api.oauth.force_login', false),
-            ]);
+            if ($debug) {
+                Log::info('Redirecting to Exact Online for OAuth authorization', [
+                    'connection_id' => $connection->id,
+                    'user_id' => $request->user()?->id,
+                    'force_login' => config('exactonline-laravel-api.oauth.force_login', false),
+                    'auth_url' => $authUrl,
+                    'session_state_stored' => $request->session()->get('exact_oauth_state') === $state,
+                    'session_connection_id_stored' => $request->session()->get('exact_oauth_connection_id'),
+                ]);
+            }
+
+            // For AJAX/Livewire requests, return URL for client-side redirect
+            // This avoids CORS issues when redirecting to external OAuth providers
+            if ($request->ajax() || $request->wantsJson() || $request->header('X-Livewire')) {
+                return response()->json([
+                    'redirect' => $authUrl,
+                ]);
+            }
 
             return redirect()->away($authUrl);
 
@@ -60,8 +101,15 @@ class RedirectToExactController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            // Redirect to failure URL with error message
             $failureUrl = config('exactonline-laravel-api.oauth.failure_url', '/');
+
+            // For AJAX requests, return error as JSON
+            if ($request->ajax() || $request->wantsJson() || $request->header('X-Livewire')) {
+                return response()->json([
+                    'error' => 'Failed to initiate Exact Online connection: '.$e->getMessage(),
+                    'redirect' => $failureUrl,
+                ], 500);
+            }
 
             return redirect()->to($failureUrl)
                 ->with('error', 'Failed to initiate Exact Online connection: '.$e->getMessage());
@@ -69,27 +117,23 @@ class RedirectToExactController extends Controller
     }
 
     /**
-     * Validate that OAuth configuration is properly set
+     * Validate that the connection has required OAuth credentials
      *
      * @throws ConnectionException
      */
-    protected function validateOAuthConfiguration(): void
+    protected function validateConnectionCredentials(ExactConnection $connection): void
     {
-        $clientId = Config::getClientId();
-        $clientSecret = Config::getClientSecret();
-
-        if (empty($clientId) || empty($clientSecret)) {
+        if (empty($connection->client_id) || empty($connection->client_secret)) {
             throw ConnectionException::invalidConfiguration(
-                'OAuth client ID and secret must be configured. '.
-                'Please set EXACT_CLIENT_ID and EXACT_CLIENT_SECRET in your .env file.'
+                'OAuth client ID and secret must be configured on the connection. '.
+                'Please edit the connection and set the Client ID and Client Secret.'
             );
         }
 
-        $redirectUrl = Config::getRedirectUrl();
-        if (empty($redirectUrl)) {
+        if (empty($connection->redirect_url)) {
             throw ConnectionException::invalidConfiguration(
-                'OAuth redirect URL must be configured. '.
-                'Please set EXACT_REDIRECT_URL in your .env file or config.'
+                'OAuth redirect URL must be configured on the connection. '.
+                'Please edit the connection and set the Redirect URL.'
             );
         }
     }
@@ -145,25 +189,33 @@ class RedirectToExactController extends Controller
                 throw ConnectionException::notFound((string) $connectionId);
             }
 
-            // Update OAuth credentials in case they changed
-            $connection->update([
-                'client_id' => Config::getClientId(),
-                'client_secret' => Config::getClientSecret(),
-                'redirect_url' => $this->getRedirectUrl($request),
-            ]);
-
+            // Connection already has its credentials configured via Filament
             return $connection;
         }
 
-        // Create a new connection record
+        // Create a new connection record using global config
         return $this->createNewConnection($request);
     }
 
     /**
-     * Create a new connection record
+     * Create a new connection record using global config
+     *
+     * @throws ConnectionException
      */
     protected function createNewConnection(Request $request): ExactConnection
     {
+        // Validate global config is set when creating new connection
+        $clientId = Config::getClientId();
+        $clientSecret = Config::getClientSecret();
+
+        if (empty($clientId) || empty($clientSecret)) {
+            throw ConnectionException::invalidConfiguration(
+                'OAuth client ID and secret must be configured to create a new connection. '.
+                'Please set EXACT_CLIENT_ID and EXACT_CLIENT_SECRET in your .env file, '.
+                'or create a connection manually in the admin panel.'
+            );
+        }
+
         $userId = $request->user()?->id;
         $tenantId = $request->session()->get('exact_oauth_tenant_id');
 
@@ -178,8 +230,8 @@ class RedirectToExactController extends Controller
         return ExactConnection::create([
             'user_id' => $userId,
             'tenant_id' => $tenantId,
-            'client_id' => Config::getClientId(),
-            'client_secret' => Config::getClientSecret(),
+            'client_id' => $clientId,
+            'client_secret' => $clientSecret,
             'redirect_url' => $this->getRedirectUrl($request),
             'base_url' => config('exactonline-laravel-api.connection.base_url', 'https://start.exactonline.nl'),
             'is_active' => false, // Will be activated after successful token acquisition

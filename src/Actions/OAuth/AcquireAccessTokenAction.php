@@ -38,10 +38,12 @@ class AcquireAccessTokenAction
             // Dispatch event
             event(new TokenAcquired($connection));
 
-            Log::info('Access token acquired successfully', [
-                'connection_id' => $connection->id,
-                'expires_at' => $tokens['expires_at'],
-            ]);
+            if (config('exactonline-laravel-api.logging.debug', false)) {
+                Log::info('Access token acquired successfully', [
+                    'connection_id' => $connection->id,
+                    'expires_at' => $tokens['expires_at'],
+                ]);
+            }
 
             return $tokens;
 
@@ -73,8 +75,8 @@ class AcquireAccessTokenAction
             throw new \InvalidArgumentException('Authorization code cannot be empty');
         }
 
-        // Authorization codes are typically 30-50 characters
-        if (strlen($code) < 20 || strlen($code) > 200) {
+        // Exact Online authorization codes can be quite long (600+ characters)
+        if (strlen($code) < 20 || strlen($code) > 1000) {
             throw new \InvalidArgumentException('Invalid authorization code format');
         }
     }
@@ -90,11 +92,27 @@ class AcquireAccessTokenAction
         ExactConnection $connection,
         string $code
     ): array {
+        $debug = config('exactonline-laravel-api.logging.debug', false);
+
         try {
+            if ($debug) {
+                Log::debug('Creating picqer connection for token exchange', [
+                    'connection_id' => $connection->id,
+                    'base_url' => $connection->base_url,
+                    'redirect_url' => $connection->redirect_url,
+                    'client_id' => $connection->client_id,
+                    'has_decrypted_secret' => ! empty($connection->getDecryptedClientSecret()),
+                ]);
+            }
+
             $picqerConnection = $connection->getPicqerConnection();
 
             // Set the authorization code
             $picqerConnection->setAuthorizationCode($code);
+
+            if ($debug) {
+                Log::debug('Exchanging authorization code for tokens');
+            }
 
             // Exchange code for tokens
             $picqerConnection->connect();
@@ -103,6 +121,14 @@ class AcquireAccessTokenAction
             $accessToken = (string) $picqerConnection->getAccessToken();
             $refreshToken = (string) $picqerConnection->getRefreshToken();
             $expiresAt = (int) $picqerConnection->getTokenExpires();
+
+            if ($debug) {
+                Log::debug('Token exchange response received', [
+                    'has_access_token' => ! empty($accessToken),
+                    'has_refresh_token' => ! empty($refreshToken),
+                    'expires_at' => $expiresAt,
+                ]);
+            }
 
             if ($accessToken === '' || $refreshToken === '') {
                 throw TokenRefreshException::invalidTokenResponse((string) $connection->id);

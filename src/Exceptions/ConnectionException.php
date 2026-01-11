@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi\Exceptions;
 
-use Exception;
-
-class ConnectionException extends Exception
+/**
+ * Exception for connection-related failures.
+ *
+ * Thrown when a connection cannot be established, is inactive,
+ * or has invalid configuration.
+ */
+class ConnectionException extends ExactOnlineException
 {
     public static function connectionNotFound(): self
     {
