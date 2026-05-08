@@ -6,6 +6,7 @@ namespace Skylence\ExactonlineLaravelApi;
 
 use Illuminate\Routing\Router;
 use Skylence\ExactonlineLaravelApi\Console\GenerateSchemasCommand;
+use Skylence\ExactonlineLaravelApi\Console\RefreshTokensCommand;
 use Skylence\ExactonlineLaravelApi\Http\Middleware\CheckExactRateLimit;
 use Skylence\ExactonlineLaravelApi\Http\Middleware\EnsureValidExactConnection;
 use Skylence\ExactonlineLaravelApi\Validation\FieldValidator;
@@ -33,7 +34,8 @@ class ExactonlineLaravelApiServiceProvider extends PackageServiceProvider
                 'create_exact_mappings_table',
             ])
             ->hasRoute('web')
-            ->hasCommand(GenerateSchemasCommand::class);
+            ->hasCommand(GenerateSchemasCommand::class)
+            ->hasCommand(RefreshTokensCommand::class);
     }
 
     public function packageBooted(): void
