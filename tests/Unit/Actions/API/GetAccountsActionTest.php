@@ -5,12 +5,12 @@ declare(strict_types=1);
 use Illuminate\Support\Collection;
 use Picqer\Financials\Exact\Account;
 use Picqer\Financials\Exact\Connection;
-use XVE\Exactonline\Actions\API\GetAccountsAction;
-use XVE\Exactonline\Actions\OAuth\RefreshAccessTokenAction;
-use XVE\Exactonline\Actions\RateLimit\CheckRateLimitAction;
-use XVE\Exactonline\Actions\RateLimit\TrackRateLimitUsageAction;
-use XVE\Exactonline\Exceptions\ConnectionException;
-use XVE\Exactonline\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Actions\API\GetAccountsAction;
+use XVE\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
+use XVE\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
+use XVE\ExactonlineLaravelApi\Actions\RateLimit\TrackRateLimitUsageAction;
+use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 beforeEach(function () {
     $this->connection = ExactConnection::factory()->create([

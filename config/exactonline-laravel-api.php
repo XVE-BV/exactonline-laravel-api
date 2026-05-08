@@ -1,10 +1,10 @@
 <?php
 
-use XVE\Exactonline\Actions;
-use XVE\Exactonline\Models\ExactConnection;
-use XVE\Exactonline\Models\ExactMapping;
-use XVE\Exactonline\Models\ExactRateLimit;
-use XVE\Exactonline\Models\ExactWebhook;
+use XVE\ExactonlineLaravelApi\Actions;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactMapping;
+use XVE\ExactonlineLaravelApi\Models\ExactRateLimit;
+use XVE\ExactonlineLaravelApi\Models\ExactWebhook;
 
 return [
     /*

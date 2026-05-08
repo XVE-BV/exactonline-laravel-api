@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Events;
+namespace XVE\ExactonlineLaravelApi\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use XVE\Exactonline\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 class RefreshTokenExpiringSoon
 {

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Database\Factories;
+namespace XVE\ExactonlineLaravelApi\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use XVE\Exactonline\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 /**
  * @extends Factory<ExactConnection>

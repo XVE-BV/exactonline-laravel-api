@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use XVE\Exactonline\Actions\RateLimit\CheckRateLimitAction;
-use XVE\Exactonline\Exceptions\RateLimitExceededException;
-use XVE\Exactonline\Models\ExactConnection;
-use XVE\Exactonline\Models\ExactRateLimit;
+use XVE\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
+use XVE\ExactonlineLaravelApi\Exceptions\RateLimitExceededException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactRateLimit;
 
 beforeEach(function () {
     $this->connection = ExactConnection::factory()->create();
@@ -36,7 +36,7 @@ it('creates rate limit record if it does not exist', function () {
 });
 
 it('throws exception when daily limit is exceeded', function () {
-    config(['exactonline.rate_limiting.throw_on_daily_limit' => true]);
+    config(['exactonline-laravel-api.rate_limiting.throw_on_daily_limit' => true]);
 
     ExactRateLimit::factory()->create([
         'connection_id' => $this->connection->id,
@@ -52,7 +52,7 @@ it('throws exception when daily limit is exceeded', function () {
 );
 
 it('throws exception when minutely limit is exceeded and configured not to wait', function () {
-    config(['exactonline.rate_limiting.wait_on_minutely_limit' => false]);
+    config(['exactonline-laravel-api.rate_limiting.wait_on_minutely_limit' => false]);
 
     ExactRateLimit::factory()->create([
         'connection_id' => $this->connection->id,
@@ -68,7 +68,7 @@ it('throws exception when minutely limit is exceeded and configured not to wait'
 );
 
 it('does not throw exception for minutely limit when configured to wait', function () {
-    config(['exactonline.rate_limiting.wait_on_minutely_limit' => true]);
+    config(['exactonline-laravel-api.rate_limiting.wait_on_minutely_limit' => true]);
 
     ExactRateLimit::factory()->create([
         'connection_id' => $this->connection->id,
@@ -210,7 +210,7 @@ it('merges cached limits with database using most restrictive values', function 
 });
 
 it('handles daily limit when configured not to throw', function () {
-    config(['exactonline.rate_limiting.throw_on_daily_limit' => false]);
+    config(['exactonline-laravel-api.rate_limiting.throw_on_daily_limit' => false]);
 
     ExactRateLimit::factory()->create([
         'connection_id' => $this->connection->id,

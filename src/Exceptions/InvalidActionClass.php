@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Exceptions;
+namespace XVE\ExactonlineLaravelApi\Exceptions;
 
 use Exception;
 
@@ -12,7 +12,7 @@ class InvalidActionClass extends Exception
     {
         return new self(
             "No action class configured for '{$actionName}'. ".
-            'Please check your exactonline.actions config.'
+            'Please check your exactonline-laravel-api.actions config.'
         );
     }
 
@@ -20,7 +20,7 @@ class InvalidActionClass extends Exception
     {
         return new self(
             "The action class '{$actionClass}' configured for '{$actionName}' does not exist. ".
-            'Please check your exactonline.actions config.'
+            'Please check your exactonline-laravel-api.actions config.'
         );
     }
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Contracts;
+namespace XVE\ExactonlineLaravelApi\Contracts;
 
-use XVE\Exactonline\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 /**
  * Interface for models that can be synced to Exact Online.

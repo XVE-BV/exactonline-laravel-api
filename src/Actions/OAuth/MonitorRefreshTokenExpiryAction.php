@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Actions\OAuth;
+namespace XVE\ExactonlineLaravelApi\Actions\OAuth;
 
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use XVE\Exactonline\Events\RefreshTokenExpiringSoon;
-use XVE\Exactonline\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Events\RefreshTokenExpiringSoon;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 class MonitorRefreshTokenExpiryAction
 {

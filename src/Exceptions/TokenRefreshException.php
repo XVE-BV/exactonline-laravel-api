@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Exceptions;
+namespace XVE\ExactonlineLaravelApi\Exceptions;
 
 /**
  * Exception for token refresh failures.

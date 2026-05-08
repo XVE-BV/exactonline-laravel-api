@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Actions\OAuth;
+namespace XVE\ExactonlineLaravelApi\Actions\OAuth;
 
 use Illuminate\Support\Facades\Log;
-use XVE\Exactonline\Events\TokensRevoked;
-use XVE\Exactonline\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Events\TokensRevoked;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 class RevokeTokensAction
 {

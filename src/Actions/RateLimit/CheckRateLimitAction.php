@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Actions\RateLimit;
+namespace XVE\ExactonlineLaravelApi\Actions\RateLimit;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use XVE\Exactonline\Exceptions\RateLimitExceededException;
-use XVE\Exactonline\Models\ExactConnection;
-use XVE\Exactonline\Models\ExactRateLimit;
+use XVE\ExactonlineLaravelApi\Exceptions\RateLimitExceededException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactRateLimit;
 
 class CheckRateLimitAction
 {
@@ -151,7 +151,7 @@ class CheckRateLimitAction
      */
     protected function handleDailyLimitExceeded(ExactRateLimit $rateLimit): void
     {
-        $shouldThrow = config('exactonline.rate_limiting.throw_on_daily_limit', true);
+        $shouldThrow = config('exactonline-laravel-api.rate_limiting.throw_on_daily_limit', true);
 
         if ($shouldThrow) {
             $resetInSeconds = $rateLimit->secondsUntilDailyReset() ?? 86400; // Default to 24 hours
@@ -181,7 +181,7 @@ class CheckRateLimitAction
      */
     protected function handleMinutelyLimitExceeded(ExactRateLimit $rateLimit): void
     {
-        $shouldWait = config('exactonline.rate_limiting.wait_on_minutely_limit', true);
+        $shouldWait = config('exactonline-laravel-api.rate_limiting.wait_on_minutely_limit', true);
         $resetInSeconds = $rateLimit->secondsUntilMinutelyReset() ?? 60; // Default to 1 minute
 
         if (! $shouldWait) {

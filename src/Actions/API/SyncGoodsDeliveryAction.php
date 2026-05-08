@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Actions\API;
+namespace XVE\ExactonlineLaravelApi\Actions\API;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
-use XVE\Exactonline\Contracts\HasExactMapping;
-use XVE\Exactonline\Events\GoodsDeliverySynced;
-use XVE\Exactonline\Models\ExactConnection;
-use XVE\Exactonline\Support\Config;
-use XVE\Exactonline\Support\Results\SyncResult;
+use XVE\ExactonlineLaravelApi\Contracts\HasExactMapping;
+use XVE\ExactonlineLaravelApi\Events\GoodsDeliverySynced;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Support\Config;
+use XVE\ExactonlineLaravelApi\Support\Results\SyncResult;
 
 /**
  * Sync a local model to Exact Online as a Goods Delivery.

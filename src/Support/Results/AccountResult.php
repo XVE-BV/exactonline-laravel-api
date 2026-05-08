@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Support\Results;
+namespace XVE\ExactonlineLaravelApi\Support\Results;
 
 /**
  * Value object representing an Exact Online Account (Customer/Supplier).

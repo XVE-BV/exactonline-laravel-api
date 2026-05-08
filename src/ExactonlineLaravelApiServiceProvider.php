@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline;
+namespace XVE\ExactonlineLaravelApi;
 
 use Illuminate\Routing\Router;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use XVE\Exactonline\Console\GenerateSchemasCommand;
-use XVE\Exactonline\Console\RefreshTokensCommand;
-use XVE\Exactonline\Http\Middleware\CheckExactRateLimit;
-use XVE\Exactonline\Http\Middleware\EnsureValidExactConnection;
-use XVE\Exactonline\Validation\FieldValidator;
-use XVE\Exactonline\Validation\PayloadValidator;
-use XVE\Exactonline\Validation\SchemaLoader;
+use XVE\ExactonlineLaravelApi\Console\GenerateSchemasCommand;
+use XVE\ExactonlineLaravelApi\Console\RefreshTokensCommand;
+use XVE\ExactonlineLaravelApi\Http\Middleware\CheckExactRateLimit;
+use XVE\ExactonlineLaravelApi\Http\Middleware\EnsureValidExactConnection;
+use XVE\ExactonlineLaravelApi\Validation\FieldValidator;
+use XVE\ExactonlineLaravelApi\Validation\PayloadValidator;
+use XVE\ExactonlineLaravelApi\Validation\SchemaLoader;
 
-class ExactonlineServiceProvider extends PackageServiceProvider
+class ExactonlineLaravelApiServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
@@ -25,8 +25,8 @@ class ExactonlineServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('exactonline')
-            ->hasConfigFile('exactonline')
+            ->name('exactonline-laravel-api')
+            ->hasConfigFile('exactonline-laravel-api')
             ->hasMigrations([
                 'create_exact_connections_table',
                 'create_exact_webhooks_table',
@@ -74,7 +74,7 @@ class ExactonlineServiceProvider extends PackageServiceProvider
     protected function registerValidation(): void
     {
         $this->app->singleton(SchemaLoader::class, function ($app) {
-            $customPath = config('exactonline.validation.schema_path');
+            $customPath = config('exactonline-laravel-api.validation.schema_path');
 
             return new SchemaLoader($customPath);
         });
@@ -85,8 +85,8 @@ class ExactonlineServiceProvider extends PackageServiceProvider
             return new PayloadValidator(
                 $app->make(SchemaLoader::class),
                 $app->make(FieldValidator::class),
-                config('exactonline.validation.enabled', true),
-                config('exactonline.validation.strict', false),
+                config('exactonline-laravel-api.validation.enabled', true),
+                config('exactonline-laravel-api.validation.strict', false),
             );
         });
     }

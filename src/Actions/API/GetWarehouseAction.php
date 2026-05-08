@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Actions\API;
+namespace XVE\ExactonlineLaravelApi\Actions\API;
 
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Warehouse;
-use XVE\Exactonline\Concerns\HandlesExactConnection;
-use XVE\Exactonline\Exceptions\ConnectionException;
-use XVE\Exactonline\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 class GetWarehouseAction
 {

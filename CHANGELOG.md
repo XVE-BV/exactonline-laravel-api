@@ -1,10 +1,10 @@
 # Changelog
 
-All notable changes to `exactonline` will be documented in this file.
+All notable changes to `exactonline-laravel-api` will be documented in this file.
 
 ## v3.0.0 - 2026-05-08
 
-Breaking: PHP namespace renamed from `Skylence\Exactonline` to `XVE\Exactonline` and composer package name from `skylence/exactonline` to `xve/exactonline`. No functional changes.
+Breaking: PHP namespace renamed from `Skylence\ExactonlineLaravelApi` to `XVE\ExactonlineLaravelApi` and composer package name from `skylence/exactonline-laravel-api` to `xve/exactonline-laravel-api`. No functional changes.
 
 ## v1.0.0 - Initial Release - 2026-01-11
 

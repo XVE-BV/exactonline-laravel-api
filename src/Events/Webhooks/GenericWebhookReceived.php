@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Events\Webhooks;
+namespace XVE\ExactonlineLaravelApi\Events\Webhooks;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use XVE\Exactonline\Models\ExactWebhook;
+use XVE\ExactonlineLaravelApi\Models\ExactWebhook;
 
 class GenericWebhookReceived implements ShouldQueue
 {

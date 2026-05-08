@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Events\Webhooks;
+namespace XVE\ExactonlineLaravelApi\Events\Webhooks;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 

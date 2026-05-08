@@ -1,12 +1,12 @@
 <?php
 
-namespace XVE\Exactonline\Commands;
+namespace XVE\ExactonlineLaravelApi\Commands;
 
 use Illuminate\Console\Command;
 
-class ExactonlineCommand extends Command
+class ExactonlineLaravelApiCommand extends Command
 {
-    public $signature = 'exactonline';
+    public $signature = 'exactonline-laravel-api';
 
     public $description = 'My command';
 

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Http\Middleware;
+namespace XVE\ExactonlineLaravelApi\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
-use XVE\Exactonline\Actions\RateLimit\CheckRateLimitAction;
-use XVE\Exactonline\Actions\RateLimit\WaitForRateLimitResetAction;
-use XVE\Exactonline\Exceptions\RateLimitExceededException;
-use XVE\Exactonline\Models\ExactConnection;
-use XVE\Exactonline\Support\Config;
+use XVE\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
+use XVE\ExactonlineLaravelApi\Actions\RateLimit\WaitForRateLimitResetAction;
+use XVE\ExactonlineLaravelApi\Exceptions\RateLimitExceededException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Support\Config;
 
 class CheckExactRateLimit
 {
@@ -91,7 +91,7 @@ class CheckExactRateLimit
 
         // Handle minutely limit
         if ($isMinutelyLimit) {
-            $waitOnMinutelyLimit = config('exactonline.rate_limiting.wait_on_minutely_limit', true);
+            $waitOnMinutelyLimit = config('exactonline-laravel-api.rate_limiting.wait_on_minutely_limit', true);
 
             if ($waitOnMinutelyLimit) {
                 Log::warning('Exact Online minutely rate limit hit, waiting for reset', [
@@ -118,7 +118,7 @@ class CheckExactRateLimit
 
         // Handle daily limit
         if ($isDailyLimit) {
-            $throwOnDailyLimit = config('exactonline.rate_limiting.throw_on_daily_limit', true);
+            $throwOnDailyLimit = config('exactonline-laravel-api.rate_limiting.throw_on_daily_limit', true);
 
             if (! $throwOnDailyLimit) {
                 // Not recommended: waiting 24 hours is not practical

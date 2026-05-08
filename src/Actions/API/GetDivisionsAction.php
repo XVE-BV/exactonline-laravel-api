@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Actions\API;
+namespace XVE\ExactonlineLaravelApi\Actions\API;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Division;
-use XVE\Exactonline\Concerns\HandlesExactConnection;
-use XVE\Exactonline\Exceptions\ApiException;
-use XVE\Exactonline\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use XVE\ExactonlineLaravelApi\Exceptions\ApiException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 class GetDivisionsAction
 {
@@ -53,7 +53,7 @@ class GetDivisionsAction
 
             $this->completeRequest($connection, $picqerConnection);
 
-            if (config('exactonline.logging.debug', false)) {
+            if (config('exactonline-laravel-api.logging.debug', false)) {
                 Log::info('Retrieved divisions from Exact Online', [
                     'connection_id' => $connection->id,
                     'count' => count($divisions),

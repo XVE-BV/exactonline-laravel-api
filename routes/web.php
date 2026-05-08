@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use XVE\Exactonline\Http\Controllers\OAuth\CallbackController;
-use XVE\Exactonline\Http\Controllers\OAuth\RedirectToExactController;
+use XVE\ExactonlineLaravelApi\Http\Controllers\OAuth\CallbackController;
+use XVE\ExactonlineLaravelApi\Http\Controllers\OAuth\RedirectToExactController;
 
 /*
 |--------------------------------------------------------------------------

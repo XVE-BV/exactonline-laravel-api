@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace XVE\Exactonline\Actions\Connection;
+namespace XVE\ExactonlineLaravelApi\Actions\Connection;
 
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\ApiException;
 use Picqer\Financials\Exact\Division;
 use Picqer\Financials\Exact\Me;
-use XVE\Exactonline\Actions\OAuth\RefreshAccessTokenAction;
-use XVE\Exactonline\Models\ExactConnection;
-use XVE\Exactonline\Support\Config;
+use XVE\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Support\Config;
 
 class ValidateConnectionAction
 {

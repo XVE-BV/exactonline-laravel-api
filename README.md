@@ -16,20 +16,20 @@ A Laravel package for integrating with the Exact Online API. Provides OAuth auth
 ## Installation
 
 ```bash
-composer require xve/exactonline
+composer require xve/exactonline-laravel-api
 ```
 
 Publish and run the migrations:
 
 ```bash
-php artisan vendor:publish --tag="exactonline-migrations"
+php artisan vendor:publish --tag="exactonline-laravel-api-migrations"
 php artisan migrate
 ```
 
 Optionally publish the config:
 
 ```bash
-php artisan vendor:publish --tag="exactonline-config"
+php artisan vendor:publish --tag="exactonline-laravel-api-config"
 ```
 
 ## Configuration
@@ -47,13 +47,13 @@ EXACT_REDIRECT_URL=https://your-app.com/exact/oauth/callback
 ### 1. Create a Connection
 
 ```php
-use XVE\Exactonline\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 $connection = ExactConnection::create([
     'name' => 'My Connection',
-    'client_id' => config('exactonline.oauth.client_id'),
+    'client_id' => config('exactonline-laravel-api.oauth.client_id'),
     'client_secret' => 'your-secret', // Auto-encrypted
-    'redirect_url' => config('exactonline.oauth.redirect_url'),
+    'redirect_url' => config('exactonline-laravel-api.oauth.redirect_url'),
     'base_url' => 'https://start.exactonline.nl',
     'is_active' => true,
 ]);
@@ -79,8 +79,8 @@ $connection->update(['division' => 123456]);
 ### Syncing Entities
 
 ```php
-use XVE\Exactonline\Support\Config;
-use XVE\Exactonline\Actions\API\SyncAccountAction;
+use XVE\ExactonlineLaravelApi\Support\Config;
+use XVE\ExactonlineLaravelApi\Actions\API\SyncAccountAction;
 
 $action = Config::getAction('sync_account', SyncAccountAction::class);
 $result = $action->execute($connection, $localCompany);
@@ -91,8 +91,8 @@ $result = $action->execute($connection, $localCompany);
 Add the `ExactMappable` trait to models you want to sync:
 
 ```php
-use XVE\Exactonline\Concerns\ExactMappable;
-use XVE\Exactonline\Contracts\HasExactMapping;
+use XVE\ExactonlineLaravelApi\Concerns\ExactMappable;
+use XVE\ExactonlineLaravelApi\Contracts\HasExactMapping;
 
 class Company extends Model implements HasExactMapping
 {
@@ -143,7 +143,7 @@ $company = Company::findByExactId($exactGuid, $connection);
 ### Fetching Data
 
 ```php
-use XVE\Exactonline\Actions\API\GetAccountsAction;
+use XVE\ExactonlineLaravelApi\Actions\API\GetAccountsAction;
 
 $action = Config::getAction('get_accounts', GetAccountsAction::class);
 $accounts = $action->execute($connection, [
@@ -155,7 +155,7 @@ $accounts = $action->execute($connection, [
 ### Creating Entities
 
 ```php
-use XVE\Exactonline\Actions\API\CreateAccountAction;
+use XVE\ExactonlineLaravelApi\Actions\API\CreateAccountAction;
 
 $action = Config::getAction('create_account', CreateAccountAction::class);
 $result = $action->execute($connection, [
@@ -177,7 +177,7 @@ Events are dispatched after sync operations:
 - ... and more
 
 ```php
-use XVE\Exactonline\Events\AccountSynced;
+use XVE\ExactonlineLaravelApi\Events\AccountSynced;
 
 Event::listen(AccountSynced::class, function ($event) {
     // $event->connection
@@ -192,11 +192,11 @@ Event::listen(AccountSynced::class, function ($event) {
 The package provides a custom exception hierarchy:
 
 ```php
-use XVE\Exactonline\Exceptions\ExactOnlineException;
-use XVE\Exactonline\Exceptions\AuthenticationException;
-use XVE\Exactonline\Exceptions\ApiException;
-use XVE\Exactonline\Exceptions\SyncException;
-use XVE\Exactonline\Exceptions\EntityNotFoundException;
+use XVE\ExactonlineLaravelApi\Exceptions\ExactOnlineException;
+use XVE\ExactonlineLaravelApi\Exceptions\AuthenticationException;
+use XVE\ExactonlineLaravelApi\Exceptions\ApiException;
+use XVE\ExactonlineLaravelApi\Exceptions\SyncException;
+use XVE\ExactonlineLaravelApi\Exceptions\EntityNotFoundException;
 
 try {
     $action->execute($connection, $data);
@@ -218,7 +218,7 @@ try {
 The package automatically handles Exact Online rate limits:
 
 ```php
-// config/exactonline.php
+// config/exactonline-laravel-api.php
 'rate_limiting' => [
     'wait_on_minutely_limit' => true,  // Auto-wait on 60/min limit
     'throw_on_daily_limit' => true,    // Throw on daily limit
@@ -231,7 +231,7 @@ The package automatically handles Exact Online rate limits:
 Payloads are validated before sending to the API:
 
 ```php
-// config/exactonline.php
+// config/exactonline-laravel-api.php
 'validation' => [
     'enabled' => true,
     'strict' => false,  // Fail on unknown fields

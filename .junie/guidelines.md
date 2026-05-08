@@ -1,7 +1,7 @@
 # Project Guidelines
 
 ## Project Overview
-`xve/exactonline` is a Laravel package that integrates with Exact Online. It focuses on robust OAuth token management (10‑minute access tokens with proactive refresh), webhook handling, rate limiting, and a clean developer experience through a strict Action Pattern architecture.
+`xve/exactonline-laravel-api` is a Laravel package that integrates with Exact Online. It focuses on robust OAuth token management (10‑minute access tokens with proactive refresh), webhook handling, rate limiting, and a clean developer experience through a strict Action Pattern architecture.
 
 Authoritative docs you should consult when making changes:
 - docs/implementation-plan.md — high‑level roadmap and architecture
@@ -19,7 +19,7 @@ Key tech requirements:
 - src/Http/** — Controllers, Middleware
 - src/Models/** — Eloquent models (ExactConnection, ExactWebhook, …)
 - src/Events/**, src/Exceptions/**, src/Support/** (Config helpers, etc.)
-- config/exactonline.php — Action resolution and settings
+- config/exactonline-laravel-api.php — Action resolution and settings
 - database/migrations/** — Package migrations
 - routes/** — Package routes
 - tests/** — Pest tests using Orchestra Testbench
@@ -57,8 +57,8 @@ Notes:
 - Service provider and package discovery are configured via composer.json extra.laravel.
 
 ## Useful paths
-- Config: config/exactonline.php
-- Service provider: src/ExactonlineServiceProvider.php
+- Config: config/exactonline-laravel-api.php
+- Service provider: src/ExactonlineLaravelApiServiceProvider.php
 - Example controller: src/Http/Controllers/**
 
 If something is ambiguous, prefer the guidance in docs/action-pattern-design.md and docs/ai-coding-rules.md over ad‑hoc solutions.
