@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use GuzzleHttp\Client;
 use Illuminate\Contracts\Cache\Lock;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
@@ -159,7 +160,7 @@ it('implements exponential backoff retry on failure', function () {
                     throw new Exception('Network error');
                 }
 
-                return Mockery::mock(\GuzzleHttp\Client::class);
+                return Mockery::mock(Client::class);
             });
 
         $mock->shouldReceive('getAccessToken')

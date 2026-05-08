@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Mockery\MockInterface;
@@ -34,7 +35,7 @@ it('can acquire access token with valid authorization code', function () {
 
         $mock->shouldReceive('connect')
             ->once()
-            ->andReturn(Mockery::mock(\GuzzleHttp\Client::class));
+            ->andReturn(Mockery::mock(Client::class));
 
         $mock->shouldReceive('getAccessToken')
             ->once()
@@ -80,7 +81,7 @@ it('can acquire access token with valid authorization code', function () {
 it('throws exception for empty authorization code', function () {
     $this->action->execute($this->connection, '');
 })->throws(
-    \InvalidArgumentException::class,
+    InvalidArgumentException::class,
     'Authorization code cannot be empty'
 );
 
@@ -109,7 +110,7 @@ it('throws exception when token exchange fails', function () {
 it('calculates refresh token expiry correctly', function () {
     $picqerConnection = $this->mock(Connection::class, function (MockInterface $mock) {
         $mock->shouldReceive('setAuthorizationCode')->once();
-        $mock->shouldReceive('connect')->once()->andReturn(Mockery::mock(\GuzzleHttp\Client::class));
+        $mock->shouldReceive('connect')->once()->andReturn(Mockery::mock(Client::class));
         $mock->shouldReceive('getAccessToken')->once()->andReturn('token');
         $mock->shouldReceive('getRefreshToken')->once()->andReturn('refresh');
         $mock->shouldReceive('getTokenExpires')->once()->andReturn(now()->addMinutes(10)->timestamp);
@@ -142,7 +143,7 @@ it('logs token acquisition', function () {
 
     $picqerConnection = $this->mock(Connection::class, function (MockInterface $mock) {
         $mock->shouldReceive('setAuthorizationCode')->once();
-        $mock->shouldReceive('connect')->once()->andReturn(Mockery::mock(\GuzzleHttp\Client::class));
+        $mock->shouldReceive('connect')->once()->andReturn(Mockery::mock(Client::class));
         $mock->shouldReceive('getAccessToken')->once()->andReturn('token');
         $mock->shouldReceive('getRefreshToken')->once()->andReturn('refresh');
         $mock->shouldReceive('getTokenExpires')->once()->andReturn(now()->addMinutes(10)->timestamp);
@@ -161,7 +162,7 @@ it('marks connection as active after successful token acquisition', function () 
 
     $picqerConnection = $this->mock(Connection::class, function (MockInterface $mock) {
         $mock->shouldReceive('setAuthorizationCode')->once();
-        $mock->shouldReceive('connect')->once()->andReturn(Mockery::mock(\GuzzleHttp\Client::class));
+        $mock->shouldReceive('connect')->once()->andReturn(Mockery::mock(Client::class));
         $mock->shouldReceive('getAccessToken')->once()->andReturn('token');
         $mock->shouldReceive('getRefreshToken')->once()->andReturn('refresh');
         $mock->shouldReceive('getTokenExpires')->once()->andReturn(now()->addMinutes(10)->timestamp);
