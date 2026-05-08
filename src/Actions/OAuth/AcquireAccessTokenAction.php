@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Skylence\ExactonlineLaravelApi\Actions\OAuth;
 
 use Illuminate\Support\Facades\Log;
+use Picqer\Financials\Exact\ApiException;
 use Skylence\ExactonlineLaravelApi\Events\TokenAcquired;
 use Skylence\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
@@ -156,7 +157,7 @@ class AcquireAccessTokenAction
                 'expires_at' => $expiresAt > 0 ? $expiresAt : now()->addMinutes(10)->getTimestamp(),
             ];
 
-        } catch (\Picqer\Financials\Exact\ApiException $e) {
+        } catch (ApiException $e) {
             // Check for common OAuth errors
             if (str_contains($e->getMessage(), 'invalid_grant')) {
                 throw TokenRefreshException::refreshFailed(

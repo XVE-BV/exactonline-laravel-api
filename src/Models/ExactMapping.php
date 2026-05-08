@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 use Skylence\ExactonlineLaravelApi\Support\Config;
 
 /**
@@ -22,10 +23,10 @@ use Skylence\ExactonlineLaravelApi\Support\Config;
  * @property string $exact_id
  * @property string|null $exact_code
  * @property string $reference_type
- * @property \Illuminate\Support\Carbon|null $synced_at
+ * @property Carbon|null $synced_at
  * @property string|null $last_error
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read Model $mappable
  * @property-read ExactConnection $connection
  */

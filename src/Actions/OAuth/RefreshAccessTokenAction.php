@@ -6,6 +6,7 @@ namespace Skylence\ExactonlineLaravelApi\Actions\OAuth;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Picqer\Financials\Exact\ApiException;
 use Skylence\ExactonlineLaravelApi\Events\TokenRefreshed;
 use Skylence\ExactonlineLaravelApi\Events\TokenRefreshFailed;
 use Skylence\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
@@ -200,7 +201,7 @@ class RefreshAccessTokenAction
                 'expires_at' => $newExpiresAt,
             ];
 
-        } catch (\Picqer\Financials\Exact\ApiException $e) {
+        } catch (ApiException $e) {
             // Check if it's a refresh token expired error
             if (str_contains($e->getMessage(), 'refresh_token') ||
                 str_contains($e->getMessage(), 'invalid_grant')) {

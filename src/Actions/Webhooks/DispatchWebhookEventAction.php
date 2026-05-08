@@ -4,8 +4,40 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi\Actions\Webhooks;
 
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\AccountCreated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\AccountDeleted;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\AccountUpdated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\ContactCreated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\ContactDeleted;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\ContactUpdated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\DocumentCreated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\DocumentDeleted;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\DocumentUpdated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\FinancialTransactionCreated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\FinancialTransactionUpdated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\GenericWebhookReceived;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\GLAccountCreated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\GLAccountUpdated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\ItemCreated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\ItemDeleted;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\ItemUpdated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\ProjectCreated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\ProjectDeleted;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\ProjectUpdated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\PurchaseInvoiceCreated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\PurchaseInvoiceUpdated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceCreated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceDeleted;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceUpdated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesOrderCreated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesOrderUpdated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\StockPositionUpdated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\SubscriptionCreated;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\SubscriptionDeleted;
+use Skylence\ExactonlineLaravelApi\Events\Webhooks\SubscriptionUpdated;
 use Skylence\ExactonlineLaravelApi\Models\ExactWebhook;
 
 class DispatchWebhookEventAction
@@ -17,58 +49,58 @@ class DispatchWebhookEventAction
      */
     protected array $eventMap = [
         // Account events
-        'AccountsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\AccountCreated::class,
-        'AccountsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\AccountUpdated::class,
-        'AccountsDeleted' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\AccountDeleted::class,
+        'AccountsCreated' => AccountCreated::class,
+        'AccountsUpdated' => AccountUpdated::class,
+        'AccountsDeleted' => AccountDeleted::class,
 
         // Sales Invoice events
-        'SalesInvoicesCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceCreated::class,
-        'SalesInvoicesUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceUpdated::class,
-        'SalesInvoicesDeleted' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceDeleted::class,
+        'SalesInvoicesCreated' => SalesInvoiceCreated::class,
+        'SalesInvoicesUpdated' => SalesInvoiceUpdated::class,
+        'SalesInvoicesDeleted' => SalesInvoiceDeleted::class,
 
         // Contact events
-        'ContactsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ContactCreated::class,
-        'ContactsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ContactUpdated::class,
-        'ContactsDeleted' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ContactDeleted::class,
+        'ContactsCreated' => ContactCreated::class,
+        'ContactsUpdated' => ContactUpdated::class,
+        'ContactsDeleted' => ContactDeleted::class,
 
         // Document events
-        'DocumentsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\DocumentCreated::class,
-        'DocumentsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\DocumentUpdated::class,
-        'DocumentsDeleted' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\DocumentDeleted::class,
+        'DocumentsCreated' => DocumentCreated::class,
+        'DocumentsUpdated' => DocumentUpdated::class,
+        'DocumentsDeleted' => DocumentDeleted::class,
 
         // GL Account events
-        'GLAccountsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\GLAccountCreated::class,
-        'GLAccountsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\GLAccountUpdated::class,
+        'GLAccountsCreated' => GLAccountCreated::class,
+        'GLAccountsUpdated' => GLAccountUpdated::class,
 
         // Financial Transaction events
-        'FinancialTransactionsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\FinancialTransactionCreated::class,
-        'FinancialTransactionsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\FinancialTransactionUpdated::class,
+        'FinancialTransactionsCreated' => FinancialTransactionCreated::class,
+        'FinancialTransactionsUpdated' => FinancialTransactionUpdated::class,
 
         // Item events
-        'ItemsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ItemCreated::class,
-        'ItemsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ItemUpdated::class,
-        'ItemsDeleted' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ItemDeleted::class,
+        'ItemsCreated' => ItemCreated::class,
+        'ItemsUpdated' => ItemUpdated::class,
+        'ItemsDeleted' => ItemDeleted::class,
 
         // Project events
-        'ProjectsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ProjectCreated::class,
-        'ProjectsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ProjectUpdated::class,
-        'ProjectsDeleted' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\ProjectDeleted::class,
+        'ProjectsCreated' => ProjectCreated::class,
+        'ProjectsUpdated' => ProjectUpdated::class,
+        'ProjectsDeleted' => ProjectDeleted::class,
 
         // Purchase Invoice events
-        'PurchaseInvoicesCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\PurchaseInvoiceCreated::class,
-        'PurchaseInvoicesUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\PurchaseInvoiceUpdated::class,
+        'PurchaseInvoicesCreated' => PurchaseInvoiceCreated::class,
+        'PurchaseInvoicesUpdated' => PurchaseInvoiceUpdated::class,
 
         // Sales Order events
-        'SalesOrdersCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesOrderCreated::class,
-        'SalesOrdersUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesOrderUpdated::class,
+        'SalesOrdersCreated' => SalesOrderCreated::class,
+        'SalesOrdersUpdated' => SalesOrderUpdated::class,
 
         // Stock Position events
-        'StockPositionsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\StockPositionUpdated::class,
+        'StockPositionsUpdated' => StockPositionUpdated::class,
 
         // Subscription events
-        'SubscriptionsCreated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\SubscriptionCreated::class,
-        'SubscriptionsUpdated' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\SubscriptionUpdated::class,
-        'SubscriptionsDeleted' => \Skylence\ExactonlineLaravelApi\Events\Webhooks\SubscriptionDeleted::class,
+        'SubscriptionsCreated' => SubscriptionCreated::class,
+        'SubscriptionsUpdated' => SubscriptionUpdated::class,
+        'SubscriptionsDeleted' => SubscriptionDeleted::class,
     ];
 
     /**
@@ -111,7 +143,7 @@ class DispatchWebhookEventAction
 
             if ($eventClass === null) {
                 // Dispatch generic webhook event as fallback
-                $eventClass = \Skylence\ExactonlineLaravelApi\Events\Webhooks\GenericWebhookReceived::class;
+                $eventClass = GenericWebhookReceived::class;
             }
 
             $result['event_class'] = $eventClass;
@@ -282,7 +314,7 @@ class DispatchWebhookEventAction
      */
     protected function isQueueable(object $event): bool
     {
-        return $event instanceof \Illuminate\Contracts\Queue\ShouldQueue;
+        return $event instanceof ShouldQueue;
     }
 
     /**

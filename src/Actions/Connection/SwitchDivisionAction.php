@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Skylence\ExactonlineLaravelApi\Actions\Connection;
 
 use Illuminate\Support\Facades\Log;
+use Picqer\Financials\Exact\Account;
 use Picqer\Financials\Exact\ApiException;
+use Picqer\Financials\Exact\Division;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
@@ -97,7 +99,7 @@ class SwitchDivisionAction
             $picqerConnection = $connection->getPicqerConnection();
 
             // Get list of divisions
-            $divisionsApi = new \Picqer\Financials\Exact\Division($picqerConnection);
+            $divisionsApi = new Division($picqerConnection);
             $divisions = $divisionsApi->get();
 
             $availableDivisions = [];
@@ -142,7 +144,7 @@ class SwitchDivisionAction
 
             try {
                 // Try to access division-specific data
-                $division = new \Picqer\Financials\Exact\Division($picqerConnection);
+                $division = new Division($picqerConnection);
                 $divisionData = $division->find($divisionId);
 
                 if (! $divisionData) {
@@ -150,7 +152,7 @@ class SwitchDivisionAction
                 }
 
                 // Also try a simple API call to ensure full access
-                $accounts = new \Picqer\Financials\Exact\Account($picqerConnection);
+                $accounts = new Account($picqerConnection);
                 $accounts->get(); // Fetch accounts to verify access
 
             } finally {

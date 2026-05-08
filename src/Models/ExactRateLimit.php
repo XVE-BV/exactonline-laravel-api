@@ -6,6 +6,7 @@ namespace Skylence\ExactonlineLaravelApi\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -16,10 +17,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $minutely_limit
  * @property int|null $minutely_remaining
  * @property int|null $minutely_reset_at
- * @property \Illuminate\Support\Carbon|null $last_checked_at
+ * @property Carbon|null $last_checked_at
  * @property int $total_calls_today
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read ExactConnection $connection
  */
 class ExactRateLimit extends Model

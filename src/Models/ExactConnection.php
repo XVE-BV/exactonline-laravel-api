@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Picqer\Financials\Exact\Connection;
 
@@ -18,22 +21,22 @@ use Picqer\Financials\Exact\Connection;
  * @property string|null $access_token
  * @property string|null $refresh_token
  * @property int|null $token_expires_at
- * @property \Illuminate\Support\Carbon|null $last_token_refresh_at
+ * @property Carbon|null $last_token_refresh_at
  * @property int|null $refresh_token_expires_at
  * @property string|null $client_id
  * @property string|null $client_secret
  * @property string|null $redirect_url
  * @property string $base_url
  * @property bool $is_active
- * @property \Illuminate\Support\Carbon|null $last_used_at
+ * @property Carbon|null $last_used_at
  * @property string|null $name
  * @property array<string, mixed>|null $metadata
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, ExactWebhook> $webhooks
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, ExactWebhook> $webhooks
  * @property-read ExactRateLimit|null $rateLimit
- * @property-read \Illuminate\Database\Eloquent\Collection<int, ExactMapping> $mappings
- * @property-read \Illuminate\Database\Eloquent\Collection<int, ExactDivision> $divisions
+ * @property-read Collection<int, ExactMapping> $mappings
+ * @property-read Collection<int, ExactDivision> $divisions
  */
 class ExactConnection extends Model
 {
@@ -136,8 +139,8 @@ class ExactConnection extends Model
     /**
      * Scope a query to only include active connections.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder<ExactConnection>  $query
-     * @return \Illuminate\Database\Eloquent\Builder<ExactConnection>
+     * @param  Builder<ExactConnection>  $query
+     * @return Builder<ExactConnection>
      */
     public function scopeActive($query)
     {
@@ -147,8 +150,8 @@ class ExactConnection extends Model
     /**
      * Scope a query to only include connections with expired tokens.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder<ExactConnection>  $query
-     * @return \Illuminate\Database\Eloquent\Builder<ExactConnection>
+     * @param  Builder<ExactConnection>  $query
+     * @return Builder<ExactConnection>
      */
     public function scopeExpired($query)
     {
@@ -159,8 +162,8 @@ class ExactConnection extends Model
      * Scope a query to only include connections that need token refresh.
      * Proactive refresh at 9 minutes (540 seconds before expiry).
      *
-     * @param  \Illuminate\Database\Eloquent\Builder<ExactConnection>  $query
-     * @return \Illuminate\Database\Eloquent\Builder<ExactConnection>
+     * @param  Builder<ExactConnection>  $query
+     * @return Builder<ExactConnection>
      */
     public function scopeNeedsRefresh($query)
     {

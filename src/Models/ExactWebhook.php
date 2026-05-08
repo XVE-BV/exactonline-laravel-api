@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -16,10 +18,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $webhook_secret
  * @property bool $is_active
  * @property array<string, mixed>|null $metadata
- * @property \Illuminate\Support\Carbon|null $last_received_at
+ * @property Carbon|null $last_received_at
  * @property int $events_received
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read ExactConnection $connection
  */
 class ExactWebhook extends Model
@@ -108,8 +110,8 @@ class ExactWebhook extends Model
     /**
      * Scope a query to only include active webhooks.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder<ExactWebhook>  $query
-     * @return \Illuminate\Database\Eloquent\Builder<ExactWebhook>
+     * @param  Builder<ExactWebhook>  $query
+     * @return Builder<ExactWebhook>
      */
     public function scopeActive($query)
     {
@@ -119,8 +121,8 @@ class ExactWebhook extends Model
     /**
      * Scope a query to filter by topic.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder<ExactWebhook>  $query
-     * @return \Illuminate\Database\Eloquent\Builder<ExactWebhook>
+     * @param  Builder<ExactWebhook>  $query
+     * @return Builder<ExactWebhook>
      */
     public function scopeByTopic($query, string $topic)
     {
@@ -130,9 +132,9 @@ class ExactWebhook extends Model
     /**
      * Scope a query to filter by multiple topics.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder<ExactWebhook>  $query
+     * @param  Builder<ExactWebhook>  $query
      * @param  array<string>  $topics
-     * @return \Illuminate\Database\Eloquent\Builder<ExactWebhook>
+     * @return Builder<ExactWebhook>
      */
     public function scopeByTopics($query, array $topics)
     {

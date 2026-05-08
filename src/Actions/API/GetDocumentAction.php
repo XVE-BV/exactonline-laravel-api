@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Skylence\ExactonlineLaravelApi\Actions\API;
 
 use Illuminate\Support\Facades\Log;
+use Picqer\Financials\Exact\Connection;
 use Picqer\Financials\Exact\Document;
 use Skylence\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
@@ -137,7 +138,7 @@ class GetDocumentAction
     /**
      * Track rate limit usage after the API request
      */
-    protected function trackRateLimitUsage(ExactConnection $connection, \Picqer\Financials\Exact\Connection $picqerConnection): void
+    protected function trackRateLimitUsage(ExactConnection $connection, Connection $picqerConnection): void
     {
         $trackRateLimitAction = Config::getAction(
             'track_rate_limit_usage',

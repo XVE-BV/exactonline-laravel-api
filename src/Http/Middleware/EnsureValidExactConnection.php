@@ -23,7 +23,7 @@ class EnsureValidExactConnection
      * 3. Tokens are refreshed if needed
      * 4. The connection is attached to the request for use in controllers
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next, ?string $connectionId = null): Response
     {

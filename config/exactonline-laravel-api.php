@@ -1,6 +1,10 @@
 <?php
 
 use Skylence\ExactonlineLaravelApi\Actions;
+use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
+use Skylence\ExactonlineLaravelApi\Models\ExactMapping;
+use Skylence\ExactonlineLaravelApi\Models\ExactRateLimit;
+use Skylence\ExactonlineLaravelApi\Models\ExactWebhook;
 
 return [
     /*
@@ -218,10 +222,10 @@ return [
     |
     */
     'models' => [
-        'connection' => \Skylence\ExactonlineLaravelApi\Models\ExactConnection::class,
-        'mapping' => \Skylence\ExactonlineLaravelApi\Models\ExactMapping::class,
-        'webhook' => \Skylence\ExactonlineLaravelApi\Models\ExactWebhook::class,
-        'rate_limit' => \Skylence\ExactonlineLaravelApi\Models\ExactRateLimit::class,
+        'connection' => ExactConnection::class,
+        'mapping' => ExactMapping::class,
+        'webhook' => ExactWebhook::class,
+        'rate_limit' => ExactRateLimit::class,
     ],
 
     /*

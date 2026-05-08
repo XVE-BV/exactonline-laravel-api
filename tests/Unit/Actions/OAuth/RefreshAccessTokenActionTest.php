@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Contracts\Cache\Lock;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
@@ -27,7 +28,7 @@ beforeEach(function () {
 
 it('refreshes access token successfully with distributed lock', function () {
     // Mock successful lock acquisition
-    $lock = Mockery::mock(\Illuminate\Contracts\Cache\Lock::class);
+    $lock = Mockery::mock(Lock::class);
     $lock->shouldReceive('get')->once()->andReturn(true);
     $lock->shouldReceive('release')->once();
 
@@ -82,7 +83,7 @@ it('refreshes access token successfully with distributed lock', function () {
 
 it('waits for lock when another process is refreshing', function () {
     // Mock failed lock acquisition (another process has it)
-    $lock = Mockery::mock(\Illuminate\Contracts\Cache\Lock::class);
+    $lock = Mockery::mock(Lock::class);
     $lock->shouldReceive('get')->once()->andReturn(false);
     $lock->shouldReceive('release')->never();
 
@@ -138,7 +139,7 @@ it('checks if token needs refresh with 9-minute threshold', function () {
 });
 
 it('implements exponential backoff retry on failure', function () {
-    $lock = Mockery::mock(\Illuminate\Contracts\Cache\Lock::class);
+    $lock = Mockery::mock(Lock::class);
     $lock->shouldReceive('get')->once()->andReturn(true);
     $lock->shouldReceive('release')->once();
 
@@ -197,7 +198,7 @@ it('implements exponential backoff retry on failure', function () {
 });
 
 it('throws exception after max retries exceeded', function () {
-    $lock = Mockery::mock(\Illuminate\Contracts\Cache\Lock::class);
+    $lock = Mockery::mock(Lock::class);
     $lock->shouldReceive('get')->once()->andReturn(true);
     $lock->shouldReceive('release')->once();
 
@@ -230,7 +231,7 @@ it('throws exception after max retries exceeded', function () {
 );
 
 it('dispatches TokenRefreshFailed event on failure', function () {
-    $lock = Mockery::mock(\Illuminate\Contracts\Cache\Lock::class);
+    $lock = Mockery::mock(Lock::class);
     $lock->shouldReceive('get')->once()->andReturn(true);
     $lock->shouldReceive('release')->once();
 
@@ -266,7 +267,7 @@ it('dispatches TokenRefreshFailed event on failure', function () {
 });
 
 it('always releases lock even on exception', function () {
-    $lock = Mockery::mock(\Illuminate\Contracts\Cache\Lock::class);
+    $lock = Mockery::mock(Lock::class);
     $lock->shouldReceive('get')->once()->andReturn(true);
     $lock->shouldReceive('release')->once(); // Must be called
 
@@ -296,7 +297,7 @@ it('always releases lock even on exception', function () {
 });
 
 it('skips refresh if token was already refreshed after lock acquisition', function () {
-    $lock = Mockery::mock(\Illuminate\Contracts\Cache\Lock::class);
+    $lock = Mockery::mock(Lock::class);
     $lock->shouldReceive('get')->once()->andReturn(true);
     $lock->shouldReceive('release')->once();
 
@@ -328,7 +329,7 @@ it('logs all refresh attempts with context', function () {
         ->with(Mockery::pattern('/Token refresh retry/'), Mockery::any())
         ->never(); // Should succeed on first try
 
-    $lock = Mockery::mock(\Illuminate\Contracts\Cache\Lock::class);
+    $lock = Mockery::mock(Lock::class);
     $lock->shouldReceive('get')->once()->andReturn(true);
     $lock->shouldReceive('release')->once();
 
@@ -351,7 +352,7 @@ it('logs all refresh attempts with context', function () {
 });
 
 it('handles timeout while waiting for another process to refresh', function () {
-    $lock = Mockery::mock(\Illuminate\Contracts\Cache\Lock::class);
+    $lock = Mockery::mock(Lock::class);
     $lock->shouldReceive('get')->once()->andReturn(false);
 
     Cache::shouldReceive('lock')
@@ -375,7 +376,7 @@ it('handles timeout while waiting for another process to refresh', function () {
 // Helper method to invoke protected/private methods
 function invokeMethod(&$object, $methodName, array $parameters = [])
 {
-    $reflection = new \ReflectionClass(get_class($object));
+    $reflection = new ReflectionClass(get_class($object));
     $method = $reflection->getMethod($methodName);
     $method->setAccessible(true);
 

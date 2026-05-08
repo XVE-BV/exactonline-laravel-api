@@ -6,6 +6,7 @@ namespace Skylence\ExactonlineLaravelApi\Actions\RateLimit;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Picqer\Financials\Exact\Connection;
 use Skylence\ExactonlineLaravelApi\Events\RateLimitApproaching;
 use Skylence\ExactonlineLaravelApi\Events\RateLimitUpdated;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
@@ -19,7 +20,7 @@ class TrackRateLimitUsageAction
      * This action parses rate limit headers from Exact Online API responses
      * and updates the rate limit tracking for the connection.
      *
-     * @param  \Picqer\Financials\Exact\Connection  $picqerConnection  Picqer connection with headers
+     * @param  Connection  $picqerConnection  Picqer connection with headers
      * @return array{
      *     tracked: bool,
      *     daily_usage: float|null,
@@ -27,7 +28,7 @@ class TrackRateLimitUsageAction
      *     warnings: array<string>
      * }
      */
-    public function execute(ExactConnection $connection, \Picqer\Financials\Exact\Connection $picqerConnection): array
+    public function execute(ExactConnection $connection, Connection $picqerConnection): array
     {
         $result = [
             'tracked' => false,
@@ -107,7 +108,7 @@ class TrackRateLimitUsageAction
      *
      * @return array<string, string>
      */
-    protected function extractRateLimitHeaders(\Picqer\Financials\Exact\Connection $picqerConnection): array
+    protected function extractRateLimitHeaders(Connection $picqerConnection): array
     {
         $headers = [];
 

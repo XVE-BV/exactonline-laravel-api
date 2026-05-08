@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Skylence\ExactonlineLaravelApi\Actions\OAuth\StoreTokensAction;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 
@@ -19,7 +20,7 @@ it('stores tokens with defaults and encrypts them', function () {
     $action = new StoreTokensAction;
 
     $now = now();
-    \Illuminate\Support\Carbon::setTestNow($now);
+    Carbon::setTestNow($now);
 
     // Act
     $updated = $action->execute($connection, [

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -21,11 +23,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $is_main
  * @property int $status
  * @property int $blocking_status
- * @property \Illuminate\Support\Carbon|null $started_at
- * @property \Illuminate\Support\Carbon|null $archived_at
- * @property \Illuminate\Support\Carbon|null $synced_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $started_at
+ * @property Carbon|null $archived_at
+ * @property Carbon|null $synced_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read ExactConnection $connection
  */
 class ExactDivision extends Model
@@ -73,8 +75,8 @@ class ExactDivision extends Model
     /**
      * Scope a query to only include active divisions.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder<ExactDivision>  $query
-     * @return \Illuminate\Database\Eloquent\Builder<ExactDivision>
+     * @param  Builder<ExactDivision>  $query
+     * @return Builder<ExactDivision>
      */
     public function scopeActive($query)
     {
@@ -84,8 +86,8 @@ class ExactDivision extends Model
     /**
      * Scope a query to only include the main division.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder<ExactDivision>  $query
-     * @return \Illuminate\Database\Eloquent\Builder<ExactDivision>
+     * @param  Builder<ExactDivision>  $query
+     * @return Builder<ExactDivision>
      */
     public function scopeMain($query)
     {

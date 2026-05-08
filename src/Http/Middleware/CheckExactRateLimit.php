@@ -23,7 +23,7 @@ class CheckExactRateLimit
      * - For minutely limits: can wait or throw exception based on config
      * - For daily limits: usually throws exception (waiting 24 hours is not practical)
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {

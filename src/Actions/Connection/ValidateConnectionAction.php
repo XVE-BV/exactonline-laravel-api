@@ -6,6 +6,8 @@ namespace Skylence\ExactonlineLaravelApi\Actions\Connection;
 
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\ApiException;
+use Picqer\Financials\Exact\Division;
+use Picqer\Financials\Exact\Me;
 use Skylence\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 use Skylence\ExactonlineLaravelApi\Support\Config;
@@ -175,7 +177,7 @@ class ValidateConnectionAction
             $picqerConnection = $connection->getPicqerConnection();
 
             // Try to get the current user info (lightweight API call)
-            $me = new \Picqer\Financials\Exact\Me($picqerConnection);
+            $me = new Me($picqerConnection);
             $currentUser = $me->get();
 
             if (empty($currentUser)) {
@@ -241,7 +243,7 @@ class ValidateConnectionAction
             $picqerConnection->setDivision($connection->division);
 
             // Try to access division-specific data (SystemDivisions is a good test)
-            $division = new \Picqer\Financials\Exact\Division($picqerConnection);
+            $division = new Division($picqerConnection);
             $divisionData = $division->find($connection->division);
 
             if (! $divisionData) {

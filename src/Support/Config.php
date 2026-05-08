@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace Skylence\ExactonlineLaravelApi\Support;
 
 use Skylence\ExactonlineLaravelApi\Exceptions\InvalidActionClass;
+use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
+use Skylence\ExactonlineLaravelApi\Models\ExactMapping;
+use Skylence\ExactonlineLaravelApi\Models\ExactRateLimit;
+use Skylence\ExactonlineLaravelApi\Models\ExactWebhook;
 
 class Config
 {
@@ -75,12 +79,12 @@ class Config
 
     public static function getConnectionModel(): string
     {
-        return config('exactonline-laravel-api.models.connection', \Skylence\ExactonlineLaravelApi\Models\ExactConnection::class);
+        return config('exactonline-laravel-api.models.connection', ExactConnection::class);
     }
 
     public static function getWebhookModel(): string
     {
-        return config('exactonline-laravel-api.models.webhook', \Skylence\ExactonlineLaravelApi\Models\ExactWebhook::class);
+        return config('exactonline-laravel-api.models.webhook', ExactWebhook::class);
     }
 
     public static function getClientId(): string
@@ -110,7 +114,7 @@ class Config
 
     public static function getMappingModel(): string
     {
-        return config('exactonline-laravel-api.models.mapping', \Skylence\ExactonlineLaravelApi\Models\ExactMapping::class);
+        return config('exactonline-laravel-api.models.mapping', ExactMapping::class);
     }
 
     public static function getMappingEnvironment(): string
@@ -120,6 +124,6 @@ class Config
 
     public static function getRateLimitModel(): string
     {
-        return config('exactonline-laravel-api.models.rate_limit', \Skylence\ExactonlineLaravelApi\Models\ExactRateLimit::class);
+        return config('exactonline-laravel-api.models.rate_limit', ExactRateLimit::class);
     }
 }

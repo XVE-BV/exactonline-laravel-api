@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi\Actions\OAuth;
 
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Skylence\ExactonlineLaravelApi\Events\RefreshTokenExpiringSoon;
@@ -82,7 +83,7 @@ class MonitorRefreshTokenExpiryAction
             return null;
         }
 
-        $expiresAt = \Carbon\Carbon::createFromTimestamp($connection->refresh_token_expires_at);
+        $expiresAt = Carbon::createFromTimestamp($connection->refresh_token_expires_at);
         $now = now();
 
         // If already expired
