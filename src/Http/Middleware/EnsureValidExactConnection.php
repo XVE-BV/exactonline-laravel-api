@@ -6,11 +6,11 @@ namespace XVE\ExactonlineLaravelApi\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use XVE\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
 use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 use XVE\ExactonlineLaravelApi\Support\Config;
-use Symfony\Component\HttpFoundation\Response;
 
 class EnsureValidExactConnection
 {

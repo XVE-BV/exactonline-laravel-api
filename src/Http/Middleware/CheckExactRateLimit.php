@@ -7,12 +7,12 @@ namespace XVE\ExactonlineLaravelApi\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 use XVE\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
 use XVE\ExactonlineLaravelApi\Actions\RateLimit\WaitForRateLimitResetAction;
 use XVE\ExactonlineLaravelApi\Exceptions\RateLimitExceededException;
 use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 use XVE\ExactonlineLaravelApi\Support\Config;
-use Symfony\Component\HttpFoundation\Response;
 
 class CheckExactRateLimit
 {
