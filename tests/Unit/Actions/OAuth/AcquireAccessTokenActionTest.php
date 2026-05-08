@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Mockery\MockInterface;
 use Picqer\Financials\Exact\Connection;
-use XVE\ExactonlineLaravelApi\Actions\OAuth\AcquireAccessTokenAction;
-use XVE\ExactonlineLaravelApi\Events\TokenAcquired;
-use XVE\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\Exactonline\Actions\OAuth\AcquireAccessTokenAction;
+use XVE\Exactonline\Events\TokenAcquired;
+use XVE\Exactonline\Exceptions\TokenRefreshException;
+use XVE\Exactonline\Models\ExactConnection;
 
 beforeEach(function () {
     Event::fake();
@@ -133,7 +133,7 @@ it('calculates refresh token expiry correctly', function () {
 });
 
 it('logs token acquisition', function () {
-    config(['exactonline-laravel-api.logging.debug' => true]);
+    config(['exactonline.logging.debug' => true]);
 
     Log::shouldReceive('debug')->zeroOrMoreTimes()->andReturn();
     Log::shouldReceive('info')

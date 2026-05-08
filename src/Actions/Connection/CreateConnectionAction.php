@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Actions\Connection;
+namespace XVE\Exactonline\Actions\Connection;
 
 use Illuminate\Support\Facades\Log;
-use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
-use XVE\ExactonlineLaravelApi\Support\Config;
+use XVE\Exactonline\Exceptions\ConnectionException;
+use XVE\Exactonline\Models\ExactConnection;
+use XVE\Exactonline\Support\Config;
 
 class CreateConnectionAction
 {
@@ -115,11 +115,11 @@ class CreateConnectionAction
             'user_id' => $data['user_id'] ?? null,
             'tenant_id' => $data['tenant_id'] ?? null,
             'name' => $name,
-            'division' => $data['division'] ?? config('exactonline-laravel-api.connection.division'),
+            'division' => $data['division'] ?? config('exactonline.connection.division'),
             'client_id' => $data['client_id'] ?? Config::getClientId(),
             'client_secret' => $data['client_secret'] ?? Config::getClientSecret(),
             'redirect_url' => $data['redirect_url'] ?? Config::getRedirectUrl(),
-            'base_url' => $data['base_url'] ?? config('exactonline-laravel-api.connection.base_url', 'https://start.exactonline.nl'),
+            'base_url' => $data['base_url'] ?? config('exactonline.connection.base_url', 'https://start.exactonline.nl'),
             'is_active' => false, // Connections start as inactive until OAuth is completed
             'metadata' => $data['metadata'] ?? [],
         ];

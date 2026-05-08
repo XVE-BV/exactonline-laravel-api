@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Support\Results;
+namespace XVE\Exactonline\Support\Results;
 
 /**
  * Value object representing the result of a sync operation.

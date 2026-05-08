@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Http\Controllers\OAuth;
+namespace XVE\Exactonline\Http\Controllers\OAuth;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -10,9 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
-use XVE\ExactonlineLaravelApi\Support\Config;
+use XVE\Exactonline\Exceptions\ConnectionException;
+use XVE\Exactonline\Models\ExactConnection;
+use XVE\Exactonline\Support\Config;
 
 class RedirectToExactController extends Controller
 {
@@ -29,7 +29,7 @@ class RedirectToExactController extends Controller
     public function __invoke(Request $request, ?int $connectionId = null): RedirectResponse|JsonResponse
     {
         try {
-            $debug = config('exactonline-laravel-api.logging.debug', false);
+            $debug = config('exactonline.logging.debug', false);
 
             if ($debug) {
                 Log::info('OAuth redirect initiated', [
@@ -78,7 +78,7 @@ class RedirectToExactController extends Controller
                 Log::info('Redirecting to Exact Online for OAuth authorization', [
                     'connection_id' => $connection->id,
                     'user_id' => $request->user()?->id,
-                    'force_login' => config('exactonline-laravel-api.oauth.force_login', false),
+                    'force_login' => config('exactonline.oauth.force_login', false),
                     'auth_url' => $authUrl,
                     'session_state_stored' => $request->session()->get('exact_oauth_state') === $state,
                     'session_connection_id_stored' => $request->session()->get('exact_oauth_connection_id'),
@@ -101,7 +101,7 @@ class RedirectToExactController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            $failureUrl = config('exactonline-laravel-api.oauth.failure_url', '/');
+            $failureUrl = config('exactonline.oauth.failure_url', '/');
 
             // For AJAX requests, return error as JSON
             if ($request->ajax() || $request->wantsJson() || $request->header('X-Livewire')) {
@@ -233,7 +233,7 @@ class RedirectToExactController extends Controller
             'client_id' => $clientId,
             'client_secret' => $clientSecret,
             'redirect_url' => $this->getRedirectUrl($request),
-            'base_url' => config('exactonline-laravel-api.connection.base_url', 'https://start.exactonline.nl'),
+            'base_url' => config('exactonline.connection.base_url', 'https://start.exactonline.nl'),
             'is_active' => false, // Will be activated after successful token acquisition
             'name' => $name,
             'metadata' => [
@@ -251,7 +251,7 @@ class RedirectToExactController extends Controller
         $baseUrl = $connection->base_url;
         $clientId = $connection->client_id;
         $redirectUrl = $connection->redirect_url;
-        $forceLogin = config('exactonline-laravel-api.oauth.force_login', false);
+        $forceLogin = config('exactonline.oauth.force_login', false);
 
         // Build authorization URL with required parameters
         $params = http_build_query([

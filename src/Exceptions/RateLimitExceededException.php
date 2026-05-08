@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Exceptions;
+namespace XVE\Exactonline\Exceptions;
 
 /**
  * Exception thrown when API rate limits are exceeded.

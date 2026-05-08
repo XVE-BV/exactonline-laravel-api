@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Actions\OAuth;
+namespace XVE\Exactonline\Actions\OAuth;
 
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\ApiException;
-use XVE\ExactonlineLaravelApi\Events\TokenAcquired;
-use XVE\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\Exactonline\Events\TokenAcquired;
+use XVE\Exactonline\Exceptions\TokenRefreshException;
+use XVE\Exactonline\Models\ExactConnection;
 
 class AcquireAccessTokenAction
 {
@@ -39,7 +39,7 @@ class AcquireAccessTokenAction
             // Dispatch event
             event(new TokenAcquired($connection));
 
-            if (config('exactonline-laravel-api.logging.debug', false)) {
+            if (config('exactonline.logging.debug', false)) {
                 Log::info('Access token acquired successfully', [
                     'connection_id' => $connection->id,
                     'expires_at' => $tokens['expires_at'],
@@ -93,7 +93,7 @@ class AcquireAccessTokenAction
         ExactConnection $connection,
         string $code
     ): array {
-        $debug = config('exactonline-laravel-api.logging.debug', false);
+        $debug = config('exactonline.logging.debug', false);
 
         try {
             if ($debug) {

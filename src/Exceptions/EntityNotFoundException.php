@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Exceptions;
+namespace XVE\Exactonline\Exceptions;
 
 /**
  * Exception thrown when an entity is not found in Exact Online.

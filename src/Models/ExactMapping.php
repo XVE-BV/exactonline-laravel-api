@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Models;
+namespace XVE\Exactonline\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
-use XVE\ExactonlineLaravelApi\Support\Config;
+use XVE\Exactonline\Support\Config;
 
 /**
  * Polymorphic mapping between local models and Exact Online entities.

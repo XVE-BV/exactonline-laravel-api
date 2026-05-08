@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Actions\RateLimit;
+namespace XVE\Exactonline\Actions\RateLimit;
 
 use Illuminate\Support\Facades\Log;
-use XVE\ExactonlineLaravelApi\Exceptions\RateLimitExceededException;
-use XVE\ExactonlineLaravelApi\Models\ExactRateLimit;
+use XVE\Exactonline\Exceptions\RateLimitExceededException;
+use XVE\Exactonline\Models\ExactRateLimit;
 
 class WaitForRateLimitResetAction
 {
@@ -23,7 +23,7 @@ class WaitForRateLimitResetAction
      */
     public function execute(ExactRateLimit $rateLimit, string $limitType = 'minutely'): void
     {
-        $maxWaitSeconds = config('exactonline-laravel-api.rate_limiting.max_wait_seconds', 65);
+        $maxWaitSeconds = config('exactonline.rate_limiting.max_wait_seconds', 65);
 
         if ($limitType === 'daily') {
             $this->handleDailyLimit($rateLimit, $maxWaitSeconds);

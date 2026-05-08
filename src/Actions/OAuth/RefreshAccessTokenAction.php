@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Actions\OAuth;
+namespace XVE\Exactonline\Actions\OAuth;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\ApiException;
-use XVE\ExactonlineLaravelApi\Events\TokenRefreshed;
-use XVE\ExactonlineLaravelApi\Events\TokenRefreshFailed;
-use XVE\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\Exactonline\Events\TokenRefreshed;
+use XVE\Exactonline\Events\TokenRefreshFailed;
+use XVE\Exactonline\Exceptions\TokenRefreshException;
+use XVE\Exactonline\Models\ExactConnection;
 
 class RefreshAccessTokenAction
 {

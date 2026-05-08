@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Services;
+namespace XVE\Exactonline\Services;
 
 use Illuminate\Support\Collection;
 use Picqer\Financials\Exact\Connection;
-use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\Exactonline\Exceptions\ConnectionException;
+use XVE\Exactonline\Models\ExactConnection;
 
 /**
  * Low-level HTTP service for Exact Online API calls.

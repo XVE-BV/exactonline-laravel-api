@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Support;
+namespace XVE\Exactonline\Support;
 
-use XVE\ExactonlineLaravelApi\Exceptions\InvalidActionClass;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
-use XVE\ExactonlineLaravelApi\Models\ExactMapping;
-use XVE\ExactonlineLaravelApi\Models\ExactRateLimit;
-use XVE\ExactonlineLaravelApi\Models\ExactWebhook;
+use XVE\Exactonline\Exceptions\InvalidActionClass;
+use XVE\Exactonline\Models\ExactConnection;
+use XVE\Exactonline\Models\ExactMapping;
+use XVE\Exactonline\Models\ExactRateLimit;
+use XVE\Exactonline\Models\ExactWebhook;
 
 class Config
 {
@@ -24,7 +24,7 @@ class Config
      */
     public static function getActionClass(string $actionName, string $actionBaseClass): string
     {
-        $actionClass = config("exactonline-laravel-api.actions.{$actionName}");
+        $actionClass = config("exactonline.actions.{$actionName}");
 
         self::ensureValidActionClass($actionName, $actionBaseClass, $actionClass);
 
@@ -74,56 +74,56 @@ class Config
      */
     public static function getRelyingPartyName(): string
     {
-        return config('exactonline-laravel-api.relying_party.name', config('app.name'));
+        return config('exactonline.relying_party.name', config('app.name'));
     }
 
     public static function getConnectionModel(): string
     {
-        return config('exactonline-laravel-api.models.connection', ExactConnection::class);
+        return config('exactonline.models.connection', ExactConnection::class);
     }
 
     public static function getWebhookModel(): string
     {
-        return config('exactonline-laravel-api.models.webhook', ExactWebhook::class);
+        return config('exactonline.models.webhook', ExactWebhook::class);
     }
 
     public static function getClientId(): string
     {
-        return config('exactonline-laravel-api.oauth.client_id', '');
+        return config('exactonline.oauth.client_id', '');
     }
 
     public static function getClientSecret(): string
     {
-        return config('exactonline-laravel-api.oauth.client_secret', '');
+        return config('exactonline.oauth.client_secret', '');
     }
 
     public static function getRedirectUrl(): string
     {
-        return config('exactonline-laravel-api.oauth.redirect_url', '/exact/oauth/callback');
+        return config('exactonline.oauth.redirect_url', '/exact/oauth/callback');
     }
 
     public static function shouldWaitOnMinutelyLimit(): bool
     {
-        return config('exactonline-laravel-api.rate_limiting.wait_on_minutely_limit', true);
+        return config('exactonline.rate_limiting.wait_on_minutely_limit', true);
     }
 
     public static function shouldThrowOnDailyLimit(): bool
     {
-        return config('exactonline-laravel-api.rate_limiting.throw_on_daily_limit', true);
+        return config('exactonline.rate_limiting.throw_on_daily_limit', true);
     }
 
     public static function getMappingModel(): string
     {
-        return config('exactonline-laravel-api.models.mapping', ExactMapping::class);
+        return config('exactonline.models.mapping', ExactMapping::class);
     }
 
     public static function getMappingEnvironment(): string
     {
-        return config('exactonline-laravel-api.mapping.environment', config('app.env', 'production'));
+        return config('exactonline.mapping.environment', config('app.env', 'production'));
     }
 
     public static function getRateLimitModel(): string
     {
-        return config('exactonline-laravel-api.models.rate_limit', ExactRateLimit::class);
+        return config('exactonline.models.rate_limit', ExactRateLimit::class);
     }
 }

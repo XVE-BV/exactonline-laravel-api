@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Events;
+namespace XVE\Exactonline\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use XVE\ExactonlineLaravelApi\Contracts\HasExactMapping;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
-use XVE\ExactonlineLaravelApi\Support\Results\SyncResult;
+use XVE\Exactonline\Contracts\HasExactMapping;
+use XVE\Exactonline\Models\ExactConnection;
+use XVE\Exactonline\Support\Results\SyncResult;
 
 class VATCodeSynced
 {

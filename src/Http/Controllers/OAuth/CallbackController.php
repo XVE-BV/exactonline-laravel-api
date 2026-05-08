@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Http\Controllers\OAuth;
+namespace XVE\Exactonline\Http\Controllers\OAuth;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
-use XVE\ExactonlineLaravelApi\Actions\API\SyncDivisionsAction;
-use XVE\ExactonlineLaravelApi\Actions\OAuth\AcquireAccessTokenAction;
-use XVE\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
-use XVE\ExactonlineLaravelApi\Support\Config;
+use XVE\Exactonline\Actions\API\SyncDivisionsAction;
+use XVE\Exactonline\Actions\OAuth\AcquireAccessTokenAction;
+use XVE\Exactonline\Exceptions\TokenRefreshException;
+use XVE\Exactonline\Models\ExactConnection;
+use XVE\Exactonline\Support\Config;
 
 class CallbackController extends Controller
 {
@@ -26,7 +26,7 @@ class CallbackController extends Controller
      */
     public function __invoke(Request $request): RedirectResponse|JsonResponse
     {
-        $debug = (bool) config('exactonline-laravel-api.logging.debug', false);
+        $debug = (bool) config('exactonline.logging.debug', false);
 
         if ($debug) {
             Log::info('OAuth callback received', [
@@ -285,7 +285,7 @@ class CallbackController extends Controller
         }
 
         // Use configured success URL
-        $successUrl = config('exactonline-laravel-api.oauth.success_url', '/dashboard');
+        $successUrl = config('exactonline.oauth.success_url', '/dashboard');
 
         // Replace {connection} placeholder if present
         if (str_contains($successUrl, '{connection}')) {
@@ -331,7 +331,7 @@ class CallbackController extends Controller
         }
 
         // Use session redirect URL or configured failure URL
-        $failureUrl = $redirectTo ?? config('exactonline-laravel-api.oauth.failure_url', '/');
+        $failureUrl = $redirectTo ?? config('exactonline.oauth.failure_url', '/');
 
         return redirect()->to($failureUrl)
             ->with('exact_oauth_error', $errorMessage);

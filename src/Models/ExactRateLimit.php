@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Models;
+namespace XVE\Exactonline\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use XVE\ExactonlineLaravelApi\Database\Factories\ExactRateLimitFactory;
+use XVE\Exactonline\Database\Factories\ExactRateLimitFactory;
 
 /**
  * @property int $id

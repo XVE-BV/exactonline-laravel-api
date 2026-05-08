@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Console;
+namespace XVE\Exactonline\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;

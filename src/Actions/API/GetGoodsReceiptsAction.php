@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Actions\API;
+namespace XVE\Exactonline\Actions\API;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\GoodsReceipt;
-use XVE\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
-use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\Exactonline\Concerns\HandlesExactConnection;
+use XVE\Exactonline\Exceptions\ConnectionException;
+use XVE\Exactonline\Models\ExactConnection;
 
 class GetGoodsReceiptsAction
 {

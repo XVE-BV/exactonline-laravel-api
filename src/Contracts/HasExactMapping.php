@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Contracts;
+namespace XVE\Exactonline\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
-use XVE\ExactonlineLaravelApi\Models\ExactMapping;
+use XVE\Exactonline\Models\ExactConnection;
+use XVE\Exactonline\Models\ExactMapping;
 
 /**
  * Interface for models that can be mapped to Exact Online entities.

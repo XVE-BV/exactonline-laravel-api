@@ -2,43 +2,43 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Actions\Webhooks;
+namespace XVE\Exactonline\Actions\Webhooks;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\AccountCreated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\AccountDeleted;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\AccountUpdated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\ContactCreated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\ContactDeleted;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\ContactUpdated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\DocumentCreated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\DocumentDeleted;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\DocumentUpdated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\FinancialTransactionCreated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\FinancialTransactionUpdated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\GenericWebhookReceived;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\GLAccountCreated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\GLAccountUpdated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\ItemCreated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\ItemDeleted;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\ItemUpdated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\ProjectCreated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\ProjectDeleted;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\ProjectUpdated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\PurchaseInvoiceCreated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\PurchaseInvoiceUpdated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceCreated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceDeleted;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceUpdated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\SalesOrderCreated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\SalesOrderUpdated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\StockPositionUpdated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\SubscriptionCreated;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\SubscriptionDeleted;
-use XVE\ExactonlineLaravelApi\Events\Webhooks\SubscriptionUpdated;
-use XVE\ExactonlineLaravelApi\Models\ExactWebhook;
+use XVE\Exactonline\Events\Webhooks\AccountCreated;
+use XVE\Exactonline\Events\Webhooks\AccountDeleted;
+use XVE\Exactonline\Events\Webhooks\AccountUpdated;
+use XVE\Exactonline\Events\Webhooks\ContactCreated;
+use XVE\Exactonline\Events\Webhooks\ContactDeleted;
+use XVE\Exactonline\Events\Webhooks\ContactUpdated;
+use XVE\Exactonline\Events\Webhooks\DocumentCreated;
+use XVE\Exactonline\Events\Webhooks\DocumentDeleted;
+use XVE\Exactonline\Events\Webhooks\DocumentUpdated;
+use XVE\Exactonline\Events\Webhooks\FinancialTransactionCreated;
+use XVE\Exactonline\Events\Webhooks\FinancialTransactionUpdated;
+use XVE\Exactonline\Events\Webhooks\GenericWebhookReceived;
+use XVE\Exactonline\Events\Webhooks\GLAccountCreated;
+use XVE\Exactonline\Events\Webhooks\GLAccountUpdated;
+use XVE\Exactonline\Events\Webhooks\ItemCreated;
+use XVE\Exactonline\Events\Webhooks\ItemDeleted;
+use XVE\Exactonline\Events\Webhooks\ItemUpdated;
+use XVE\Exactonline\Events\Webhooks\ProjectCreated;
+use XVE\Exactonline\Events\Webhooks\ProjectDeleted;
+use XVE\Exactonline\Events\Webhooks\ProjectUpdated;
+use XVE\Exactonline\Events\Webhooks\PurchaseInvoiceCreated;
+use XVE\Exactonline\Events\Webhooks\PurchaseInvoiceUpdated;
+use XVE\Exactonline\Events\Webhooks\SalesInvoiceCreated;
+use XVE\Exactonline\Events\Webhooks\SalesInvoiceDeleted;
+use XVE\Exactonline\Events\Webhooks\SalesInvoiceUpdated;
+use XVE\Exactonline\Events\Webhooks\SalesOrderCreated;
+use XVE\Exactonline\Events\Webhooks\SalesOrderUpdated;
+use XVE\Exactonline\Events\Webhooks\StockPositionUpdated;
+use XVE\Exactonline\Events\Webhooks\SubscriptionCreated;
+use XVE\Exactonline\Events\Webhooks\SubscriptionDeleted;
+use XVE\Exactonline\Events\Webhooks\SubscriptionUpdated;
+use XVE\Exactonline\Models\ExactWebhook;
 
 class DispatchWebhookEventAction
 {
@@ -214,7 +214,7 @@ class DispatchWebhookEventAction
         }
 
         // Try custom event map from config
-        $customMap = config('exactonline-laravel-api.webhooks.event_map', []);
+        $customMap = config('exactonline.webhooks.event_map', []);
 
         if (isset($customMap[$topic])) {
             $eventClass = $customMap[$topic];
@@ -302,7 +302,7 @@ class DispatchWebhookEventAction
         }
 
         // Check global webhook queue configuration
-        $queueConfig = config('exactonline-laravel-api.webhooks.queue');
+        $queueConfig = config('exactonline.webhooks.queue');
 
         if ($queueConfig !== null) {
             return (bool) $queueConfig;
@@ -340,7 +340,7 @@ class DispatchWebhookEventAction
     {
         return array_merge(
             $this->eventMap,
-            config('exactonline-laravel-api.webhooks.event_map', [])
+            config('exactonline.webhooks.event_map', [])
         );
     }
 }

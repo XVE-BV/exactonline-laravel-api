@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Validation;
+namespace XVE\Exactonline\Validation;
 
 class PayloadValidator
 {

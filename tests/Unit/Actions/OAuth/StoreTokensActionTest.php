@@ -2,8 +2,8 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
-use XVE\ExactonlineLaravelApi\Actions\OAuth\StoreTokensAction;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\Exactonline\Actions\OAuth\StoreTokensAction;
+use XVE\Exactonline\Models\ExactConnection;
 
 uses(RefreshDatabase::class);
 
