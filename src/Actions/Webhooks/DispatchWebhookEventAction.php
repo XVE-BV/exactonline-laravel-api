@@ -2,43 +2,43 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Actions\Webhooks;
+namespace XVE\ExactonlineLaravelApi\Actions\Webhooks;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\AccountCreated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\AccountDeleted;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\AccountUpdated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\ContactCreated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\ContactDeleted;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\ContactUpdated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\DocumentCreated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\DocumentDeleted;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\DocumentUpdated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\FinancialTransactionCreated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\FinancialTransactionUpdated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\GenericWebhookReceived;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\GLAccountCreated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\GLAccountUpdated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\ItemCreated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\ItemDeleted;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\ItemUpdated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\ProjectCreated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\ProjectDeleted;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\ProjectUpdated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\PurchaseInvoiceCreated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\PurchaseInvoiceUpdated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceCreated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceDeleted;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceUpdated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesOrderCreated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\SalesOrderUpdated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\StockPositionUpdated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\SubscriptionCreated;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\SubscriptionDeleted;
-use Skylence\ExactonlineLaravelApi\Events\Webhooks\SubscriptionUpdated;
-use Skylence\ExactonlineLaravelApi\Models\ExactWebhook;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\AccountCreated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\AccountDeleted;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\AccountUpdated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\ContactCreated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\ContactDeleted;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\ContactUpdated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\DocumentCreated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\DocumentDeleted;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\DocumentUpdated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\FinancialTransactionCreated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\FinancialTransactionUpdated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\GenericWebhookReceived;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\GLAccountCreated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\GLAccountUpdated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\ItemCreated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\ItemDeleted;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\ItemUpdated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\ProjectCreated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\ProjectDeleted;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\ProjectUpdated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\PurchaseInvoiceCreated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\PurchaseInvoiceUpdated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceCreated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceDeleted;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\SalesInvoiceUpdated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\SalesOrderCreated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\SalesOrderUpdated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\StockPositionUpdated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\SubscriptionCreated;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\SubscriptionDeleted;
+use XVE\ExactonlineLaravelApi\Events\Webhooks\SubscriptionUpdated;
+use XVE\ExactonlineLaravelApi\Models\ExactWebhook;
 
 class DispatchWebhookEventAction
 {

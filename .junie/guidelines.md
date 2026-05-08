@@ -1,7 +1,7 @@
 # Project Guidelines
 
 ## Project Overview
-`skylence/exactonline-laravel-api` is a Laravel package that integrates with Exact Online. It focuses on robust OAuth token management (10‑minute access tokens with proactive refresh), webhook handling, rate limiting, and a clean developer experience through a strict Action Pattern architecture.
+`xve/exactonline-laravel-api` is a Laravel package that integrates with Exact Online. It focuses on robust OAuth token management (10‑minute access tokens with proactive refresh), webhook handling, rate limiting, and a clean developer experience through a strict Action Pattern architecture.
 
 Authoritative docs you should consult when making changes:
 - docs/implementation-plan.md — high‑level roadmap and architecture

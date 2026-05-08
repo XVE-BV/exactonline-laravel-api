@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Actions\API;
+namespace XVE\ExactonlineLaravelApi\Actions\API;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Quotation;
-use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
-use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 class GetQuotationsAction
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Actions\Webhooks;
+namespace XVE\ExactonlineLaravelApi\Actions\Webhooks;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Skylence\ExactonlineLaravelApi\Models\ExactWebhook;
+use XVE\ExactonlineLaravelApi\Models\ExactWebhook;
 
 class ValidateWebhookSignatureAction
 {

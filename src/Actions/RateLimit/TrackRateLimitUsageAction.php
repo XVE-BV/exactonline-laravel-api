@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Actions\RateLimit;
+namespace XVE\ExactonlineLaravelApi\Actions\RateLimit;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Connection;
-use Skylence\ExactonlineLaravelApi\Events\RateLimitApproaching;
-use Skylence\ExactonlineLaravelApi\Events\RateLimitUpdated;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Models\ExactRateLimit;
+use XVE\ExactonlineLaravelApi\Events\RateLimitApproaching;
+use XVE\ExactonlineLaravelApi\Events\RateLimitUpdated;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactRateLimit;
 
 class TrackRateLimitUsageAction
 {

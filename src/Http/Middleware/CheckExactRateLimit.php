@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Http\Middleware;
+namespace XVE\ExactonlineLaravelApi\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Skylence\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
-use Skylence\ExactonlineLaravelApi\Actions\RateLimit\WaitForRateLimitResetAction;
-use Skylence\ExactonlineLaravelApi\Exceptions\RateLimitExceededException;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Support\Config;
 use Symfony\Component\HttpFoundation\Response;
+use XVE\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
+use XVE\ExactonlineLaravelApi\Actions\RateLimit\WaitForRateLimitResetAction;
+use XVE\ExactonlineLaravelApi\Exceptions\RateLimitExceededException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Support\Config;
 
 class CheckExactRateLimit
 {

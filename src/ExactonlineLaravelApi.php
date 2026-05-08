@@ -1,5 +1,5 @@
 <?php
 
-namespace Skylence\ExactonlineLaravelApi;
+namespace XVE\ExactonlineLaravelApi;
 
 class ExactonlineLaravelApi {}

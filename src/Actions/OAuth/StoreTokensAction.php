@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Actions\OAuth;
+namespace XVE\ExactonlineLaravelApi\Actions\OAuth;
 
 use Illuminate\Support\Facades\Log;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 class StoreTokensAction
 {

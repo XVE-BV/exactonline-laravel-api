@@ -1,12 +1,12 @@
 {
-    "name": "skylence/exactonline-laravel-api",
+    "name": "xve/exactonline-laravel-api",
     "description": "This is my package exactonline-laravel-api",
     "keywords": [
-        "skylence",
+        "xve",
         "laravel",
         "exactonline-laravel-api"
     ],
-    "homepage": "https://github.com/skylence/exactonline-laravel-api",
+    "homepage": "https://github.com/XVE-BV/exactonline-laravel-api",
     "license": "MIT",
     "authors": [
         {
@@ -36,13 +36,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Skylence\\ExactonlineLaravelApi\\": "src/",
-            "Skylence\\ExactonlineLaravelApi\\Database\\Factories\\": "database/factories/"
+            "XVE\\ExactonlineLaravelApi\\": "src/",
+            "XVE\\ExactonlineLaravelApi\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Skylence\\ExactonlineLaravelApi\\Tests\\": "tests/",
+            "XVE\\ExactonlineLaravelApi\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -64,10 +64,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Skylence\\ExactonlineLaravelApi\\ExactonlineLaravelApiServiceProvider"
+                "XVE\\ExactonlineLaravelApi\\ExactonlineLaravelApiServiceProvider"
             ],
             "aliases": {
-                "ExactonlineLaravelApi": "Skylence\\ExactonlineLaravelApi\\Facades\\ExactonlineLaravelApi"
+                "ExactonlineLaravelApi": "XVE\\ExactonlineLaravelApi\\Facades\\ExactonlineLaravelApi"
             }
         }
     },

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Validation;
+namespace XVE\ExactonlineLaravelApi\Validation;
 
-use Skylence\ExactonlineLaravelApi\Exceptions\ExactOnlineException;
+use XVE\ExactonlineLaravelApi\Exceptions\ExactOnlineException;
 
 /**
  * Exception for pre-flight payload validation failures.

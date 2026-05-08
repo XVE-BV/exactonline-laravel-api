@@ -1,6 +1,6 @@
 <?php
 
-namespace Skylence\ExactonlineLaravelApi\Commands;
+namespace XVE\ExactonlineLaravelApi\Commands;
 
 use Illuminate\Console\Command;
 

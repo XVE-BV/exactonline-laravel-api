@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Support;
+namespace XVE\ExactonlineLaravelApi\Support;
 
-use Skylence\ExactonlineLaravelApi\Exceptions\InvalidActionClass;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Models\ExactMapping;
-use Skylence\ExactonlineLaravelApi\Models\ExactRateLimit;
-use Skylence\ExactonlineLaravelApi\Models\ExactWebhook;
+use XVE\ExactonlineLaravelApi\Exceptions\InvalidActionClass;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactMapping;
+use XVE\ExactonlineLaravelApi\Models\ExactRateLimit;
+use XVE\ExactonlineLaravelApi\Models\ExactWebhook;
 
 class Config
 {

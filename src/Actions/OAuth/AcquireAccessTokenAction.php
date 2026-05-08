@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Actions\OAuth;
+namespace XVE\ExactonlineLaravelApi\Actions\OAuth;
 
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\ApiException;
-use Skylence\ExactonlineLaravelApi\Events\TokenAcquired;
-use Skylence\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Events\TokenAcquired;
+use XVE\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 class AcquireAccessTokenAction
 {

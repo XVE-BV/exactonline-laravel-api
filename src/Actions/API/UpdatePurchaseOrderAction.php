@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Actions\API;
+namespace XVE\ExactonlineLaravelApi\Actions\API;
 
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\PurchaseOrder;
-use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
-use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
-use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
+use XVE\ExactonlineLaravelApi\Concerns\ValidatesPayload;
+use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 class UpdatePurchaseOrderAction
 {

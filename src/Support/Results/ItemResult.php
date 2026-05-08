@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Support\Results;
+namespace XVE\ExactonlineLaravelApi\Support\Results;
 
 /**
  * Value object representing an Exact Online Item (Product).

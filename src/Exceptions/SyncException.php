@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Exceptions;
+namespace XVE\ExactonlineLaravelApi\Exceptions;
 
 /**
  * Exception for synchronization failures between local and Exact Online data.

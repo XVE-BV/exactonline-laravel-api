@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Mockery\MockInterface;
 use Picqer\Financials\Exact\Connection;
-use Skylence\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
-use Skylence\ExactonlineLaravelApi\Events\TokenRefreshed;
-use Skylence\ExactonlineLaravelApi\Events\TokenRefreshFailed;
-use Skylence\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
+use XVE\ExactonlineLaravelApi\Events\TokenRefreshed;
+use XVE\ExactonlineLaravelApi\Events\TokenRefreshFailed;
+use XVE\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 beforeEach(function () {
     Event::fake();

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Actions\API;
+namespace XVE\ExactonlineLaravelApi\Actions\API;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
-use Skylence\ExactonlineLaravelApi\Contracts\HasExactMapping;
-use Skylence\ExactonlineLaravelApi\Events\PurchaseOrderSynced;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Support\Config;
-use Skylence\ExactonlineLaravelApi\Support\Results\SyncResult;
+use XVE\ExactonlineLaravelApi\Contracts\HasExactMapping;
+use XVE\ExactonlineLaravelApi\Events\PurchaseOrderSynced;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Support\Config;
+use XVE\ExactonlineLaravelApi\Support\Results\SyncResult;
 
 /**
  * Sync a local model to Exact Online as a Purchase Order.

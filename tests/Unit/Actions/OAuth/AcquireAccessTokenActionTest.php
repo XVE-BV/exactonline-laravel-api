@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Mockery\MockInterface;
 use Picqer\Financials\Exact\Connection;
-use Skylence\ExactonlineLaravelApi\Actions\OAuth\AcquireAccessTokenAction;
-use Skylence\ExactonlineLaravelApi\Events\TokenAcquired;
-use Skylence\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Actions\OAuth\AcquireAccessTokenAction;
+use XVE\ExactonlineLaravelApi\Events\TokenAcquired;
+use XVE\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 beforeEach(function () {
     Event::fake();

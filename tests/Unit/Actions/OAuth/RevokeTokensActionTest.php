@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Skylence\ExactonlineLaravelApi\Actions\OAuth\RevokeTokensAction;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Actions\OAuth\RevokeTokensAction;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 uses(RefreshDatabase::class);
 

@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi;
+namespace XVE\ExactonlineLaravelApi;
 
 use Illuminate\Routing\Router;
-use Skylence\ExactonlineLaravelApi\Console\GenerateSchemasCommand;
-use Skylence\ExactonlineLaravelApi\Console\RefreshTokensCommand;
-use Skylence\ExactonlineLaravelApi\Http\Middleware\CheckExactRateLimit;
-use Skylence\ExactonlineLaravelApi\Http\Middleware\EnsureValidExactConnection;
-use Skylence\ExactonlineLaravelApi\Validation\FieldValidator;
-use Skylence\ExactonlineLaravelApi\Validation\PayloadValidator;
-use Skylence\ExactonlineLaravelApi\Validation\SchemaLoader;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use XVE\ExactonlineLaravelApi\Console\GenerateSchemasCommand;
+use XVE\ExactonlineLaravelApi\Console\RefreshTokensCommand;
+use XVE\ExactonlineLaravelApi\Http\Middleware\CheckExactRateLimit;
+use XVE\ExactonlineLaravelApi\Http\Middleware\EnsureValidExactConnection;
+use XVE\ExactonlineLaravelApi\Validation\FieldValidator;
+use XVE\ExactonlineLaravelApi\Validation\PayloadValidator;
+use XVE\ExactonlineLaravelApi\Validation\SchemaLoader;
 
 class ExactonlineLaravelApiServiceProvider extends PackageServiceProvider
 {

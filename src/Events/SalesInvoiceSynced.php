@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Events;
+namespace XVE\ExactonlineLaravelApi\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Skylence\ExactonlineLaravelApi\Contracts\HasExactMapping;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Support\Results\SyncResult;
+use XVE\ExactonlineLaravelApi\Contracts\HasExactMapping;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Support\Results\SyncResult;
 
 class SalesInvoiceSynced
 {

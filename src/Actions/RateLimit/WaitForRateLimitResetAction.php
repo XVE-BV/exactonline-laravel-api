@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Actions\RateLimit;
+namespace XVE\ExactonlineLaravelApi\Actions\RateLimit;
 
 use Illuminate\Support\Facades\Log;
-use Skylence\ExactonlineLaravelApi\Exceptions\RateLimitExceededException;
-use Skylence\ExactonlineLaravelApi\Models\ExactRateLimit;
+use XVE\ExactonlineLaravelApi\Exceptions\RateLimitExceededException;
+use XVE\ExactonlineLaravelApi\Models\ExactRateLimit;
 
 class WaitForRateLimitResetAction
 {
