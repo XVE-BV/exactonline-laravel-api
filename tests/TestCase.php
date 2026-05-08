@@ -1,10 +1,10 @@
 <?php
 
-namespace XVE\ExactonlineLaravelApi\Tests;
+namespace XVE\Exactonline\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use XVE\ExactonlineLaravelApi\ExactonlineLaravelApiServiceProvider;
+use XVE\Exactonline\ExactonlineServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -13,7 +13,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'XVE\\ExactonlineLaravelApi\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'XVE\\Exactonline\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
 
         // Load package migrations for tests
@@ -23,7 +23,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            ExactonlineLaravelApiServiceProvider::class,
+            ExactonlineServiceProvider::class,
         ];
     }
 

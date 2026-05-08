@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Models;
+namespace XVE\Exactonline\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Picqer\Financials\Exact\Connection;
-use XVE\ExactonlineLaravelApi\Database\Factories\ExactConnectionFactory;
+use XVE\Exactonline\Database\Factories\ExactConnectionFactory;
 
 /**
  * @property int $id

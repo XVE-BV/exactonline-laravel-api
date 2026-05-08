@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Http\Middleware;
+namespace XVE\Exactonline\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use XVE\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
-use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
-use XVE\ExactonlineLaravelApi\Support\Config;
+use XVE\Exactonline\Actions\OAuth\RefreshAccessTokenAction;
+use XVE\Exactonline\Exceptions\ConnectionException;
+use XVE\Exactonline\Models\ExactConnection;
+use XVE\Exactonline\Support\Config;
 
 class EnsureValidExactConnection
 {

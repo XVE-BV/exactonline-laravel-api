@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Actions\Webhooks;
+namespace XVE\Exactonline\Actions\Webhooks;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
-use XVE\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
-use XVE\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
-use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
-use XVE\ExactonlineLaravelApi\Models\ExactWebhook;
-use XVE\ExactonlineLaravelApi\Support\Config;
+use XVE\Exactonline\Actions\OAuth\RefreshAccessTokenAction;
+use XVE\Exactonline\Actions\RateLimit\CheckRateLimitAction;
+use XVE\Exactonline\Exceptions\ConnectionException;
+use XVE\Exactonline\Models\ExactConnection;
+use XVE\Exactonline\Models\ExactWebhook;
+use XVE\Exactonline\Support\Config;
 
 class RegisterWebhookAction
 {
@@ -103,7 +103,7 @@ class RegisterWebhookAction
      */
     protected function validateTopic(string $topic): void
     {
-        $allowedTopics = config('exactonline-laravel-api.webhooks.topics', []);
+        $allowedTopics = config('exactonline.webhooks.topics', []);
 
         if (! empty($allowedTopics) && ! in_array($topic, $allowedTopics, true)) {
             throw ConnectionException::invalidConfiguration(
@@ -149,7 +149,7 @@ class RegisterWebhookAction
      */
     protected function getDefaultCallbackUrl(): string
     {
-        $path = config('exactonline-laravel-api.webhooks.path', '/exact/webhooks');
+        $path = config('exactonline.webhooks.path', '/exact/webhooks');
 
         return URL::to($path);
     }

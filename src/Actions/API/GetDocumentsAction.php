@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Actions\API;
+namespace XVE\Exactonline\Actions\API;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Connection;
 use Picqer\Financials\Exact\Document;
-use XVE\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
-use XVE\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
-use XVE\ExactonlineLaravelApi\Actions\RateLimit\TrackRateLimitUsageAction;
-use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
-use XVE\ExactonlineLaravelApi\Support\Config;
+use XVE\Exactonline\Actions\OAuth\RefreshAccessTokenAction;
+use XVE\Exactonline\Actions\RateLimit\CheckRateLimitAction;
+use XVE\Exactonline\Actions\RateLimit\TrackRateLimitUsageAction;
+use XVE\Exactonline\Exceptions\ConnectionException;
+use XVE\Exactonline\Models\ExactConnection;
+use XVE\Exactonline\Support\Config;
 
 class GetDocumentsAction
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Actions\Webhooks;
+namespace XVE\Exactonline\Actions\Webhooks;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use XVE\ExactonlineLaravelApi\Exceptions\WebhookValidationException;
+use XVE\Exactonline\Exceptions\WebhookValidationException;
 
 class ProcessWebhookPayloadAction
 {

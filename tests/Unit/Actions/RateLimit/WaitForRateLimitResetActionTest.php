@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Log;
-use XVE\ExactonlineLaravelApi\Actions\RateLimit\WaitForRateLimitResetAction;
-use XVE\ExactonlineLaravelApi\Exceptions\RateLimitExceededException;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
-use XVE\ExactonlineLaravelApi\Models\ExactRateLimit;
+use XVE\Exactonline\Actions\RateLimit\WaitForRateLimitResetAction;
+use XVE\Exactonline\Exceptions\RateLimitExceededException;
+use XVE\Exactonline\Models\ExactConnection;
+use XVE\Exactonline\Models\ExactRateLimit;
 
 beforeEach(function () {
     $this->connection = ExactConnection::factory()->create();
@@ -42,7 +42,7 @@ it('waits for minutely rate limit to reset', function () {
 });
 
 it('throws exception when minutely wait time exceeds maximum', function () {
-    config(['exactonline-laravel-api.rate_limiting.max_wait_seconds' => 30]);
+    config(['exactonline.rate_limiting.max_wait_seconds' => 30]);
 
     $rateLimit = ExactRateLimit::factory()->create([
         'connection_id' => $this->connection->id,
@@ -80,7 +80,7 @@ it('throws exception for daily rate limit by default', function () {
 );
 
 it('waits for daily rate limit if reset is within max wait time', function () {
-    config(['exactonline-laravel-api.rate_limiting.max_wait_seconds' => 10]);
+    config(['exactonline.rate_limiting.max_wait_seconds' => 10]);
 
     $rateLimit = ExactRateLimit::factory()->create([
         'connection_id' => $this->connection->id,
@@ -205,7 +205,7 @@ it('resets minutely counter after waiting', function () {
 });
 
 it('resets daily counter after waiting', function () {
-    config(['exactonline-laravel-api.rate_limiting.max_wait_seconds' => 10]);
+    config(['exactonline.rate_limiting.max_wait_seconds' => 10]);
 
     $rateLimit = ExactRateLimit::factory()->create([
         'connection_id' => $this->connection->id,

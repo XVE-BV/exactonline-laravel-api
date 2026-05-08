@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Events;
+namespace XVE\Exactonline\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\Exactonline\Models\ExactConnection;
 
 class DivisionsSynced
 {

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Actions\Connection;
+namespace XVE\Exactonline\Actions\Connection;
 
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Account;
 use Picqer\Financials\Exact\ApiException;
 use Picqer\Financials\Exact\Division;
-use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\Exactonline\Exceptions\ConnectionException;
+use XVE\Exactonline\Models\ExactConnection;
 
 class SwitchDivisionAction
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Actions\Webhooks;
+namespace XVE\Exactonline\Actions\Webhooks;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use XVE\ExactonlineLaravelApi\Models\ExactWebhook;
+use XVE\Exactonline\Models\ExactWebhook;
 
 class ValidateWebhookSignatureAction
 {

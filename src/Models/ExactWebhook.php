@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Models;
+namespace XVE\Exactonline\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -170,7 +170,7 @@ class ExactWebhook extends Model
             default => 'Changed',
         };
 
-        return "XVE\\ExactonlineLaravelApi\\Events\\Webhooks\\{$this->topic}{$action}";
+        return "XVE\\Exactonline\\Events\\Webhooks\\{$this->topic}{$action}";
     }
 
     /**

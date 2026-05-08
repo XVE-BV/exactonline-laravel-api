@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Actions\API;
+namespace XVE\Exactonline\Actions\API;
 
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\GLAccount;
-use XVE\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
-use XVE\ExactonlineLaravelApi\Concerns\ValidatesPayload;
-use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\Exactonline\Concerns\HandlesExactConnection;
+use XVE\Exactonline\Concerns\ValidatesPayload;
+use XVE\Exactonline\Exceptions\ConnectionException;
+use XVE\Exactonline\Models\ExactConnection;
 
 class UpdateGLAccountAction
 {

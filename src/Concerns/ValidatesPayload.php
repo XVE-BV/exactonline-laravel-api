@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Concerns;
+namespace XVE\Exactonline\Concerns;
 
-use XVE\ExactonlineLaravelApi\Validation\PayloadValidationException;
-use XVE\ExactonlineLaravelApi\Validation\PayloadValidator;
+use XVE\Exactonline\Validation\PayloadValidationException;
+use XVE\Exactonline\Validation\PayloadValidator;
 
 trait ValidatesPayload
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace XVE\ExactonlineLaravelApi\Database\Factories;
+namespace XVE\Exactonline\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 

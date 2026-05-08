@@ -2,8 +2,8 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config as LaravelConfig;
-use XVE\ExactonlineLaravelApi\Actions\OAuth\AcquireAccessTokenAction;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\Exactonline\Actions\OAuth\AcquireAccessTokenAction;
+use XVE\Exactonline\Models\ExactConnection;
 
 uses(RefreshDatabase::class);
 
@@ -16,7 +16,7 @@ it('redirects to failure url on state mismatch', function () {
         ]));
 
     // Assert
-    $response->assertRedirect(config('exactonline-laravel-api.oauth.failure_url'));
+    $response->assertRedirect(config('exactonline.oauth.failure_url'));
     $response->assertSessionHas('exact_oauth_error');
 });
 
@@ -45,7 +45,7 @@ class StubAcquireAccessTokenAction extends AcquireAccessTokenAction
 
 it('handles successful callback and redirects to success url', function () {
     // Arrange: configure stub action
-    LaravelConfig::set('exactonline-laravel-api.actions.acquire_access_token', StubAcquireAccessTokenAction::class);
+    LaravelConfig::set('exactonline.actions.acquire_access_token', StubAcquireAccessTokenAction::class);
 
     $connection = ExactConnection::create([
         'client_id' => 'client-id',
@@ -65,6 +65,6 @@ it('handles successful callback and redirects to success url', function () {
     ]));
 
     // Assert
-    $response->assertRedirect(config('exactonline-laravel-api.oauth.success_url'));
+    $response->assertRedirect(config('exactonline.oauth.success_url'));
     $response->assertSessionHas('exact_connection_id', $connection->id);
 });

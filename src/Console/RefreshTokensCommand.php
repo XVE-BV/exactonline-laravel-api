@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Console;
+namespace XVE\Exactonline\Console;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use XVE\ExactonlineLaravelApi\Actions\OAuth\MonitorRefreshTokenExpiryAction;
-use XVE\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
-use XVE\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
-use XVE\ExactonlineLaravelApi\Support\Config;
+use XVE\Exactonline\Actions\OAuth\MonitorRefreshTokenExpiryAction;
+use XVE\Exactonline\Actions\OAuth\RefreshAccessTokenAction;
+use XVE\Exactonline\Exceptions\TokenRefreshException;
+use XVE\Exactonline\Models\ExactConnection;
+use XVE\Exactonline\Support\Config;
 
 class RefreshTokensCommand extends Command
 {

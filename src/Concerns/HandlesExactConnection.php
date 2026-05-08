@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Concerns;
+namespace XVE\Exactonline\Concerns;
 
 use Picqer\Financials\Exact\Connection;
-use XVE\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
-use XVE\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
-use XVE\ExactonlineLaravelApi\Actions\RateLimit\TrackRateLimitUsageAction;
-use XVE\ExactonlineLaravelApi\Models\ExactConnection;
-use XVE\ExactonlineLaravelApi\Support\Config;
+use XVE\Exactonline\Actions\OAuth\RefreshAccessTokenAction;
+use XVE\Exactonline\Actions\RateLimit\CheckRateLimitAction;
+use XVE\Exactonline\Actions\RateLimit\TrackRateLimitUsageAction;
+use XVE\Exactonline\Models\ExactConnection;
+use XVE\Exactonline\Support\Config;
 
 /**
  * Shared functionality for actions that interact with Exact Online.

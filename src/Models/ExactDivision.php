@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Models;
+namespace XVE\Exactonline\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

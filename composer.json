@@ -1,12 +1,12 @@
 {
-    "name": "xve/exactonline-laravel-api",
-    "description": "This is my package exactonline-laravel-api",
+    "name": "xve/exactonline",
+    "description": "This is my package exactonline",
     "keywords": [
         "xve",
         "laravel",
-        "exactonline-laravel-api"
+        "exactonline"
     ],
-    "homepage": "https://github.com/XVE-BV/exactonline-laravel-api",
+    "homepage": "https://github.com/XVE-BV/exactonline",
     "license": "MIT",
     "authors": [
         {
@@ -36,13 +36,13 @@
     },
     "autoload": {
         "psr-4": {
-            "XVE\\ExactonlineLaravelApi\\": "src/",
-            "XVE\\ExactonlineLaravelApi\\Database\\Factories\\": "database/factories/"
+            "XVE\\Exactonline\\": "src/",
+            "XVE\\Exactonline\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "XVE\\ExactonlineLaravelApi\\Tests\\": "tests/",
+            "XVE\\Exactonline\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -64,10 +64,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "XVE\\ExactonlineLaravelApi\\ExactonlineLaravelApiServiceProvider"
+                "XVE\\Exactonline\\ExactonlineServiceProvider"
             ],
             "aliases": {
-                "ExactonlineLaravelApi": "XVE\\ExactonlineLaravelApi\\Facades\\ExactonlineLaravelApi"
+                "Exactonline": "XVE\\Exactonline\\Facades\\Exactonline"
             }
         }
     },

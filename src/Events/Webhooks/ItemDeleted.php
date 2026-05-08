@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XVE\ExactonlineLaravelApi\Events\Webhooks;
+namespace XVE\Exactonline\Events\Webhooks;
 
 class ItemDeleted extends BaseWebhookEvent
 {
