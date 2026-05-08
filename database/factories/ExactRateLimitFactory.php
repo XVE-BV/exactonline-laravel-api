@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Database\Factories;
+namespace XVE\ExactonlineLaravelApi\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Models\ExactRateLimit;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactRateLimit;
 
 /**
  * @extends Factory<ExactRateLimit>

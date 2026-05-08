@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Validation;
+namespace XVE\ExactonlineLaravelApi\Validation;
 
 use RuntimeException;
 

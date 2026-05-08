@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Concerns;
+namespace XVE\ExactonlineLaravelApi\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Models\ExactMapping;
-use Skylence\ExactonlineLaravelApi\Support\Config;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactMapping;
+use XVE\ExactonlineLaravelApi\Support\Config;
 
 /**
  * Trait for Eloquent models that can be mapped to Exact Online entities.

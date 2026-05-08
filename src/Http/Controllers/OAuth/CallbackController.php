@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Http\Controllers\OAuth;
+namespace XVE\ExactonlineLaravelApi\Http\Controllers\OAuth;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
-use Skylence\ExactonlineLaravelApi\Actions\API\SyncDivisionsAction;
-use Skylence\ExactonlineLaravelApi\Actions\OAuth\AcquireAccessTokenAction;
-use Skylence\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Support\Config;
+use XVE\ExactonlineLaravelApi\Actions\API\SyncDivisionsAction;
+use XVE\ExactonlineLaravelApi\Actions\OAuth\AcquireAccessTokenAction;
+use XVE\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Support\Config;
 
 class CallbackController extends Controller
 {

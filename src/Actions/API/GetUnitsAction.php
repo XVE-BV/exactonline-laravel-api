@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Actions\API;
+namespace XVE\ExactonlineLaravelApi\Actions\API;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Connection;
 use Picqer\Financials\Exact\Unit;
-use Skylence\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
-use Skylence\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
-use Skylence\ExactonlineLaravelApi\Actions\RateLimit\TrackRateLimitUsageAction;
-use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Support\Config;
+use XVE\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
+use XVE\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
+use XVE\ExactonlineLaravelApi\Actions\RateLimit\TrackRateLimitUsageAction;
+use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Support\Config;
 
 class GetUnitsAction
 {

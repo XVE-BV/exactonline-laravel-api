@@ -6,11 +6,11 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Connection;
-use Skylence\ExactonlineLaravelApi\Actions\RateLimit\TrackRateLimitUsageAction;
-use Skylence\ExactonlineLaravelApi\Events\RateLimitApproaching;
-use Skylence\ExactonlineLaravelApi\Events\RateLimitUpdated;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Models\ExactRateLimit;
+use XVE\ExactonlineLaravelApi\Actions\RateLimit\TrackRateLimitUsageAction;
+use XVE\ExactonlineLaravelApi\Events\RateLimitApproaching;
+use XVE\ExactonlineLaravelApi\Events\RateLimitUpdated;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactRateLimit;
 
 beforeEach(function () {
     Event::fake();

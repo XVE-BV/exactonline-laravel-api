@@ -16,7 +16,7 @@
     backupStaticProperties="false"
 >
     <testsuites>
-        <testsuite name="Skylence Test Suite">
+        <testsuite name="XVE Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

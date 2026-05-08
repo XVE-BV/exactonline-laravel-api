@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Events;
+namespace XVE\ExactonlineLaravelApi\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Models\ExactRateLimit;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactRateLimit;
 
 class RateLimitApproaching
 {

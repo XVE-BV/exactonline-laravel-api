@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Log;
-use Skylence\ExactonlineLaravelApi\Actions\RateLimit\WaitForRateLimitResetAction;
-use Skylence\ExactonlineLaravelApi\Exceptions\RateLimitExceededException;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Models\ExactRateLimit;
+use XVE\ExactonlineLaravelApi\Actions\RateLimit\WaitForRateLimitResetAction;
+use XVE\ExactonlineLaravelApi\Exceptions\RateLimitExceededException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactRateLimit;
 
 beforeEach(function () {
     $this->connection = ExactConnection::factory()->create();

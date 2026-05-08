@@ -1,10 +1,10 @@
 <?php
 
-namespace Skylence\ExactonlineLaravelApi\Tests;
+namespace XVE\ExactonlineLaravelApi\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Skylence\ExactonlineLaravelApi\ExactonlineLaravelApiServiceProvider;
+use XVE\ExactonlineLaravelApi\ExactonlineLaravelApiServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -13,7 +13,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Skylence\\ExactonlineLaravelApi\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'XVE\\ExactonlineLaravelApi\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
 
         // Load package migrations for tests

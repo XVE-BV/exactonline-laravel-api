@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Console;
+namespace XVE\ExactonlineLaravelApi\Console;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Skylence\ExactonlineLaravelApi\Actions\OAuth\MonitorRefreshTokenExpiryAction;
-use Skylence\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
-use Skylence\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Support\Config;
+use XVE\ExactonlineLaravelApi\Actions\OAuth\MonitorRefreshTokenExpiryAction;
+use XVE\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
+use XVE\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Support\Config;
 
 class RefreshTokensCommand extends Command
 {

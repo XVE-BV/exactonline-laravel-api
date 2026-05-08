@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Http\Middleware;
+namespace XVE\ExactonlineLaravelApi\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Skylence\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
-use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Support\Config;
+use XVE\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
+use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Support\Config;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureValidExactConnection

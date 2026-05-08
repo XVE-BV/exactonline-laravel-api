@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Events;
+namespace XVE\ExactonlineLaravelApi\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 class TokenRefreshed
 {

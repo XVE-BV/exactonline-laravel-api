@@ -1,5 +1,5 @@
 <?php
 
-use Skylence\ExactonlineLaravelApi\Tests\TestCase;
+use XVE\ExactonlineLaravelApi\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);

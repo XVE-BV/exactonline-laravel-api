@@ -1,10 +1,10 @@
 <?php
 
-use Skylence\ExactonlineLaravelApi\Actions;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Models\ExactMapping;
-use Skylence\ExactonlineLaravelApi\Models\ExactRateLimit;
-use Skylence\ExactonlineLaravelApi\Models\ExactWebhook;
+use XVE\ExactonlineLaravelApi\Actions;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactMapping;
+use XVE\ExactonlineLaravelApi\Models\ExactRateLimit;
+use XVE\ExactonlineLaravelApi\Models\ExactWebhook;
 
 return [
     /*

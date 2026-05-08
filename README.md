@@ -16,7 +16,7 @@ A Laravel package for integrating with the Exact Online API. Provides OAuth auth
 ## Installation
 
 ```bash
-composer require skylence/exactonline-laravel-api
+composer require xve/exactonline-laravel-api
 ```
 
 Publish and run the migrations:
@@ -47,7 +47,7 @@ EXACT_REDIRECT_URL=https://your-app.com/exact/oauth/callback
 ### 1. Create a Connection
 
 ```php
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 $connection = ExactConnection::create([
     'name' => 'My Connection',
@@ -79,8 +79,8 @@ $connection->update(['division' => 123456]);
 ### Syncing Entities
 
 ```php
-use Skylence\ExactonlineLaravelApi\Support\Config;
-use Skylence\ExactonlineLaravelApi\Actions\API\SyncAccountAction;
+use XVE\ExactonlineLaravelApi\Support\Config;
+use XVE\ExactonlineLaravelApi\Actions\API\SyncAccountAction;
 
 $action = Config::getAction('sync_account', SyncAccountAction::class);
 $result = $action->execute($connection, $localCompany);
@@ -91,8 +91,8 @@ $result = $action->execute($connection, $localCompany);
 Add the `ExactMappable` trait to models you want to sync:
 
 ```php
-use Skylence\ExactonlineLaravelApi\Concerns\ExactMappable;
-use Skylence\ExactonlineLaravelApi\Contracts\HasExactMapping;
+use XVE\ExactonlineLaravelApi\Concerns\ExactMappable;
+use XVE\ExactonlineLaravelApi\Contracts\HasExactMapping;
 
 class Company extends Model implements HasExactMapping
 {
@@ -143,7 +143,7 @@ $company = Company::findByExactId($exactGuid, $connection);
 ### Fetching Data
 
 ```php
-use Skylence\ExactonlineLaravelApi\Actions\API\GetAccountsAction;
+use XVE\ExactonlineLaravelApi\Actions\API\GetAccountsAction;
 
 $action = Config::getAction('get_accounts', GetAccountsAction::class);
 $accounts = $action->execute($connection, [
@@ -155,7 +155,7 @@ $accounts = $action->execute($connection, [
 ### Creating Entities
 
 ```php
-use Skylence\ExactonlineLaravelApi\Actions\API\CreateAccountAction;
+use XVE\ExactonlineLaravelApi\Actions\API\CreateAccountAction;
 
 $action = Config::getAction('create_account', CreateAccountAction::class);
 $result = $action->execute($connection, [
@@ -177,7 +177,7 @@ Events are dispatched after sync operations:
 - ... and more
 
 ```php
-use Skylence\ExactonlineLaravelApi\Events\AccountSynced;
+use XVE\ExactonlineLaravelApi\Events\AccountSynced;
 
 Event::listen(AccountSynced::class, function ($event) {
     // $event->connection
@@ -192,11 +192,11 @@ Event::listen(AccountSynced::class, function ($event) {
 The package provides a custom exception hierarchy:
 
 ```php
-use Skylence\ExactonlineLaravelApi\Exceptions\ExactOnlineException;
-use Skylence\ExactonlineLaravelApi\Exceptions\AuthenticationException;
-use Skylence\ExactonlineLaravelApi\Exceptions\ApiException;
-use Skylence\ExactonlineLaravelApi\Exceptions\SyncException;
-use Skylence\ExactonlineLaravelApi\Exceptions\EntityNotFoundException;
+use XVE\ExactonlineLaravelApi\Exceptions\ExactOnlineException;
+use XVE\ExactonlineLaravelApi\Exceptions\AuthenticationException;
+use XVE\ExactonlineLaravelApi\Exceptions\ApiException;
+use XVE\ExactonlineLaravelApi\Exceptions\SyncException;
+use XVE\ExactonlineLaravelApi\Exceptions\EntityNotFoundException;
 
 try {
     $action->execute($connection, $data);

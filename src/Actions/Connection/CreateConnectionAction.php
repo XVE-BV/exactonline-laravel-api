@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Actions\Connection;
+namespace XVE\ExactonlineLaravelApi\Actions\Connection;
 
 use Illuminate\Support\Facades\Log;
-use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Support\Config;
+use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Support\Config;
 
 class CreateConnectionAction
 {

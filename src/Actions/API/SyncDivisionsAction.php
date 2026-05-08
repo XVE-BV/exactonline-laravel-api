@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Skylence\ExactonlineLaravelApi\Actions\API;
+namespace XVE\ExactonlineLaravelApi\Actions\API;
 
 use Illuminate\Support\Facades\Log;
-use Skylence\ExactonlineLaravelApi\Events\DivisionsSynced;
-use Skylence\ExactonlineLaravelApi\Exceptions\SyncException;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Models\ExactDivision;
-use Skylence\ExactonlineLaravelApi\Support\Config;
+use XVE\ExactonlineLaravelApi\Events\DivisionsSynced;
+use XVE\ExactonlineLaravelApi\Exceptions\SyncException;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactDivision;
+use XVE\ExactonlineLaravelApi\Support\Config;
 
 class SyncDivisionsAction
 {

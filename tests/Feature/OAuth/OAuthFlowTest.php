@@ -2,8 +2,8 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config as LaravelConfig;
-use Skylence\ExactonlineLaravelApi\Actions\OAuth\AcquireAccessTokenAction;
-use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Actions\OAuth\AcquireAccessTokenAction;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 uses(RefreshDatabase::class);
 
