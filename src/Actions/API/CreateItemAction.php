@@ -20,29 +20,7 @@ class CreateItemAction
      * Create a new item in Exact Online.
      *
      * @param  ExactConnection  $connection  The Exact Online connection
-     * @param  array{
-     *     Code: string,
-     *     Description: string,
-     *     ItemGroup?: string|null,
-     *     Unit?: string|null,
-     *     CostPriceStandard?: float|null,
-     *     SalesPrice?: float|null,
-     *     SalesCurrency?: string|null,
-     *     SalesVATCode?: string|null,
-     *     PurchasePrice?: float|null,
-     *     PurchaseCurrency?: string|null,
-     *     PurchaseVATCode?: string|null,
-     *     IsSalesItem?: bool|null,
-     *     IsPurchaseItem?: bool|null,
-     *     IsStockItem?: bool|null,
-     *     IsSerialItem?: bool|null,
-     *     IsBatchItem?: bool|null,
-     *     Barcode?: string|null,
-     *     ExtraDescription?: string|null,
-     *     Notes?: string|null,
-     *     GrossWeight?: float|null,
-     *     NetWeight?: float|null
-     * }  $data  Item data following Exact Online's schema
+     * @param  array<string, mixed>  $data  The entity data
      * @return array<string, mixed> The created item data
      *
      * @throws ConnectionException

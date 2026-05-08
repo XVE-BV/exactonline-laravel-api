@@ -23,24 +23,7 @@ class CreateDocumentAction
      * Create a new document in Exact Online
      *
      * @param  ExactConnection  $connection  The Exact Online connection
-     * @param  array{
-     *     Subject: string,
-     *     Type?: int|null,
-     *     Category?: string|null,
-     *     Account?: string|null,
-     *     Contact?: string|null,
-     *     DocumentDate?: string|null,
-     *     DocumentFolder?: string|null,
-     *     FinancialTransactionEntryID?: string|null,
-     *     HID?: int|null,
-     *     Language?: string|null,
-     *     Opportunity?: string|null,
-     *     Project?: string|null,
-     *     SalesInvoiceNumber?: int|null,
-     *     SalesOrderNumber?: int|null,
-     *     ShopOrderNumber?: int|null,
-     *     TypeDescription?: string|null
-     * }  $data  Document data following Exact Online's schema
+     * @param  array<string, mixed>  $data  The entity data
      * @return array<string, mixed> The created document data
      *
      * @throws ConnectionException
@@ -145,7 +128,7 @@ class CreateDocumentAction
         }
 
         // Refresh proactively at 9 minutes (540 seconds before expiry)
-        return $connection->token_expires_at < (now()->timestamp + 540);
+        return $connection->token_expires_at < (now()->getTimestamp() + 540);
     }
 
     /**

@@ -6,6 +6,21 @@ namespace Skylence\ExactonlineLaravelApi\Events\Webhooks;
 
 class PurchaseInvoiceCreated extends BaseWebhookEvent
 {
+    public function getEventName(): string
+    {
+        return 'purchase-invoice.created';
+    }
+
+    public function getEntityType(): string
+    {
+        return 'PurchaseInvoice';
+    }
+
+    public function getActionType(): string
+    {
+        return 'Created';
+    }
+
     public function getInvoiceId(): ?string
     {
         return $this->getEntityId();

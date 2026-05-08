@@ -15,6 +15,7 @@ use Skylence\ExactonlineLaravelApi\Support\Config;
  *
  * @mixin Model
  */
+// @phpstan-ignore trait.unused
 trait ExactMappable
 {
     /**

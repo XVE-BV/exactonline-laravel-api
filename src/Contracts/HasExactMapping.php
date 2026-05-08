@@ -16,7 +16,7 @@ interface HasExactMapping
     /**
      * Get all Exact mappings for this model.
      *
-     * @return MorphMany<ExactMapping, $this>
+     * @return MorphMany<ExactMapping, \Illuminate\Database\Eloquent\Model>
      */
     public function exactMappings(): MorphMany;
 
@@ -63,4 +63,6 @@ interface HasExactMapping
         ?ExactConnection $connection = null,
         string $type = 'primary'
     ): ?static;
+
+    public function recordExactError(ExactConnection $connection, string $error, string $type = 'primary'): void;
 }

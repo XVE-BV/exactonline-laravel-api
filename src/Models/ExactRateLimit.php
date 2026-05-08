@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Skylence\ExactonlineLaravelApi\Database\Factories\ExactRateLimitFactory;
 
 /**
  * @property int $id
@@ -25,6 +27,14 @@ use Illuminate\Support\Carbon;
  */
 class ExactRateLimit extends Model
 {
+    /** @use HasFactory<ExactRateLimitFactory> */
+    use HasFactory;
+
+    protected static function newFactory(): ExactRateLimitFactory
+    {
+        return ExactRateLimitFactory::new();
+    }
+
     /**
      * The table associated with the model.
      *

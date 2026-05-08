@@ -75,9 +75,9 @@ abstract class BaseWebhookEvent implements ShouldQueue
         $this->webhook = $webhook;
         $this->entityId = $payload['entity_id'] ?? null;
         $this->division = $payload['division'] ?? null;
-        $this->timestamp = $payload['timestamp'] ?? now()->timestamp;
-        $this->data = $payload['data'] ?? [];
-        $this->metadata = $payload['metadata'] ?? [];
+        $this->timestamp = $payload['timestamp'];
+        $this->data = $payload['data'];
+        $this->metadata = $payload['metadata'];
     }
 
     /**
@@ -106,6 +106,20 @@ abstract class BaseWebhookEvent implements ShouldQueue
         }
 
         return $tags;
+    }
+
+    public function getEntityId(): ?string
+    {
+        return $this->entityId;
+    }
+
+    /**
+     * @param  mixed  $default
+     * @return mixed
+     */
+    public function getData(string $key, mixed $default = null): mixed
+    {
+        return $this->data[$key] ?? $default;
     }
 
     /**

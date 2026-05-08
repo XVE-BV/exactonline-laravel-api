@@ -98,7 +98,7 @@ class ExactApiService
      * Perform a raw GET request returning the full response.
      *
      * @param  array<string, mixed>  $params
-     * @return array<string, mixed>
+     * @return array<int, array<string, mixed>>
      */
     public function rawGet(ExactConnection $connection, string $url, array $params = []): array
     {
@@ -131,11 +131,11 @@ class ExactApiService
     protected function createConnection(ExactConnection $connection): Connection
     {
         if (! $connection->is_active) {
-            throw ConnectionException::inactive($connection);
+            throw ConnectionException::inactive((string) $connection->id);
         }
 
         if (! $connection->access_token) {
-            throw ConnectionException::noAccessToken($connection);
+            throw ConnectionException::noAccessToken((string) $connection->id);
         }
 
         return $connection->getPicqerConnection();

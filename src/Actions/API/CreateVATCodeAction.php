@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Skylence\ExactonlineLaravelApi\Actions\API;
 
 use Illuminate\Support\Facades\Log;
-use Picqer\Financials\Exact\VATCode;
+use Picqer\Financials\Exact\VatCode;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
 use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
@@ -20,28 +20,7 @@ class CreateVATCodeAction
      * Create a new VAT code in Exact Online.
      *
      * @param  ExactConnection  $connection  The Exact Online connection
-     * @param  array{
-     *     Code: string,
-     *     Description: string,
-     *     Account?: string|null,
-     *     CalculationBasis?: string|null,
-     *     Charged?: string|null,
-     *     Country?: string|null,
-     *     GLDiscountPurchase?: string|null,
-     *     GLDiscountSales?: string|null,
-     *     GLToClaim?: string|null,
-     *     GLToPay?: string|null,
-     *     IntraStat?: bool|null,
-     *     IsBlocked?: bool|null,
-     *     LegalText?: string|null,
-     *     Percentage?: float|null,
-     *     TaxReturnType?: int|null,
-     *     Type?: string|null,
-     *     VATDocType?: string|null,
-     *     VATMargin?: int|null,
-     *     VATPartialRatio?: int|null,
-     *     VATTransactionType?: string|null
-     * }  $data  VAT code data following Exact Online's schema
+     * @param  array<string, mixed>  $data  The entity data
      * @return array<string, mixed> The created VAT code data
      *
      * @throws ConnectionException
@@ -54,7 +33,7 @@ class CreateVATCodeAction
         $picqerConnection = $this->prepareConnection($connection);
 
         try {
-            $vatCode = new VATCode($picqerConnection);
+            $vatCode = new VatCode($picqerConnection);
 
             foreach ($data as $key => $value) {
                 $vatCode->{$key} = $value;

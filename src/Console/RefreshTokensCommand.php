@@ -46,7 +46,7 @@ class RefreshTokensCommand extends Command
     protected function refreshAccessToken(ExactConnection $connection, RefreshAccessTokenAction $action): void
     {
         $needsRefresh = empty($connection->token_expires_at)
-            || $connection->token_expires_at < (now()->timestamp + 540);
+            || $connection->token_expires_at < (now()->getTimestamp() + 540);
 
         if (! $needsRefresh) {
             $this->line("  [{$connection->name}] Token still valid, skipping.");

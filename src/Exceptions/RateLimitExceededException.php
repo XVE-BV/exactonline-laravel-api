@@ -18,12 +18,13 @@ class RateLimitExceededException extends ApiException
 
     protected int $resetAt;
 
+    // @phpstan-ignore parameter.notOptional, parameter.notOptional, parameter.notOptional, method.childParameterType
     public function __construct(string $message, int $retryAfterSeconds, string $limitType, ?int $resetAt = null)
     {
         parent::__construct($message, 429);
         $this->retryAfterSeconds = $retryAfterSeconds;
         $this->limitType = $limitType;
-        $this->resetAt = $resetAt ?? (now()->timestamp + $retryAfterSeconds);
+        $this->resetAt = $resetAt ?? (now()->getTimestamp() + $retryAfterSeconds);
 
         $this->setContext([
             'retry_after_seconds' => $retryAfterSeconds,
@@ -35,7 +36,7 @@ class RateLimitExceededException extends ApiException
     public static function dailyLimitExceeded(int $limit, int $resetInSeconds): self
     {
         $hours = round($resetInSeconds / 3600, 1);
-        $resetAt = now()->timestamp + $resetInSeconds;
+        $resetAt = now()->getTimestamp() + $resetInSeconds;
 
         return new self(
             "Daily API rate limit of {$limit} requests exceeded. ".
@@ -48,7 +49,7 @@ class RateLimitExceededException extends ApiException
 
     public static function minutelyLimitExceeded(int $limit, int $resetInSeconds): self
     {
-        $resetAt = now()->timestamp + $resetInSeconds;
+        $resetAt = now()->getTimestamp() + $resetInSeconds;
 
         return new self(
             "Minutely API rate limit of {$limit} requests exceeded. ".

@@ -139,14 +139,14 @@ class UpdateAccountAction
         }
 
         // Validate email format if provided
-        if (isset($data['Email']) && $data['Email'] !== null && ! filter_var($data['Email'], FILTER_VALIDATE_EMAIL)) {
+        if (isset($data['Email']) && ! filter_var($data['Email'], FILTER_VALIDATE_EMAIL)) {
             throw ConnectionException::invalidConfiguration(
                 'Invalid email format provided'
             );
         }
 
         // Validate website format if provided
-        if (isset($data['Website']) && $data['Website'] !== null && ! filter_var($data['Website'], FILTER_VALIDATE_URL)) {
+        if (isset($data['Website']) && ! filter_var($data['Website'], FILTER_VALIDATE_URL)) {
             throw ConnectionException::invalidConfiguration(
                 'Invalid website URL format provided'
             );
@@ -180,7 +180,7 @@ class UpdateAccountAction
         }
 
         // Refresh proactively at 9 minutes (540 seconds before expiry)
-        return $connection->token_expires_at < (now()->timestamp + 540);
+        return $connection->token_expires_at < (now()->getTimestamp() + 540);
     }
 
     /**

@@ -8,6 +8,21 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class ProjectCreated extends BaseWebhookEvent implements ShouldQueue
 {
+    public function getEventName(): string
+    {
+        return 'project.created';
+    }
+
+    public function getEntityType(): string
+    {
+        return 'Project';
+    }
+
+    public function getActionType(): string
+    {
+        return 'Created';
+    }
+
     public function getProjectId(): ?string
     {
         return $this->getEntityId();

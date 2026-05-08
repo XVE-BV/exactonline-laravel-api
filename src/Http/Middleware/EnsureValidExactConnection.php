@@ -36,7 +36,7 @@ class EnsureValidExactConnection
 
         // Check if connection is active
         if (! $connection->is_active) {
-            throw ConnectionException::connectionInactive($connection->id);
+            throw ConnectionException::connectionInactive((string) $connection->id);
         }
 
         // Check and refresh token if needed
@@ -69,8 +69,8 @@ class EnsureValidExactConnection
             ?? $request->query('connection_id')
             ?? $request->input('connection_id');
 
-        if ($requestConnectionId !== null) {
-            return ExactConnection::find($requestConnectionId);
+        if ($requestConnectionId !== null && is_scalar($requestConnectionId)) {
+            return ExactConnection::find((string) $requestConnectionId);
         }
 
         // Priority 3: Connection for authenticated user
@@ -99,7 +99,7 @@ class EnsureValidExactConnection
     {
         // Check if we have tokens
         if (empty($connection->access_token) || empty($connection->refresh_token)) {
-            throw ConnectionException::tokensNotFound($connection->id);
+            throw ConnectionException::tokensNotFound((string) $connection->id);
         }
 
         // Check if token needs refresh (proactive at 9 minutes)
@@ -116,7 +116,7 @@ class EnsureValidExactConnection
                 $connection->refresh();
 
             } catch (\Exception $e) {
-                throw ConnectionException::tokenRefreshFailed($connection->id, $e->getMessage());
+                throw ConnectionException::tokenRefreshFailed((string) $connection->id, $e->getMessage());
             }
         }
     }
@@ -131,6 +131,6 @@ class EnsureValidExactConnection
         }
 
         // Refresh proactively at 9 minutes (540 seconds before expiry)
-        return $connection->token_expires_at < (now()->timestamp + 540);
+        return $connection->token_expires_at < (now()->getTimestamp() + 540);
     }
 }

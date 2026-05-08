@@ -28,7 +28,7 @@ use Skylence\ExactonlineLaravelApi\Support\Config;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Model $mappable
- * @property-read ExactConnection $connection
+ * @property-read ExactConnection|null $connection
  */
 class ExactMapping extends Model
 {

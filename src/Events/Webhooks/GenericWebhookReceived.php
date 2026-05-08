@@ -88,14 +88,14 @@ class GenericWebhookReceived implements ShouldQueue
     {
         $this->payload = $payload;
         $this->webhook = $webhook;
-        $this->topic = $payload['topic'] ?? 'unknown';
-        $this->action = $payload['action'] ?? 'unknown';
-        $this->entity = $payload['entity'] ?? 'unknown';
-        $this->entityId = $payload['entity_id'] ?? null;
-        $this->division = $payload['division'] ?? null;
-        $this->timestamp = $payload['timestamp'] ?? now()->timestamp;
-        $this->data = $payload['data'] ?? [];
-        $this->metadata = $payload['metadata'] ?? [];
+        $this->topic = $payload['topic'];
+        $this->action = $payload['action'];
+        $this->entity = $payload['entity'];
+        $this->entityId = $payload['entity_id'];
+        $this->division = $payload['division'];
+        $this->timestamp = $payload['timestamp'];
+        $this->data = $payload['data'];
+        $this->metadata = $payload['metadata'];
     }
 
     /**

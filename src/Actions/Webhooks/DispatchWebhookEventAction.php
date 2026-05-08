@@ -167,7 +167,7 @@ class DispatchWebhookEventAction
                     'entity_id' => $processedPayload['entity_id'],
                 ]);
             } else {
-                Event::dispatchNow($event);
+                Event::dispatch($event);
                 Log::info('Webhook event dispatched synchronously', [
                     'event_class' => $eventClass,
                     'topic' => $processedPayload['topic'],
@@ -247,6 +247,7 @@ class DispatchWebhookEventAction
     protected function createEvent(string $eventClass, array $processedPayload, ?ExactWebhook $webhook): object
     {
         // Check if event class accepts webhook in constructor
+        /** @var class-string $eventClass */
         $reflection = new \ReflectionClass($eventClass);
         $constructor = $reflection->getConstructor();
 
@@ -268,6 +269,7 @@ class DispatchWebhookEventAction
             if ($reflection->hasProperty('payload')) {
                 $property = $reflection->getProperty('payload');
                 if ($property->isPublic()) {
+                    // @phpstan-ignore-next-line property.notFound
                     $event->payload = $processedPayload;
                 }
             }
@@ -275,6 +277,7 @@ class DispatchWebhookEventAction
             if ($webhook !== null && $reflection->hasProperty('webhook')) {
                 $property = $reflection->getProperty('webhook');
                 if ($property->isPublic()) {
+                    // @phpstan-ignore-next-line property.notFound
                     $event->webhook = $webhook;
                 }
             }

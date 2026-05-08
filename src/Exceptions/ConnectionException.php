@@ -73,4 +73,28 @@ class ConnectionException extends ExactOnlineException
             "Exact Online API error (HTTP {$statusCode}): {$message}"
         );
     }
+
+    public static function notFound(string $connectionId): self
+    {
+        return new self(
+            "Exact Online connection '{$connectionId}' not found. ".
+            'Please ensure the connection exists and you have the necessary permissions.'
+        );
+    }
+
+    public static function inactive(string $connectionId): self
+    {
+        return new self(
+            "Exact Online connection '{$connectionId}' is marked as inactive. ".
+            'Please reactivate the connection or complete the OAuth flow.'
+        );
+    }
+
+    public static function noAccessToken(string $connectionId): self
+    {
+        return new self(
+            "No access token found for connection '{$connectionId}'. ".
+            'Please complete the OAuth flow to authenticate with Exact Online.'
+        );
+    }
 }

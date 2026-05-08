@@ -4,25 +4,22 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi\Events\Webhooks;
 
-class ProjectDeleted extends BaseWebhookEvent
+use Illuminate\Contracts\Queue\ShouldQueue;
+
+class PurchaseInvoiceUpdated extends BaseWebhookEvent implements ShouldQueue
 {
     public function getEventName(): string
     {
-        return 'project.deleted';
+        return 'purchase_invoice.updated';
     }
 
     public function getEntityType(): string
     {
-        return 'Project';
+        return 'PurchaseInvoice';
     }
 
     public function getActionType(): string
     {
-        return 'Deleted';
-    }
-
-    public function getProjectId(): ?string
-    {
-        return $this->getEntityId();
+        return 'Updated';
     }
 }

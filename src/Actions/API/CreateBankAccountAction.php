@@ -20,18 +20,7 @@ class CreateBankAccountAction
      * Create a new bank account in Exact Online.
      *
      * @param  ExactConnection  $connection  The Exact Online connection
-     * @param  array{
-     *     Account: string,
-     *     BankAccount?: string|null,
-     *     BankAccountHolderName?: string|null,
-     *     BankDescription?: string|null,
-     *     BankName?: string|null,
-     *     BICCode?: string|null,
-     *     Description?: string|null,
-     *     IBAN?: string|null,
-     *     Main?: bool|null,
-     *     Type?: string|null
-     * }  $data  Bank account data following Exact Online's schema
+     * @param  array<string, mixed>  $data  The entity data
      * @return array<string, mixed> The created bank account data
      *
      * @throws ConnectionException

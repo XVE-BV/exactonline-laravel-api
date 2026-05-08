@@ -110,7 +110,7 @@ class GetPaymentsAction
         }
 
         // Refresh proactively at 9 minutes (540 seconds before expiry)
-        return $connection->token_expires_at < (now()->timestamp + 540);
+        return $connection->token_expires_at < (now()->getTimestamp() + 540);
     }
 
     /**

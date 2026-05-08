@@ -23,36 +23,7 @@ class CreateAccountAction
      * Create a new account in Exact Online
      *
      * @param  ExactConnection  $connection  The Exact Online connection
-     * @param  array{
-     *     Name: string,
-     *     Code?: string|null,
-     *     SearchCode?: string|null,
-     *     Status?: string|null,
-     *     Email?: string|null,
-     *     Phone?: string|null,
-     *     Website?: string|null,
-     *     VATNumber?: string|null,
-     *     ChamberOfCommerce?: string|null,
-     *     City?: string|null,
-     *     Country?: string|null,
-     *     AddressLine1?: string|null,
-     *     AddressLine2?: string|null,
-     *     AddressLine3?: string|null,
-     *     Postcode?: string|null,
-     *     State?: string|null,
-     *     StartDate?: string|null,
-     *     EndDate?: string|null,
-     *     CreditLinePurchase?: float|null,
-     *     CreditLineSales?: float|null,
-     *     DiscountPurchase?: float|null,
-     *     DiscountSales?: float|null,
-     *     Remarks?: string|null,
-     *     SalesCurrency?: string|null,
-     *     SalesVATCode?: string|null,
-     *     IsSupplier?: bool|null,
-     *     IsCustomer?: bool|null,
-     *     IsSales?: bool|null
-     * }  $data  Account data following Exact Online's schema
+     * @param  array<string, mixed>  $data  The entity data
      * @return array<string, mixed> The created account data
      *
      * @throws ConnectionException
@@ -172,7 +143,7 @@ class CreateAccountAction
         }
 
         // Refresh proactively at 9 minutes (540 seconds before expiry)
-        return $connection->token_expires_at < (now()->timestamp + 540);
+        return $connection->token_expires_at < (now()->getTimestamp() + 540);
     }
 
     /**

@@ -6,12 +6,14 @@ namespace Skylence\ExactonlineLaravelApi\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Picqer\Financials\Exact\Connection;
+use Skylence\ExactonlineLaravelApi\Database\Factories\ExactConnectionFactory;
 
 /**
  * @property int $id
@@ -40,6 +42,9 @@ use Picqer\Financials\Exact\Connection;
  */
 class ExactConnection extends Model
 {
+    /** @use HasFactory<ExactConnectionFactory> */
+    use HasFactory;
+
     /**
      * The table associated with the model.
      *
@@ -155,7 +160,7 @@ class ExactConnection extends Model
      */
     public function scopeExpired($query)
     {
-        return $query->where('token_expires_at', '<', now()->timestamp);
+        return $query->where('token_expires_at', '<', now()->getTimestamp());
     }
 
     /**
@@ -318,5 +323,10 @@ class ExactConnection extends Model
     public function setClientSecretAttribute(?string $secret): void
     {
         $this->attributes['client_secret'] = $secret ? Crypt::encryptString($secret) : null;
+    }
+
+    protected static function newFactory(): ExactConnectionFactory
+    {
+        return ExactConnectionFactory::new();
     }
 }

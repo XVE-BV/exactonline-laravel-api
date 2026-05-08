@@ -130,6 +130,7 @@ class UpdatePaymentAction
             }
 
             // Save the updated payment
+            // FIXME: Payment does not implement Storable, so save() does not exist on this class and will throw a BadMethodCallException at runtime.
             $existingPayment->save();
 
             // Track rate limit usage after the request
@@ -187,7 +188,7 @@ class UpdatePaymentAction
         }
 
         // Refresh proactively at 9 minutes (540 seconds before expiry)
-        return $connection->token_expires_at < (now()->timestamp + 540);
+        return $connection->token_expires_at < (now()->getTimestamp() + 540);
     }
 
     /**

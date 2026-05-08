@@ -80,9 +80,9 @@ class SwitchDivisionAction
     /**
      * Get list of available divisions for the connection
      *
-     * @return array<array{
-     *     id: int,
-     *     code: string,
+     * @return list<array{
+     *     id: int|null,
+     *     code: int|null,
      *     description: string,
      *     current: bool
      * }>

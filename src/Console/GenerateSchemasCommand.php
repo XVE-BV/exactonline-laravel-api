@@ -16,6 +16,7 @@ class GenerateSchemasCommand extends Command
 
     protected $description = 'Generate validation schemas from Exact Online API documentation';
 
+    /** @var array<string, string> */
     protected array $priorityEntities = [
         'CRMAccounts' => 'Account',
         'CRMContacts' => 'Contact',
@@ -53,7 +54,8 @@ class GenerateSchemasCommand extends Command
             File::makeDirectory($schemasPath, 0755, true);
         }
 
-        if ($entity = $this->option('entity')) {
+        $entity = $this->option('entity');
+        if (is_string($entity) && $entity !== '') {
             return $this->generateSingleSchema($entity, $schemasPath);
         }
 
@@ -91,7 +93,7 @@ class GenerateSchemasCommand extends Command
             return 1;
         }
 
-        File::put($schemaFile, json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        File::put($schemaFile, (string) json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         $this->info("Generated: {$schemaFile}");
 
         return 0;
@@ -121,7 +123,7 @@ class GenerateSchemasCommand extends Command
                 continue;
             }
 
-            File::put($schemaFile, json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            File::put($schemaFile, (string) json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
             $this->info("  <info>Generated</info> {$entity} (".count($schema['fields']).' fields)');
         }
 
@@ -150,6 +152,7 @@ class GenerateSchemasCommand extends Command
         return $key !== false ? $key : null;
     }
 
+    /** @return array<string, mixed>|null */
     protected function fetchAndParseSchema(string $docEntity, string $entity): ?array
     {
         $url = "https://start.exactonline.nl/docs/HlpRestAPIResourcesDetails.aspx?name={$docEntity}";
@@ -169,6 +172,7 @@ class GenerateSchemasCommand extends Command
         return $this->parseHtmlToSchema($html, $entity, $docEntity);
     }
 
+    /** @return array<string, mixed> */
     protected function parseHtmlToSchema(string $html, string $entity, string $docEntity): array
     {
         $schema = [
@@ -226,6 +230,7 @@ class GenerateSchemasCommand extends Command
         return strtolower($docEntity);
     }
 
+    /** @return array<string, mixed>|null */
     protected function parseField(string $name, string $edmType, string $description): ?array
     {
         $type = $this->mapEdmType($edmType);
@@ -257,6 +262,7 @@ class GenerateSchemasCommand extends Command
         return $field;
     }
 
+    /** @return array<string, mixed> */
     protected function parseFieldsFallback(string $html): array
     {
         $fields = [];

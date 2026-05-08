@@ -14,6 +14,7 @@ trait ValidatesPayload
      *
      * @throws PayloadValidationException
      */
+    /** @param array<string, mixed> $data */
     protected function validateCreatePayload(string $entity, array $data): void
     {
         $this->getPayloadValidator()->validateCreate($entity, $data);
@@ -22,6 +23,7 @@ trait ValidatesPayload
     /**
      * Validate a payload for an update operation.
      *
+     * @param array<string, mixed> $data
      * @throws PayloadValidationException
      */
     protected function validateUpdatePayload(string $entity, array $data): void
