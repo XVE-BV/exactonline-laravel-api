@@ -6,6 +6,7 @@ namespace Skylence\ExactonlineLaravelApi\Actions\Webhooks;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Skylence\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
@@ -150,7 +151,7 @@ class RegisterWebhookAction
     {
         $path = config('exactonline-laravel-api.webhooks.path', '/exact/webhooks');
 
-        return \Illuminate\Support\Facades\URL::to($path);
+        return URL::to($path);
     }
 
     /**

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Skylence\ExactonlineLaravelApi\Contracts;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
 use Skylence\ExactonlineLaravelApi\Models\ExactMapping;
@@ -16,7 +17,7 @@ interface HasExactMapping
     /**
      * Get all Exact mappings for this model.
      *
-     * @return MorphMany<ExactMapping, \Illuminate\Database\Eloquent\Model>
+     * @return MorphMany<ExactMapping, Model>
      */
     public function exactMappings(): MorphMany;
 

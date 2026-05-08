@@ -113,10 +113,6 @@ abstract class BaseWebhookEvent implements ShouldQueue
         return $this->entityId;
     }
 
-    /**
-     * @param  mixed  $default
-     * @return mixed
-     */
     public function getData(string $key, mixed $default = null): mixed
     {
         return $this->data[$key] ?? $default;

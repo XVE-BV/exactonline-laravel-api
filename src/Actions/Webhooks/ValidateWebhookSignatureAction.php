@@ -217,6 +217,7 @@ class ValidateWebhookSignatureAction
 
         if (isset($metadata['signature_encoding']) && $metadata['signature_encoding'] === 'base64') {
             $binary = hex2bin($signature);
+
             return base64_encode($binary === false ? '' : $binary);
         }
 

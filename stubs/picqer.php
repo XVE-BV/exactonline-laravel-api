@@ -175,9 +175,7 @@ class Model
  * @property string|null $Website Website of the account
  * @property bool|null $IsCustomer Indicates whether the account is a customer
  */
-class Account extends Model
-{
-}
+class Account extends Model {}
 
 /**
  * @property string|null $ID Primary key
@@ -235,9 +233,7 @@ class Account extends Model
  * @property string|null $WarehouseCode Code of the warehoude
  * @property string|null $WarehouseDescription Description of the warehouse
  */
-class Address extends Model
-{
-}
+class Address extends Model {}
 
 /**
  * @property string|null $ID Primary key
@@ -264,9 +260,7 @@ class Address extends Model
  * @property string|null $BankName Name of the bank
  * @property string|null $BankDescription Description of the bank
  */
-class BankAccount extends Model
-{
-}
+class BankAccount extends Model {}
 
 /**
  * @property string|null $ID Primary key
@@ -340,9 +334,7 @@ class BankAccount extends Model
  * @property string|null $Fax Fax number
  * @property string|null $Salutation Salutation
  */
-class Contact extends Model
-{
-}
+class Contact extends Model {}
 
 /**
  * @property string|null $ID Primary key
@@ -395,9 +387,7 @@ class Contact extends Model
  * @property int|null $Type ID of the type of this document
  * @property string|null $TypeDescription Description of Type
  */
-class Document extends Model
-{
-}
+class Document extends Model {}
 
 /**
  * @property string|null $ID Primary Key
@@ -444,9 +434,7 @@ class Document extends Model
  * @property string|null $YearEndCostGLAccount Indicates the costing account for year end calculations
  * @property string|null $YearEndReflectionGLAccount Indicates the reflection account that is used by year end application
  */
-class GLAccount extends Model
-{
-}
+class GLAccount extends Model {}
 
 /**
  * @property string|null $EntryID Primary key
@@ -480,9 +468,7 @@ class GLAccount extends Model
  * @property string|null $WarehouseCode Code of Warehouse
  * @property string|null $WarehouseDescription Description of Warehouse
  */
-class GoodsDelivery extends Model
-{
-}
+class GoodsDelivery extends Model {}
 
 /**
  * @property string|null $ID The unique identifier of a stock transaction for a goods delivery line. A goods delivery line can be split into multiple storage locations. In this case, multiple storage locations will have the same stock transaction ID.
@@ -515,9 +501,7 @@ class GoodsDelivery extends Model
  * @property string|null $TrackingNumber Reference to tracking number
  * @property string|null $Unitcode Code of item unit
  */
-class GoodsDeliveryLine extends Model
-{
-}
+class GoodsDeliveryLine extends Model {}
 
 /**
  * @property string|null $ID Primary key
@@ -549,9 +533,7 @@ class GoodsDeliveryLine extends Model
  * @property string|null $GoodsReceiptID Primary key of the goods receipt
  * @property string|null $YourRef The purchase invoice number provided by the supplier
  */
-class GoodsReceipt extends Model
-{
-}
+class GoodsReceipt extends Model {}
 
 /**
  * @property string|null $ID The unique identifier of a stock transaction for a goods receipt line. A goods receipt line can be split into multiple storage locations. In this case, multiple storage locations will have the same stock transaction ID.
@@ -588,9 +570,7 @@ class GoodsReceipt extends Model
  * @property StockSerialNumber[] $SerialNumbers Collection of serial numbers
  * @property string|null $SupplierItemCode Supplier item code
  */
-class GoodsReceiptLine extends Model
-{
-}
+class GoodsReceiptLine extends Model {}
 
 /**
  * @property string|null $ID A guid that is the unique identifier of the item
@@ -705,9 +685,7 @@ class GoodsReceiptLine extends Model
  * @property string|null $UnitDescription Description of Unit
  * @property string|null $UnitType Type of unit: A=Area, L=Length, O=Other, T=Time, V=Volume, W=Weight
  */
-class Item extends Model
-{
-}
+class Item extends Model {}
 
 /**
  * @property string|null $ID Primary Key
@@ -746,9 +724,7 @@ class Item extends Model
  * @property string|null $PaymentServiceProviderName Name of the Payment service provider
  * @property int|null $Type Type of Journal. The following values are supported: 10 (Cash) 12 (Bank) 16 (Payment service) 20 (Sales) 21 (Return invoice) 22 (Purchase) 23 (Received return invoice) 90 (General journal)
  */
-class Journal extends Model
-{
-}
+class Journal extends Model {}
 
 /**
  * @property string|null $ID Identifier of the payment.
@@ -820,9 +796,7 @@ class Journal extends Model
  * @property int|null $TransactionType Type of the linked transaction.
  * @property string|null $YourRef Invoice number of the supplier. In case the payment belongs to a bank entry line and is matched with one invoice, YourRef is filled with the YourRef of this invoice.
  */
-class Payment extends Model
-{
-}
+class Payment extends Model {}
 
 /**
  * @property string|null $ID Primary key
@@ -891,9 +865,7 @@ class Payment extends Model
  * @property string|null $TypeDescription Description of Type
  * @property bool|null $UseBillingMilestones Indicates whether the Project is using billing milestones
  */
-class Project extends Model
-{
-}
+class Project extends Model {}
 
 /**
  * @property string|null $ID Primary key
@@ -912,9 +884,7 @@ class Project extends Model
  * @property string|null $ProjectCode Project code that the budgeted hours is referenced to
  * @property string|null $ProjectDescription Project description that the budgeted hours is referenced to
  */
-class ProjectHourBudget extends Model
-{
-}
+class ProjectHourBudget extends Model {}
 
 /**
  * @property string|null $ID A guid that is the unique identifier of the purchase invoice.
@@ -943,9 +913,7 @@ class ProjectHourBudget extends Model
  * @property string|null $Warehouse Guid that identifies the warehouse that will receive the purchased goods. This is mandatory for creating a direct purchase invoice except for Exact Online Projects.
  * @property string|null $YourRef The invoice number provided by the supplier.
  */
-class PurchaseInvoice extends Model
-{
-}
+class PurchaseInvoice extends Model {}
 
 /**
  * @property string|null $ID A guid that uniquely identifies the purchase invoice line.
@@ -976,9 +944,7 @@ class PurchaseInvoice extends Model
  * @property string|null $VATCode The VAT code used for the invoice line.
  * @property float|null $VATPercentage The VAT percentage.
  */
-class PurchaseInvoiceLine extends Model
-{
-}
+class PurchaseInvoiceLine extends Model {}
 
 /**
  * @property string|null $PurchaseOrderID Primary key
@@ -1044,9 +1010,7 @@ class PurchaseInvoiceLine extends Model
  * @property string|null $WarehouseDescription Description of Warehouse
  * @property string|null $YourRef Shows the reference number associated with the purchase order. Enter a description and reference to make the purchase order easier to identify.
  */
-class PurchaseOrder extends Model
-{
-}
+class PurchaseOrder extends Model {}
 
 /**
  * @property string|null $ID Primary key
@@ -1107,9 +1071,7 @@ class PurchaseOrder extends Model
  * @property string|null $VATDescription Description of vat code
  * @property float|null $VATPercentage The VAT percentage of the VAT code. This is the percentage at the moment the invoice is created. It's also used by the default calculation of VAT amounts and VAT base amounts
  */
-class PurchaseOrderLine extends Model
-{
-}
+class PurchaseOrderLine extends Model {}
 
 /**
  * @property string|null $QuotationID Identifier of the quotation
@@ -1182,9 +1144,7 @@ class PurchaseOrderLine extends Model
  * @property string|null $WarehouseID Warehouse. Only supported by the Plus, Professional and Premium editions for Wholesale & Distribution and Manufacturing
  * @property string|null $YourRef The number by which this quotation is identified by the order account
  */
-class Quotation extends Model
-{
-}
+class Quotation extends Model {}
 
 /**
  * @property string|null $ID Primary key
@@ -1217,9 +1177,7 @@ class Quotation extends Model
  * @property float|null $VATPercentage The VAT percentage of the VAT code
  * @property int|null $VersionNumber Number indicating the different reviews which are made for the quotation
  */
-class QuotationLine extends Model
-{
-}
+class QuotationLine extends Model {}
 
 /**
  * @property string|null $InvoiceID Primary key
@@ -1301,9 +1259,7 @@ class QuotationLine extends Model
  * @property float|null $WithholdingTaxPercentage Withholding tax percentage applied to sales invoice. Not supported in The Netherlands.
  * @property string|null $YourRef The invoice number of the customer
  */
-class SalesInvoice extends Model
-{
-}
+class SalesInvoice extends Model {}
 
 /**
  * @property string|null $ID Primary key
@@ -1356,9 +1312,7 @@ class SalesInvoice extends Model
  * @property string|null $VATCodeDescription Description of VATCode
  * @property float|null $VATPercentage The vat percentage of the VAT code. This is the percentage at the moment the invoice is created. It's also used for the default calculation of VAT amounts and VAT base amounts
  */
-class SalesInvoiceLine extends Model
-{
-}
+class SalesInvoiceLine extends Model {}
 
 /**
  * @property string|null $OrderID Primary key
@@ -1432,9 +1386,7 @@ class SalesInvoiceLine extends Model
  * @property string|null $WarehouseID Warehouse. Only supported by the Plus, Professional and Premium editions for Wholesale & Distribution and Manufacturing
  * @property string|null $YourRef The reference number of the customer
  */
-class SalesOrder extends Model
-{
-}
+class SalesOrder extends Model {}
 
 /**
  * @property string|null $ID Primary key
@@ -1486,9 +1438,7 @@ class SalesOrder extends Model
  * @property string|null $VATCodeDescription Description of VATCode
  * @property float|null $VATPercentage The vat percentage of the VAT code. This is the percentage at the moment the sales order is created. It's also used for the default calculation of VAT amounts and VAT base amounts
  */
-class SalesOrderLine extends Model
-{
-}
+class SalesOrderLine extends Model {}
 
 /**
  * @property string|null $ID Primary key
@@ -1538,9 +1488,7 @@ class SalesOrderLine extends Model
  * @property string|null $VATMargin VAT margin scheme indicator (alias for VatMargin as used in action code)
  * @property string|null $VATTransactionType Indicates the type of transactions for which the VAT code may be used. B = Both, P = Purchase, S = Sales
  */
-class VatCode extends Model
-{
-}
+class VatCode extends Model {}
 
 /**
  * @property string|null $ID A guid that is the unique identifier of the warehouse
@@ -1561,9 +1509,7 @@ class VatCode extends Model
  * @property string|null $ModifierFullName Name of modifier
  * @property int|null $UseStorageLocations Indicates if this warehouse is using storage locations. The storage locations will not be removed when when this is deactivated
  */
-class Warehouse extends Model
-{
-}
+class Warehouse extends Model {}
 
 /**
  * @property string|null $ID Primary key
@@ -1578,9 +1524,7 @@ class Warehouse extends Model
  * @property string|null $Topic Webhook subscription topic, e.g.: Accounts, Items, StockPositions
  * @property string|null $UserID Subscribing User ID
  */
-class WebhookSubscription extends Model
-{
-}
+class WebhookSubscription extends Model {}
 
 /**
  * @property int|null $Code Primary key
@@ -1617,9 +1561,7 @@ class WebhookSubscription extends Model
  * @property string|null $VATNumber VAT number
  * @property string|null $Website Customer value, hyperlink to external website
  */
-class Division extends Model
-{
-}
+class Division extends Model {}
 
 /**
  * @property string|null $UserID Primary key
@@ -1662,9 +1604,7 @@ class Division extends Model
  * @property string|null $Title Title
  * @property string|null $UserName Login name of the user. If the user logs in with One Exact Identity, the login name is in the email address field
  */
-class Me extends Model
-{
-}
+class Me extends Model {}
 
 /**
  * @method object getClient()

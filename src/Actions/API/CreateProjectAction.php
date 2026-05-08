@@ -38,7 +38,7 @@ class CreateProjectAction
      *     TimeQuantityToAlert?: float|null,
      *     UseBillingMilestones?: bool|null
      * }  $data
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      *
      * @throws ConnectionException
