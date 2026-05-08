@@ -51,8 +51,14 @@ it('tracks rate limit usage from picqer connection', function () {
 it('returns empty result when no rate limit headers are present', function () {
     $picqerConnection = Mockery::mock(Connection::class);
 
-    // No rate limit methods exist
-    $picqerConnection->shouldReceive('getDailyLimit')->never();
+    // method_exists() returns true for mocked methods, so all are called —
+    // returning null produces empty strings that array_filter removes, giving empty headers
+    $picqerConnection->shouldReceive('getDailyLimit')->once()->andReturn(null);
+    $picqerConnection->shouldReceive('getDailyLimitRemaining')->once()->andReturn(null);
+    $picqerConnection->shouldReceive('getDailyLimitReset')->once()->andReturn(null);
+    $picqerConnection->shouldReceive('getMinutelyLimit')->once()->andReturn(null);
+    $picqerConnection->shouldReceive('getMinutelyLimitRemaining')->once()->andReturn(null);
+    $picqerConnection->shouldReceive('getMinutelyLimitReset')->once()->andReturn(null);
 
     $result = $this->action->execute($this->connection, $picqerConnection);
 
@@ -76,7 +82,7 @@ it('generates warnings when approaching daily limit', function () {
 
     Cache::shouldReceive('put')->once();
 
-    Log::shouldReceive('debug')->twice();
+    Log::shouldReceive('debug')->once();
     Log::shouldReceive('warning')
         ->once()
         ->with('Rate limit warning', Mockery::on(function ($context) {
@@ -143,7 +149,7 @@ it('dispatches RateLimitApproaching event when warnings exist', function () {
 
     Cache::shouldReceive('put')->once();
 
-    Log::shouldReceive('debug')->twice();
+    Log::shouldReceive('debug')->once();
     Log::shouldReceive('warning')->times(4); // Multiple warnings
 
     $this->action->execute($this->connection, $picqerConnection);

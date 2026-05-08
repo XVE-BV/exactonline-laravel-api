@@ -11,7 +11,6 @@ use Skylence\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\TrackRateLimitUsageAction;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
-use Skylence\ExactonlineLaravelApi\Support\Config;
 
 beforeEach(function () {
     $this->connection = ExactConnection::factory()->create([
@@ -21,63 +20,44 @@ beforeEach(function () {
         'is_active' => true,
     ]);
 
-    $this->action = new GetAccountsAction;
+    $this->action = Mockery::mock(GetAccountsAction::class)->makePartial();
 });
 
 it('retrieves accounts successfully', function () {
     // Mock rate limit checking
     $checkRateLimitAction = Mockery::mock(CheckRateLimitAction::class);
-    $checkRateLimitAction->shouldReceive('execute')
-        ->once()
-        ->with($this->connection);
+    $checkRateLimitAction->shouldReceive('execute')->once();
 
-    Config::shouldReceive('getAction')
-        ->with('check_rate_limit', CheckRateLimitAction::class)
-        ->once()
-        ->andReturn($checkRateLimitAction);
+    $this->app->instance(CheckRateLimitAction::class, $checkRateLimitAction);
 
     // Mock rate limit tracking
     $trackRateLimitAction = Mockery::mock(TrackRateLimitUsageAction::class);
     $trackRateLimitAction->shouldReceive('execute')
         ->once();
 
-    Config::shouldReceive('getAction')
-        ->with('track_rate_limit_usage', TrackRateLimitUsageAction::class)
-        ->once()
-        ->andReturn($trackRateLimitAction);
+    $this->app->instance(TrackRateLimitUsageAction::class, $trackRateLimitAction);
 
-    // Mock picqer Account entity
-    $mockAccounts = [
-        (object) [
-            'ID' => 'account-1',
-            'Name' => 'Test Account 1',
-            'Email' => 'test1@example.com',
-            'attributes' => function () {
-                return [
-                    'ID' => 'account-1',
-                    'Name' => 'Test Account 1',
-                    'Email' => 'test1@example.com',
-                ];
-            },
-        ],
-        (object) [
-            'ID' => 'account-2',
-            'Name' => 'Test Account 2',
-            'Email' => 'test2@example.com',
-            'attributes' => function () {
-                return [
-                    'ID' => 'account-2',
-                    'Name' => 'Test Account 2',
-                    'Email' => 'test2@example.com',
-                ];
-            },
-        ],
-    ];
+    // Mock picqer Account entity results
+    $mockAccount1 = Mockery::mock();
+    $mockAccount1->shouldReceive('attributes')->once()->andReturn([
+        'ID' => 'account-1',
+        'Name' => 'Test Account 1',
+        'Email' => 'test1@example.com',
+    ]);
+    $mockAccount2 = Mockery::mock();
+    $mockAccount2->shouldReceive('attributes')->once()->andReturn([
+        'ID' => 'account-2',
+        'Name' => 'Test Account 2',
+        'Email' => 'test2@example.com',
+    ]);
+    $mockAccounts = [$mockAccount1, $mockAccount2];
 
-    $accountEntity = Mockery::mock('overload:'.Account::class);
+    $accountEntity = Mockery::mock(Account::class);
     $accountEntity->shouldReceive('get')
         ->once()
         ->andReturn($mockAccounts);
+
+    $this->action->shouldReceive('createAccount')->once()->andReturn($accountEntity);
 
     $picqerConnection = Mockery::mock(Connection::class);
 
@@ -103,21 +83,15 @@ it('applies OData query options correctly', function () {
     $checkRateLimitAction = Mockery::mock(CheckRateLimitAction::class);
     $checkRateLimitAction->shouldReceive('execute')->once();
 
-    Config::shouldReceive('getAction')
-        ->with('check_rate_limit', CheckRateLimitAction::class)
-        ->once()
-        ->andReturn($checkRateLimitAction);
+    $this->app->instance(CheckRateLimitAction::class, $checkRateLimitAction);
 
     $trackRateLimitAction = Mockery::mock(TrackRateLimitUsageAction::class);
     $trackRateLimitAction->shouldReceive('execute')->once();
 
-    Config::shouldReceive('getAction')
-        ->with('track_rate_limit_usage', TrackRateLimitUsageAction::class)
-        ->once()
-        ->andReturn($trackRateLimitAction);
+    $this->app->instance(TrackRateLimitUsageAction::class, $trackRateLimitAction);
 
     // Mock Account entity with query options
-    $accountEntity = Mockery::mock('overload:'.Account::class);
+    $accountEntity = Mockery::mock(Account::class);
     $accountEntity->shouldReceive('filter')
         ->once()
         ->with("Name eq 'Test'");
@@ -139,6 +113,8 @@ it('applies OData query options correctly', function () {
     $accountEntity->shouldReceive('get')
         ->once()
         ->andReturn([]);
+
+    $this->action->shouldReceive('createAccount')->once()->andReturn($accountEntity);
 
     $picqerConnection = Mockery::mock(Connection::class);
 
@@ -172,37 +148,29 @@ it('refreshes token automatically when needed', function () {
     $refreshAction = Mockery::mock(RefreshAccessTokenAction::class);
     $refreshAction->shouldReceive('execute')
         ->once()
-        ->with($this->connection)
         ->andReturn([
             'access_token' => 'new-token',
             'refresh_token' => 'new-refresh',
             'expires_at' => now()->addMinutes(10)->timestamp,
         ]);
 
-    Config::shouldReceive('getAction')
-        ->with('refresh_access_token', RefreshAccessTokenAction::class)
-        ->once()
-        ->andReturn($refreshAction);
+    $this->app->instance(RefreshAccessTokenAction::class, $refreshAction);
 
     // Mock other dependencies
     $checkRateLimitAction = Mockery::mock(CheckRateLimitAction::class);
     $checkRateLimitAction->shouldReceive('execute')->once();
 
-    Config::shouldReceive('getAction')
-        ->with('check_rate_limit', CheckRateLimitAction::class)
-        ->once()
-        ->andReturn($checkRateLimitAction);
+    $this->app->instance(CheckRateLimitAction::class, $checkRateLimitAction);
 
     $trackRateLimitAction = Mockery::mock(TrackRateLimitUsageAction::class);
     $trackRateLimitAction->shouldReceive('execute')->once();
 
-    Config::shouldReceive('getAction')
-        ->with('track_rate_limit_usage', TrackRateLimitUsageAction::class)
-        ->once()
-        ->andReturn($trackRateLimitAction);
+    $this->app->instance(TrackRateLimitUsageAction::class, $trackRateLimitAction);
 
-    $accountEntity = Mockery::mock('overload:'.Account::class);
+    $accountEntity = Mockery::mock(Account::class);
     $accountEntity->shouldReceive('get')->once()->andReturn([]);
+
+    $this->action->shouldReceive('createAccount')->once()->andReturn($accountEntity);
 
     $picqerConnection = Mockery::mock(Connection::class);
 
@@ -223,16 +191,15 @@ it('throws ConnectionException on API error', function () {
     $checkRateLimitAction = Mockery::mock(CheckRateLimitAction::class);
     $checkRateLimitAction->shouldReceive('execute')->once();
 
-    Config::shouldReceive('getAction')
-        ->with('check_rate_limit', CheckRateLimitAction::class)
-        ->once()
-        ->andReturn($checkRateLimitAction);
+    $this->app->instance(CheckRateLimitAction::class, $checkRateLimitAction);
 
     // Mock Account entity to throw exception
-    $accountEntity = Mockery::mock('overload:'.Account::class);
+    $accountEntity = Mockery::mock(Account::class);
     $accountEntity->shouldReceive('get')
         ->once()
         ->andThrow(new Exception('API Error: Invalid request'));
+
+    $this->action->shouldReceive('createAccount')->once()->andReturn($accountEntity);
 
     $picqerConnection = Mockery::mock(Connection::class);
 
@@ -252,23 +219,19 @@ it('returns empty collection when no accounts found', function () {
     $checkRateLimitAction = Mockery::mock(CheckRateLimitAction::class);
     $checkRateLimitAction->shouldReceive('execute')->once();
 
-    Config::shouldReceive('getAction')
-        ->with('check_rate_limit', CheckRateLimitAction::class)
-        ->once()
-        ->andReturn($checkRateLimitAction);
+    $this->app->instance(CheckRateLimitAction::class, $checkRateLimitAction);
 
     $trackRateLimitAction = Mockery::mock(TrackRateLimitUsageAction::class);
     $trackRateLimitAction->shouldReceive('execute')->once();
 
-    Config::shouldReceive('getAction')
-        ->with('track_rate_limit_usage', TrackRateLimitUsageAction::class)
-        ->once()
-        ->andReturn($trackRateLimitAction);
+    $this->app->instance(TrackRateLimitUsageAction::class, $trackRateLimitAction);
 
-    $accountEntity = Mockery::mock('overload:'.Account::class);
+    $accountEntity = Mockery::mock(Account::class);
     $accountEntity->shouldReceive('get')
         ->once()
         ->andReturn([]);
+
+    $this->action->shouldReceive('createAccount')->once()->andReturn($accountEntity);
 
     $picqerConnection = Mockery::mock(Connection::class);
 

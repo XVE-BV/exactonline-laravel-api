@@ -46,7 +46,7 @@ class GetAccountsAction
             $picqerConnection = $connection->getPicqerConnection();
 
             // Create Account instance
-            $account = new Account($picqerConnection);
+            $account = $this->createAccount($picqerConnection);
 
             // Apply filters if provided
             $this->applyQueryOptions($account, $options);
@@ -135,6 +135,11 @@ class GetAccountsAction
             TrackRateLimitUsageAction::class
         );
         $trackRateLimitAction->execute($connection, $picqerConnection);
+    }
+
+    public function createAccount(Connection $picqerConnection): Account
+    {
+        return new Account($picqerConnection);
     }
 
     /**

@@ -81,6 +81,11 @@ it('does not throw exception for minutely limit when configured to wait', functi
         ->once()
         ->with('Minutely rate limit exceeded, will wait', Mockery::any());
 
+    // minutely_remaining=0 also triggers the low-limit warning
+    Log::shouldReceive('warning')
+        ->once()
+        ->with('Low minutely rate limit', Mockery::any());
+
     $result = $this->action->execute($this->connection);
 
     expect($result['can_proceed'])->toBeTrue();

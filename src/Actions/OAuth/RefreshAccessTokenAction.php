@@ -34,6 +34,7 @@ class RefreshAccessTokenAction
 
         // Distributed lock with 30-second timeout
         $lock = Cache::lock($lockKey, 30);
+        $lockAcquired = false;
 
         try {
             // Try to acquire lock
@@ -45,6 +46,8 @@ class RefreshAccessTokenAction
 
                 return $this->waitForRefreshAndReturnTokens($connection);
             }
+
+            $lockAcquired = true;
 
             // Double-check token hasn't been refreshed by another process
             $connection->refresh();
@@ -92,8 +95,9 @@ class RefreshAccessTokenAction
                 $e->getMessage()
             );
         } finally {
-            // Always release the lock
-            $lock->release();
+            if ($lockAcquired) {
+                $lock->release();
+            }
         }
     }
 
@@ -139,7 +143,7 @@ class RefreshAccessTokenAction
 
                 // Exponential backoff: 100ms, 200ms, 400ms
                 $delay = $baseDelay * (2 ** ($attempt - 1));
-                usleep($delay * 1000);
+                $this->sleep($delay * 1000);
 
                 Log::warning('Token refresh retry', [
                     'connection_id' => $connection->id,
@@ -253,7 +257,7 @@ class RefreshAccessTokenAction
         $checkInterval = 100; // ms
 
         while ($waited < $maxWaitMs) {
-            usleep($checkInterval * 1000);
+            $this->sleep($checkInterval * 1000);
             $waited += $checkInterval;
 
             $connection->refresh();
@@ -269,6 +273,11 @@ class RefreshAccessTokenAction
         }
 
         throw TokenRefreshException::lockTimeout((string) $connection->id);
+    }
+
+    public function sleep(int $microseconds): void
+    {
+        usleep($microseconds);
     }
 
     /**
