@@ -8,6 +8,7 @@ use RuntimeException;
 
 class SchemaLoader
 {
+    /** @var array<string, array<string, mixed>> */
     protected array $cache = [];
 
     protected ?string $customPath = null;
@@ -17,6 +18,7 @@ class SchemaLoader
         $this->customPath = $customPath;
     }
 
+    /** @return array<string, mixed> */
     public function load(string $entity): array
     {
         if (! isset($this->cache[$entity])) {
@@ -26,7 +28,7 @@ class SchemaLoader
                 throw new RuntimeException("Schema not found for entity: {$entity}. Expected at: {$path}");
             }
 
-            $content = file_get_contents($path);
+            $content = (string) file_get_contents($path);
             $decoded = json_decode($content, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
@@ -39,6 +41,7 @@ class SchemaLoader
         return $this->cache[$entity];
     }
 
+    /** @return array<string, mixed> */
     public function getFields(string $entity): array
     {
         return $this->load($entity)['fields'] ?? [];

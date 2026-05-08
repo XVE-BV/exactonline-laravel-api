@@ -6,7 +6,7 @@ namespace Skylence\ExactonlineLaravelApi\Actions\API;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Picqer\Financials\Exact\VATCode;
+use Picqer\Financials\Exact\VatCode;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
@@ -28,7 +28,7 @@ class GetVATCodesAction
         $picqerConnection = $this->prepareConnection($connection);
 
         try {
-            $vatCode = new VATCode($picqerConnection);
+            $vatCode = new VatCode($picqerConnection);
 
             $this->applyQueryOptions($vatCode, $options);
 
@@ -60,7 +60,7 @@ class GetVATCodesAction
     /**
      * @param  array<string, mixed>  $options
      */
-    protected function applyQueryOptions(VATCode $entity, array $options): void
+    protected function applyQueryOptions(VatCode $entity, array $options): void
     {
         if (! empty($options['filter'])) {
             $entity->filter($options['filter']);

@@ -44,6 +44,19 @@ final readonly class SyncResult
     }
 
     /**
+     * Create a skipped result (entity already exists or no action needed).
+     */
+    public static function skipped(string $reason = '', ?string $id = null, ?string $code = null): self
+    {
+        return new self(
+            id: $id ?? '',
+            code: $code,
+            created: false,
+            updated: false,
+        );
+    }
+
+    /**
      * Create a failed result.
      */
     public static function failed(string $error, ?string $id = null): self

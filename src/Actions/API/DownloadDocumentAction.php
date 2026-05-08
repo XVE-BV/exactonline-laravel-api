@@ -156,6 +156,8 @@ class DownloadDocumentAction
         // Otherwise, make a direct HTTP request with authentication
         $client = $picqerConnection->getClient();
 
+        // FIXME: getClient() returns a GuzzleHttp\Client but the stub types it as mixed, so request() is unknown to PHPStan. Will throw at runtime if picqer ever changes the underlying client.
+        // @phpstan-ignore-next-line method.notFound
         $response = $client->request('GET', $url, [
             'headers' => [
                 'Accept' => 'application/octet-stream',
@@ -224,7 +226,7 @@ class DownloadDocumentAction
         }
 
         // Refresh proactively at 9 minutes (540 seconds before expiry)
-        return $connection->token_expires_at < (now()->timestamp + 540);
+        return $connection->token_expires_at < (now()->getTimestamp() + 540);
     }
 
     /**

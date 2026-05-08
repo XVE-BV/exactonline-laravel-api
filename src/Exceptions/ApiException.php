@@ -18,8 +18,10 @@ class ApiException extends ExactOnlineException
 
     protected ?string $method = null;
 
+    /** @var array<string, mixed>|null */
     protected ?array $responseBody = null;
 
+    /** @var array<string, mixed> */
     protected array $validationErrors = [];
 
     public function __construct(
@@ -54,6 +56,7 @@ class ApiException extends ExactOnlineException
     /**
      * Create exception for validation error from API.
      */
+    /** @param array<string, mixed> $errors */
     public static function validationFailed(
         string $entity,
         array $errors,
@@ -262,6 +265,7 @@ class ApiException extends ExactOnlineException
     /**
      * Get the response body.
      */
+    /** @return array<string, mixed>|null */
     public function getResponseBody(): ?array
     {
         return $this->responseBody;
@@ -270,6 +274,7 @@ class ApiException extends ExactOnlineException
     /**
      * Set the response body.
      */
+    /** @param array<string, mixed> $responseBody */
     public function setResponseBody(array $responseBody): self
     {
         $this->responseBody = $responseBody;
@@ -280,6 +285,7 @@ class ApiException extends ExactOnlineException
     /**
      * Get validation errors from the API.
      */
+    /** @return array<string, mixed> */
     public function getValidationErrors(): array
     {
         return $this->validationErrors;

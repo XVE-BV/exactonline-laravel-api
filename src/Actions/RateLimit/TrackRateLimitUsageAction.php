@@ -113,22 +113,27 @@ class TrackRateLimitUsageAction
         $headers = [];
 
         // Get rate limit data from picqer connection
-        // These methods are available in picqer's Connection class
+        // @phpstan-ignore-next-line function.alreadyNarrowedType
         if (method_exists($picqerConnection, 'getDailyLimit')) {
             $headers['X-RateLimit-Limit'] = (string) $picqerConnection->getDailyLimit();
         }
+        // @phpstan-ignore-next-line function.alreadyNarrowedType
         if (method_exists($picqerConnection, 'getDailyLimitRemaining')) {
             $headers['X-RateLimit-Remaining'] = (string) $picqerConnection->getDailyLimitRemaining();
         }
+        // @phpstan-ignore-next-line function.alreadyNarrowedType
         if (method_exists($picqerConnection, 'getDailyLimitReset')) {
             $headers['X-RateLimit-Reset'] = (string) $picqerConnection->getDailyLimitReset();
         }
+        // @phpstan-ignore-next-line function.alreadyNarrowedType
         if (method_exists($picqerConnection, 'getMinutelyLimit')) {
             $headers['X-RateLimit-Minutely-Limit'] = (string) $picqerConnection->getMinutelyLimit();
         }
+        // @phpstan-ignore-next-line function.alreadyNarrowedType
         if (method_exists($picqerConnection, 'getMinutelyLimitRemaining')) {
             $headers['X-RateLimit-Minutely-Remaining'] = (string) $picqerConnection->getMinutelyLimitRemaining();
         }
+        // @phpstan-ignore-next-line function.alreadyNarrowedType
         if (method_exists($picqerConnection, 'getMinutelyLimitReset')) {
             $headers['X-RateLimit-Minutely-Reset'] = (string) $picqerConnection->getMinutelyLimitReset();
         }
@@ -291,7 +296,7 @@ class TrackRateLimitUsageAction
             'minutely_limit' => $rateLimit->minutely_limit,
             'minutely_remaining' => $rateLimit->minutely_remaining,
             'minutely_reset_at' => $rateLimit->minutely_reset_at,
-            'updated_at' => now()->timestamp,
+            'updated_at' => now()->getTimestamp(),
         ], $ttl);
     }
 

@@ -19,33 +19,7 @@ class CreatePurchaseInvoiceAction
     /**
      * Create a new purchase invoice in Exact Online.
      *
-     * @param  array{
-     *     Supplier: string,
-     *     InvoiceDate?: string|null,
-     *     DueDate?: string|null,
-     *     Description?: string|null,
-     *     Currency?: string|null,
-     *     YourRef?: string|null,
-     *     Journal?: string|null,
-     *     Document?: string|null,
-     *     PaymentCondition?: string|null,
-     *     PaymentReference?: string|null,
-     *     Source?: int|null,
-     *     Type?: int|null,
-     *     PurchaseInvoiceLines?: array<int, array{
-     *         Item?: string|null,
-     *         GLAccount?: string|null,
-     *         Description?: string|null,
-     *         Quantity?: float|null,
-     *         NetPrice?: float|null,
-     *         Amount?: float|null,
-     *         VATCode?: string|null,
-     *         VATPercentage?: float|null,
-     *         Project?: string|null,
-     *         CostCenter?: string|null,
-     *         CostUnit?: string|null
-     *     }>|null
-     * }  $data
+     * @param  array<string, mixed>  $data  The entity data
      * @return array<string, mixed>
      *
      * @throws ConnectionException

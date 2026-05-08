@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Skylence\ExactonlineLaravelApi\Actions\API;
 
 use Illuminate\Support\Facades\Log;
-use Picqer\Financials\Exact\VATCode;
+use Picqer\Financials\Exact\VatCode;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
 use Skylence\ExactonlineLaravelApi\Concerns\ValidatesPayload;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
@@ -54,7 +54,7 @@ class UpdateVATCodeAction
         $picqerConnection = $this->prepareConnection($connection);
 
         try {
-            $vatCode = new VATCode($picqerConnection);
+            $vatCode = new VatCode($picqerConnection);
 
             $existingVATCode = $vatCode->find($vatCodeId);
 
@@ -63,6 +63,7 @@ class UpdateVATCodeAction
             }
 
             foreach ($data as $key => $value) {
+                // @phpstan-ignore-next-line assign.propertyType
                 $existingVATCode->{$key} = $value;
             }
 

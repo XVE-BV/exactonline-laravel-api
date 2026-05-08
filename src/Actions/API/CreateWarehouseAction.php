@@ -20,13 +20,7 @@ class CreateWarehouseAction
      * Create a new warehouse in Exact Online.
      *
      * @param  ExactConnection  $connection  The Exact Online connection
-     * @param  array{
-     *     Code: string,
-     *     Description: string,
-     *     Main?: bool|null,
-     *     ManagerUser?: string|null,
-     *     UseStorageLocations?: int|null
-     * }  $data  Warehouse data following Exact Online's schema
+     * @param  array<string, mixed>  $data  The entity data
      * @return array<string, mixed> The created warehouse data
      *
      * @throws ConnectionException

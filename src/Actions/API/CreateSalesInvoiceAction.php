@@ -23,42 +23,7 @@ class CreateSalesInvoiceAction
      * Create a new sales invoice in Exact Online
      *
      * @param  ExactConnection  $connection  The Exact Online connection
-     * @param  array{
-     *     InvoiceTo: string,
-     *     OrderedBy?: string|null,
-     *     InvoiceDate?: string|null,
-     *     DueDate?: string|null,
-     *     Currency?: string|null,
-     *     Description?: string|null,
-     *     PaymentCondition?: string|null,
-     *     PaymentReference?: string|null,
-     *     Journal?: string|null,
-     *     Status?: int|null,
-     *     Type?: int|null,
-     *     Remarks?: string|null,
-     *     InvoiceNumber?: int|null,
-     *     DeliverTo?: string|null,
-     *     DeliveryAddress?: string|null,
-     *     DeliveryDate?: string|null,
-     *     OrderNumber?: int|null,
-     *     OrderDate?: string|null,
-     *     SalesInvoiceLines: array<array{
-     *         Item?: string|null,
-     *         Quantity?: float|null,
-     *         UnitPrice?: float|null,
-     *         VATAmount?: float|null,
-     *         VATCode?: string|null,
-     *         Description?: string|null,
-     *         Discount?: float|null,
-     *         LineNumber?: int|null,
-     *         GLAccount?: string|null,
-     *         CostCenter?: string|null,
-     *         CostUnit?: string|null,
-     *         Project?: string|null,
-     *         Subscription?: string|null,
-     *         NetPrice?: float|null
-     *     }>
-     * }  $invoiceData  Invoice data following Exact Online's schema
+     * @param  array<string, mixed>  $invoiceData  Invoice data following Exact Online's schema
      * @return array<string, mixed> The created invoice data
      *
      * @throws ConnectionException
@@ -219,7 +184,7 @@ class CreateSalesInvoiceAction
         }
 
         // Refresh proactively at 9 minutes (540 seconds before expiry)
-        return $connection->token_expires_at < (now()->timestamp + 540);
+        return $connection->token_expires_at < (now()->getTimestamp() + 540);
     }
 
     /**

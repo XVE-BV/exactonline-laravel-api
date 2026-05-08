@@ -14,7 +14,7 @@ class FieldValidator
      *
      * @param  string  $field  The field name
      * @param  mixed  $value  The value to validate
-     * @param  array  $rules  The validation rules
+     * @param  array<string, mixed>  $rules  The validation rules
      * @return array<string> Array of error messages (empty if valid)
      */
     public function validate(string $field, mixed $value, array $rules): array

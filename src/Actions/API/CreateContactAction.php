@@ -20,31 +20,7 @@ class CreateContactAction
      * Create a new contact in Exact Online.
      *
      * @param  ExactConnection  $connection  The Exact Online connection
-     * @param  array{
-     *     Account: string,
-     *     FirstName?: string|null,
-     *     LastName?: string|null,
-     *     FullName?: string|null,
-     *     JobTitleDescription?: string|null,
-     *     Email?: string|null,
-     *     Phone?: string|null,
-     *     Mobile?: string|null,
-     *     Fax?: string|null,
-     *     Gender?: string|null,
-     *     Title?: string|null,
-     *     Initials?: string|null,
-     *     MiddleName?: string|null,
-     *     Salutation?: string|null,
-     *     Language?: string|null,
-     *     Notes?: string|null,
-     *     IsMainContact?: bool|null,
-     *     City?: string|null,
-     *     Country?: string|null,
-     *     AddressLine1?: string|null,
-     *     AddressLine2?: string|null,
-     *     Postcode?: string|null,
-     *     State?: string|null
-     * }  $data  Contact data following Exact Online's schema
+     * @param  array<string, mixed>  $data  The entity data
      * @return array<string, mixed> The created contact data
      *
      * @throws ConnectionException

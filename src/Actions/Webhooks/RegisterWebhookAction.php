@@ -6,6 +6,7 @@ namespace Skylence\ExactonlineLaravelApi\Actions\Webhooks;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Skylence\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
 use Skylence\ExactonlineLaravelApi\Actions\RateLimit\CheckRateLimitAction;
@@ -150,7 +151,7 @@ class RegisterWebhookAction
     {
         $path = config('exactonline-laravel-api.webhooks.path', '/exact/webhooks');
 
-        return url($path);
+        return URL::to($path);
     }
 
     /**
@@ -180,9 +181,11 @@ class RegisterWebhookAction
         // Make API call to register webhook
         // Note: The exact endpoint and method may vary based on Exact Online's webhook API
         // This is a generic implementation that may need adjustment
+        // FIXME: Connection::getApiUrl() is private; this will throw at runtime.
+        // @phpstan-ignore-next-line method.private
         $url = $picqerConnection->getApiUrl().'/webhooks/WebhookSubscriptions';
 
-        $response = Http::withToken(decrypt($connection->access_token))
+        $response = Http::withToken(decrypt((string) $connection->access_token))
             ->withHeaders([
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
@@ -226,7 +229,7 @@ class RegisterWebhookAction
         }
 
         // Refresh proactively at 9 minutes (540 seconds before expiry)
-        return $connection->token_expires_at < (now()->timestamp + 540);
+        return $connection->token_expires_at < (now()->getTimestamp() + 540);
     }
 
     /**

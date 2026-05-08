@@ -200,7 +200,7 @@ class ProcessWebhookPayloadAction
                     null;
 
         if ($timestamp === null) {
-            return now()->timestamp;
+            return now()->getTimestamp();
         }
 
         // If it's already a Unix timestamp
@@ -216,7 +216,7 @@ class ProcessWebhookPayloadAction
         // Parse string timestamp
         $parsed = strtotime($timestamp);
 
-        return $parsed !== false ? $parsed : now()->timestamp;
+        return $parsed !== false ? $parsed : now()->getTimestamp();
     }
 
     /**

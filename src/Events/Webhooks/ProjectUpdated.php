@@ -6,6 +6,21 @@ namespace Skylence\ExactonlineLaravelApi\Events\Webhooks;
 
 class ProjectUpdated extends BaseWebhookEvent
 {
+    public function getEventName(): string
+    {
+        return 'project.updated';
+    }
+
+    public function getEntityType(): string
+    {
+        return 'Project';
+    }
+
+    public function getActionType(): string
+    {
+        return 'Updated';
+    }
+
     public function getProjectId(): ?string
     {
         return $this->getEntityId();
@@ -21,6 +36,7 @@ class ProjectUpdated extends BaseWebhookEvent
         return $this->getData('Description');
     }
 
+    /** @return array<string, mixed> */
     public function getModifiedFields(): array
     {
         return $this->getData('ModifiedFields', []);

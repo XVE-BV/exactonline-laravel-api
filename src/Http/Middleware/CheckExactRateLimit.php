@@ -66,12 +66,9 @@ class CheckExactRateLimit
         }
 
         // Try to get from user resolver (also set by EnsureValidExactConnection)
-        $userResolver = $request->getUserResolver();
-        if ($userResolver !== null) {
-            $resolved = $userResolver();
-            if ($resolved instanceof ExactConnection) {
-                return $resolved;
-            }
+        $resolved = $request->getUserResolver()();
+        if ($resolved instanceof ExactConnection) {
+            return $resolved;
         }
 
         return null;
@@ -103,12 +100,16 @@ class CheckExactRateLimit
                 ]);
 
                 // Wait for rate limit reset
-                $waitAction = Config::getAction(
-                    'wait_for_rate_limit_reset',
-                    WaitForRateLimitResetAction::class
-                );
+                $rateLimit = $connection->rateLimit;
 
-                $waitAction->execute($connection, $exception->getResetAt());
+                if ($rateLimit !== null) {
+                    $waitAction = Config::getAction(
+                        'wait_for_rate_limit_reset',
+                        WaitForRateLimitResetAction::class
+                    );
+
+                    $waitAction->execute($rateLimit, 'minutely');
+                }
 
                 // Retry the request after waiting
                 return $next($request);
@@ -126,13 +127,17 @@ class CheckExactRateLimit
                     'reset_at' => $exception->getResetAt(),
                 ]);
 
-                $waitAction = Config::getAction(
-                    'wait_for_rate_limit_reset',
-                    WaitForRateLimitResetAction::class
-                );
+                $rateLimit = $connection->rateLimit;
 
-                // This will likely timeout or be impractical
-                $waitAction->execute($connection, $exception->getResetAt());
+                if ($rateLimit !== null) {
+                    $waitAction = Config::getAction(
+                        'wait_for_rate_limit_reset',
+                        WaitForRateLimitResetAction::class
+                    );
+
+                    // This will likely timeout or be impractical
+                    $waitAction->execute($rateLimit, 'daily');
+                }
 
                 return $next($request);
             }
@@ -156,7 +161,7 @@ class CheckExactRateLimit
      */
     protected function createRateLimitResponse(RateLimitExceededException $exception): Response
     {
-        $retryAfter = max(1, $exception->getResetAt() - now()->timestamp);
+        $retryAfter = max(1, $exception->getResetAt() - now()->getTimestamp());
 
         return response()->json([
             'error' => 'Rate limit exceeded',

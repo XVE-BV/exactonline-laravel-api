@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Skylence\ExactonlineLaravelApi\Actions\API;
 
 use Illuminate\Support\Facades\Log;
-use Picqer\Financials\Exact\VATCode;
+use Picqer\Financials\Exact\VatCode;
 use Skylence\ExactonlineLaravelApi\Concerns\HandlesExactConnection;
 use Skylence\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use Skylence\ExactonlineLaravelApi\Models\ExactConnection;
@@ -27,7 +27,7 @@ class GetVATCodeAction
         $picqerConnection = $this->prepareConnection($connection);
 
         try {
-            $vatCode = new VATCode($picqerConnection);
+            $vatCode = new VatCode($picqerConnection);
 
             $result = $vatCode->find($vatCodeId);
 

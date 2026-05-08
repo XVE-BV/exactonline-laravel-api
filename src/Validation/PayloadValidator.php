@@ -18,6 +18,7 @@ class PayloadValidator
      *
      * @throws PayloadValidationException
      */
+    /** @param array<string, mixed> $data */
     public function validateCreate(string $entity, array $data): void
     {
         $this->validate($entity, $data, 'create');
@@ -28,6 +29,7 @@ class PayloadValidator
      *
      * @throws PayloadValidationException
      */
+    /** @param array<string, mixed> $data */
     public function validateUpdate(string $entity, array $data): void
     {
         $this->validate($entity, $data, 'update');
@@ -46,6 +48,7 @@ class PayloadValidator
      *
      * @throws PayloadValidationException
      */
+    /** @param array<string, mixed> $data */
     protected function validate(string $entity, array $data, string $operation): void
     {
         // Skip validation if disabled

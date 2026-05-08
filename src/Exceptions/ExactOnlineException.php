@@ -12,6 +12,8 @@ use Throwable;
  *
  * This provides a common parent for catching all package-related exceptions
  * and includes context about the connection and entity involved.
+ *
+ * @phpstan-consistent-constructor
  */
 class ExactOnlineException extends Exception
 {
@@ -19,6 +21,7 @@ class ExactOnlineException extends Exception
 
     protected ?string $entity = null;
 
+    /** @var array<string, mixed> */
     protected array $context = [];
 
     public function __construct(
@@ -32,7 +35,7 @@ class ExactOnlineException extends Exception
     /**
      * Set the connection ID associated with this exception.
      */
-    public function setConnectionId(?string $connectionId): self
+    public function setConnectionId(?string $connectionId): static
     {
         $this->connectionId = $connectionId;
 
@@ -50,7 +53,7 @@ class ExactOnlineException extends Exception
     /**
      * Set the entity type associated with this exception.
      */
-    public function setEntity(?string $entity): self
+    public function setEntity(?string $entity): static
     {
         $this->entity = $entity;
 
@@ -67,8 +70,10 @@ class ExactOnlineException extends Exception
 
     /**
      * Set additional context for this exception.
+     *
+     * @param  array<string, mixed>  $context
      */
-    public function setContext(array $context): self
+    public function setContext(array $context): static
     {
         $this->context = $context;
 
@@ -78,7 +83,7 @@ class ExactOnlineException extends Exception
     /**
      * Add context to this exception.
      */
-    public function addContext(string $key, mixed $value): self
+    public function addContext(string $key, mixed $value): static
     {
         $this->context[$key] = $value;
 
@@ -87,6 +92,8 @@ class ExactOnlineException extends Exception
 
     /**
      * Get the additional context for this exception.
+     *
+     * @return array<string, mixed>
      */
     public function getContext(): array
     {
@@ -95,6 +102,8 @@ class ExactOnlineException extends Exception
 
     /**
      * Get all exception data as an array for logging.
+     *
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {

@@ -113,7 +113,7 @@ class WaitForRateLimitResetAction
                     'sleeping_for' => $sleepSeconds,
                 ]);
 
-                sleep($sleepSeconds);
+                $this->sleep($sleepSeconds);
                 $remainingSeconds -= $sleepSeconds;
 
                 if ($remainingSeconds <= 0) {
@@ -121,7 +121,7 @@ class WaitForRateLimitResetAction
                 }
             }
         } else {
-            sleep($secondsToWait);
+            $this->sleep($secondsToWait);
         }
 
         Log::info('Rate limit wait completed', [
@@ -131,6 +131,14 @@ class WaitForRateLimitResetAction
 
         // Reset the appropriate limit counter after waiting
         $this->resetLimitCounter($rateLimit, $limitType);
+    }
+
+    /**
+     * Wrapper around PHP sleep() to allow mocking in tests
+     */
+    protected function sleep(int $seconds): void
+    {
+        sleep($seconds);
     }
 
     /**

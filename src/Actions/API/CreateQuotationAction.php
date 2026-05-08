@@ -19,26 +19,7 @@ class CreateQuotationAction
     /**
      * Create a new quotation in Exact Online.
      *
-     * @param  array{
-     *     OrderAccount: string,
-     *     QuotationDate?: string|null,
-     *     ClosingDate?: string|null,
-     *     Description?: string|null,
-     *     Currency?: string|null,
-     *     YourRef?: string|null,
-     *     Remarks?: string|null,
-     *     DeliveryAccount?: string|null,
-     *     InvoiceAccount?: string|null,
-     *     Status?: int|null,
-     *     QuotationLines?: array<int, array{
-     *         Item: string,
-     *         Description?: string|null,
-     *         Quantity: float,
-     *         UnitPrice?: float|null,
-     *         Discount?: float|null,
-     *         VATCode?: string|null
-     *     }>|null
-     * }  $data
+     * @param  array<string, mixed>  $data  The entity data
      * @return array<string, mixed>
      *
      * @throws ConnectionException

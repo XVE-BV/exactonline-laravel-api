@@ -46,7 +46,7 @@ class GetAccountsAction
             $picqerConnection = $connection->getPicqerConnection();
 
             // Create Account instance
-            $account = new Account($picqerConnection);
+            $account = $this->createAccount($picqerConnection);
 
             // Apply filters if provided
             $this->applyQueryOptions($account, $options);
@@ -110,7 +110,7 @@ class GetAccountsAction
         }
 
         // Refresh proactively at 9 minutes (540 seconds before expiry)
-        return $connection->token_expires_at < (now()->timestamp + 540);
+        return $connection->token_expires_at < (now()->getTimestamp() + 540);
     }
 
     /**
@@ -135,6 +135,11 @@ class GetAccountsAction
             TrackRateLimitUsageAction::class
         );
         $trackRateLimitAction->execute($connection, $picqerConnection);
+    }
+
+    public function createAccount(Connection $picqerConnection): Account
+    {
+        return new Account($picqerConnection);
     }
 
     /**

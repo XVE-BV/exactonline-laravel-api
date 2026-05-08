@@ -19,32 +19,7 @@ class CreateGLAccountAction
     /**
      * Create a new GL account in Exact Online.
      *
-     * @param  array{
-     *     Code: string,
-     *     Description: string,
-     *     Type?: int|null,
-     *     TypeDescription?: string|null,
-     *     AssimilatedVATBox?: int|null,
-     *     BalanceSide?: string|null,
-     *     BalanceType?: string|null,
-     *     Compress?: bool|null,
-     *     Costcenter?: string|null,
-     *     Costunit?: string|null,
-     *     ExcludeVATListing?: bool|null,
-     *     IsBlocked?: bool|null,
-     *     Matching?: bool|null,
-     *     PrivateGLAccount?: string|null,
-     *     PrivatePercentage?: float|null,
-     *     ReportingCode?: string|null,
-     *     SearchCode?: string|null,
-     *     UseCostcenter?: int|null,
-     *     UseCostunit?: int|null,
-     *     VATCode?: string|null,
-     *     VATDescription?: string|null,
-     *     VATGLAccountType?: string|null,
-     *     VATNonDeductibleGLAccount?: string|null,
-     *     VATNonDeductiblePercentage?: float|null
-     * }  $data
+     * @param  array<string, mixed>  $data  The entity data
      * @return array<string, mixed>
      *
      * @throws ConnectionException

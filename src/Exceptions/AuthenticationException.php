@@ -199,6 +199,8 @@ class AuthenticationException extends ExactOnlineException
 
     /**
      * Get exception data for logging.
+     *
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {

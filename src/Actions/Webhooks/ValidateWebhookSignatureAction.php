@@ -127,13 +127,13 @@ class ValidateWebhookSignatureAction
         // Try to extract from payload
         $payload = $request->json();
 
-        if ($payload && isset($payload['Topic'])) {
-            return $payload['Topic'];
+        if ($payload->has('Topic')) {
+            return (string) $payload->get('Topic');
         }
 
         // Try alternative field names
-        if ($payload && isset($payload['topic'])) {
-            return $payload['topic'];
+        if ($payload->has('topic')) {
+            return (string) $payload->get('topic');
         }
 
         return null;
@@ -206,7 +206,7 @@ class ValidateWebhookSignatureAction
      */
     protected function calculateSignature(string $payload, ExactWebhook $webhook): string
     {
-        $secret = decrypt($webhook->webhook_secret);
+        $secret = decrypt((string) $webhook->webhook_secret);
 
         // Calculate HMAC-SHA256
         $signature = hash_hmac('sha256', $payload, $secret);
@@ -216,7 +216,9 @@ class ValidateWebhookSignatureAction
         $metadata = $webhook->metadata ?? [];
 
         if (isset($metadata['signature_encoding']) && $metadata['signature_encoding'] === 'base64') {
-            return base64_encode(hex2bin($signature));
+            $binary = hex2bin($signature);
+
+            return base64_encode($binary === false ? '' : $binary);
         }
 
         return $signature;
@@ -233,11 +235,15 @@ class ValidateWebhookSignatureAction
         if (empty($timestamp)) {
             // Try to get from payload
             $payload = $request->json();
-            $timestamp = $payload['timestamp'] ?? $payload['Timestamp'] ?? null;
+            $timestamp = $payload->get('timestamp') ?? $payload->get('Timestamp');
         }
 
         if (empty($timestamp)) {
             // No timestamp to validate, consider it valid
+            return true;
+        }
+
+        if (! is_string($timestamp)) {
             return true;
         }
 
@@ -253,7 +259,7 @@ class ValidateWebhookSignatureAction
         }
 
         // Check if timestamp is within acceptable window (5 minutes)
-        $currentTime = now()->timestamp;
+        $currentTime = now()->getTimestamp();
         $timeDifference = abs($currentTime - $webhookTime);
 
         if ($timeDifference > 300) { // 5 minutes

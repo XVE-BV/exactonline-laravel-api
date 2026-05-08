@@ -19,26 +19,7 @@ class CreateAddressAction
     /**
      * Create a new address in Exact Online.
      *
-     * @param  array{
-     *     Account: string,
-     *     Type: int,
-     *     AddressLine1: string,
-     *     AddressLine2?: string|null,
-     *     AddressLine3?: string|null,
-     *     City?: string|null,
-     *     Country?: string|null,
-     *     CountryName?: string|null,
-     *     Postcode?: string|null,
-     *     State?: string|null,
-     *     StateDescription?: string|null,
-     *     Contact?: string|null,
-     *     ContactName?: string|null,
-     *     Fax?: string|null,
-     *     Mailbox?: string|null,
-     *     Main?: bool|null,
-     *     Phone?: string|null,
-     *     PhoneExtension?: string|null
-     * }  $data
+     * @param  array<string, mixed>  $data  The entity data
      * @return array<string, mixed>
      *
      * @throws ConnectionException

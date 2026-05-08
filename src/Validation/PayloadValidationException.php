@@ -16,8 +16,11 @@ class PayloadValidationException extends ExactOnlineException
 {
     protected string $operation;
 
+    /** @var array<string, array<string>> */
     protected array $validationErrors;
 
+    /** @param array<string, array<string>> $errors */
+    // @phpstan-ignore parameter.notOptional, parameter.notOptional, parameter.notOptional, method.childParameterType, method.childParameterType
     public function __construct(
         string $entity,
         string $operation,
@@ -38,6 +41,7 @@ class PayloadValidationException extends ExactOnlineException
         ]);
     }
 
+    /** @return array<string, array<string>> */
     public function getValidationErrors(): array
     {
         return $this->validationErrors;

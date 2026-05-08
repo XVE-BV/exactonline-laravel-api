@@ -14,6 +14,7 @@ class EntityNotFoundException extends ApiException
 {
     protected ?string $entityId = null;
 
+    // @phpstan-ignore parameter.notOptional, parameter.notOptional, method.childParameterType
     public function __construct(
         string $entity,
         string $id,

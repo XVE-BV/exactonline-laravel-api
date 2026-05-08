@@ -19,25 +19,7 @@ class CreatePurchaseOrderAction
     /**
      * Create a new purchase order in Exact Online.
      *
-     * @param  array{
-     *     Supplier: string,
-     *     OrderDate?: string|null,
-     *     ReceiptDate?: string|null,
-     *     Description?: string|null,
-     *     Currency?: string|null,
-     *     YourRef?: string|null,
-     *     Remarks?: string|null,
-     *     Warehouse?: string|null,
-     *     DropShipment?: bool|null,
-     *     PurchaseOrderLines?: array<int, array{
-     *         Item: string,
-     *         Description?: string|null,
-     *         Quantity: float,
-     *         NetPrice?: float|null,
-     *         ReceiptDate?: string|null,
-     *         VATCode?: string|null
-     *     }>|null
-     * }  $data
+     * @param  array<string, mixed>  $data  The entity data
      * @return array<string, mixed>
      *
      * @throws ConnectionException

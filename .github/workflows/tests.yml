@@ -1,0 +1,203 @@
+name: tests
+
+on:
+  push:
+    paths:
+      - '**.php'
+      - '.github/workflows/tests.yml'
+      - 'phpunit.xml.dist'
+      - 'phpstan.neon.dist'
+      - 'composer.json'
+      - 'composer.lock'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '**.php'
+      - 'phpunit.xml.dist'
+      - 'phpstan.neon.dist'
+      - 'composer.json'
+      - 'composer.lock'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ──────────────────────────────────────────────
+  # Stage 1: Static Analysis (parallel)
+  # ──────────────────────────────────────────────
+
+  pint:
+    name: Pint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - name: Cache vendor
+        id: vendor-cache
+        uses: actions/cache@v5
+        with:
+          path: vendor/
+          key: vendor-${{ hashFiles('composer.lock') }}
+
+      - name: Install dependencies
+        if: steps.vendor-cache.outputs.cache-hit != 'true'
+        uses: ramsey/composer-install@v4
+
+      - name: Cache Pint results
+        uses: actions/cache@v5
+        with:
+          path: .pint.cache
+          key: pint-${{ hashFiles('src/**/*.php', 'tests/**/*.php') }}
+          restore-keys: pint-
+
+      - name: Get changed PHP files
+        id: changed
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            FILES=$(git diff --name-only --diff-filter=ACMR origin/${{ github.base_ref }}...HEAD -- 'src/**/*.php' 'tests/**/*.php' | tr '\n' ' ')
+          else
+            FILES=$(git diff --name-only --diff-filter=ACMR HEAD~1...HEAD -- 'src/**/*.php' 'tests/**/*.php' | tr '\n' ' ')
+          fi
+          echo "files=$FILES" >> $GITHUB_OUTPUT
+          [ -z "$FILES" ] && echo "empty=true" >> $GITHUB_OUTPUT || echo "empty=false" >> $GITHUB_OUTPUT
+
+      - name: Run Pint
+        if: steps.changed.outputs.empty == 'false'
+        run: echo ${{ steps.changed.outputs.files }} | xargs vendor/bin/pint --test
+
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+          coverage: none
+
+      - name: Cache vendor
+        id: vendor-cache
+        uses: actions/cache@v5
+        with:
+          path: vendor/
+          key: vendor-${{ hashFiles('composer.lock') }}
+
+      - name: Install dependencies
+        if: steps.vendor-cache.outputs.cache-hit != 'true'
+        uses: ramsey/composer-install@v4
+
+      - name: Cache PHPStan results
+        uses: actions/cache@v5
+        with:
+          path: .phpstan.cache
+          key: phpstan-${{ hashFiles('src/**/*.php') }}
+          restore-keys: phpstan-
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan --error-format=github --memory-limit=1G
+
+  # ──────────────────────────────────────────────
+  # Stage 2: Tests (needs stage 1)
+  # ──────────────────────────────────────────────
+
+  tests:
+    name: P${{ matrix.php }} - L${{ matrix.laravel }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [pint, phpstan]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4']
+        laravel: ['12.*', '13.*']
+        include:
+          - laravel: '12.*'
+            testbench: ^10.0
+          - laravel: '13.*'
+            testbench: ^11.0
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer update --prefer-dist --no-interaction
+
+      - name: Execute tests
+        run: vendor/bin/pest --compact --no-coverage
+
+  # ──────────────────────────────────────────────
+  # Summary
+  # ──────────────────────────────────────────────
+
+  summary:
+    name: Summary
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [pint, phpstan, tests]
+    if: always()
+
+    steps:
+      - name: All checks passed
+        if: >-
+          ${{
+            needs.pint.result == 'success' &&
+            needs.phpstan.result == 'success' &&
+            needs.tests.result == 'success'
+          }}
+        run: |
+          echo "### All Checks Passed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Static Analysis**" >> $GITHUB_STEP_SUMMARY
+          echo "- Pint: Passed" >> $GITHUB_STEP_SUMMARY
+          echo "- PHPStan: Passed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tests**" >> $GITHUB_STEP_SUMMARY
+          echo "- All matrix combinations: Passed" >> $GITHUB_STEP_SUMMARY
+
+      - name: Some checks failed
+        if: >-
+          ${{
+            needs.pint.result != 'success' ||
+            needs.phpstan.result != 'success' ||
+            needs.tests.result != 'success'
+          }}
+        run: |
+          echo "### Some Checks Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Static Analysis**" >> $GITHUB_STEP_SUMMARY
+          echo "- Pint: ${{ needs.pint.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- PHPStan: ${{ needs.phpstan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tests**" >> $GITHUB_STEP_SUMMARY
+          echo "- Tests: ${{ needs.tests.result }}" >> $GITHUB_STEP_SUMMARY
+          exit 1

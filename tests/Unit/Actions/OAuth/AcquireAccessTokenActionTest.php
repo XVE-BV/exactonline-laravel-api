@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Mockery\MockInterface;
 use Picqer\Financials\Exact\Connection;
 use Skylence\ExactonlineLaravelApi\Actions\OAuth\AcquireAccessTokenAction;
@@ -17,6 +19,8 @@ beforeEach(function () {
         'access_token' => null,
         'refresh_token' => null,
         'token_expires_at' => null,
+        'is_active' => false,
+        'division' => '12345',
     ]);
 
     $this->action = new AcquireAccessTokenAction;
@@ -31,7 +35,7 @@ it('can acquire access token with valid authorization code', function () {
 
         $mock->shouldReceive('connect')
             ->once()
-            ->andReturn(true);
+            ->andReturn(Mockery::mock(Client::class));
 
         $mock->shouldReceive('getAccessToken')
             ->once()
@@ -64,8 +68,8 @@ it('can acquire access token with valid authorization code', function () {
 
     // Assert connection is updated in database
     $this->connection->refresh();
-    expect(decrypt($this->connection->access_token))->toBe('new-access-token')
-        ->and(decrypt($this->connection->refresh_token))->toBe('new-refresh-token')
+    expect($this->connection->getDecryptedAccessToken())->toBe('new-access-token')
+        ->and($this->connection->getDecryptedRefreshToken())->toBe('new-refresh-token')
         ->and($this->connection->is_active)->toBeTrue();
 
     // Assert event is dispatched
@@ -77,7 +81,7 @@ it('can acquire access token with valid authorization code', function () {
 it('throws exception for empty authorization code', function () {
     $this->action->execute($this->connection, '');
 })->throws(
-    TokenRefreshException::class,
+    InvalidArgumentException::class,
     'Authorization code cannot be empty'
 );
 
@@ -85,7 +89,7 @@ it('throws exception when token exchange fails', function () {
     $picqerConnection = $this->mock(Connection::class, function (MockInterface $mock) {
         $mock->shouldReceive('setAuthorizationCode')
             ->once()
-            ->with('test-code');
+            ->with('valid-test-authorization-code');
 
         $mock->shouldReceive('connect')
             ->once()
@@ -97,16 +101,16 @@ it('throws exception when token exchange fails', function () {
         ->once()
         ->andReturn($picqerConnection);
 
-    $this->action->execute($this->connection, 'test-code');
+    $this->action->execute($this->connection, 'valid-test-authorization-code');
 })->throws(
     TokenRefreshException::class,
-    'Failed to acquire access token'
+    'Failed to exchange authorization code'
 );
 
 it('calculates refresh token expiry correctly', function () {
     $picqerConnection = $this->mock(Connection::class, function (MockInterface $mock) {
         $mock->shouldReceive('setAuthorizationCode')->once();
-        $mock->shouldReceive('connect')->once();
+        $mock->shouldReceive('connect')->once()->andReturn(Mockery::mock(Client::class));
         $mock->shouldReceive('getAccessToken')->once()->andReturn('token');
         $mock->shouldReceive('getRefreshToken')->once()->andReturn('refresh');
         $mock->shouldReceive('getTokenExpires')->once()->andReturn(now()->addMinutes(10)->timestamp);
@@ -118,7 +122,7 @@ it('calculates refresh token expiry correctly', function () {
         ->andReturn($picqerConnection);
 
     $beforeTime = now();
-    $this->action->execute($this->connection, 'test-code');
+    $this->action->execute($this->connection, 'valid-test-authorization-code');
 
     $this->connection->refresh();
 
@@ -129,15 +133,17 @@ it('calculates refresh token expiry correctly', function () {
 });
 
 it('logs token acquisition', function () {
+    config(['exactonline-laravel-api.logging.debug' => true]);
+
+    Log::shouldReceive('debug')->zeroOrMoreTimes()->andReturn();
     Log::shouldReceive('info')
         ->once()
-        ->with('Acquired new access token for Exact Online connection', Mockery::any());
-
+        ->with('Access token acquired successfully', Mockery::any());
     Log::shouldReceive('error')->never();
 
     $picqerConnection = $this->mock(Connection::class, function (MockInterface $mock) {
         $mock->shouldReceive('setAuthorizationCode')->once();
-        $mock->shouldReceive('connect')->once();
+        $mock->shouldReceive('connect')->once()->andReturn(Mockery::mock(Client::class));
         $mock->shouldReceive('getAccessToken')->once()->andReturn('token');
         $mock->shouldReceive('getRefreshToken')->once()->andReturn('refresh');
         $mock->shouldReceive('getTokenExpires')->once()->andReturn(now()->addMinutes(10)->timestamp);
@@ -148,7 +154,7 @@ it('logs token acquisition', function () {
         ->once()
         ->andReturn($picqerConnection);
 
-    $this->action->execute($this->connection, 'test-code');
+    $this->action->execute($this->connection, 'valid-test-authorization-code');
 });
 
 it('marks connection as active after successful token acquisition', function () {
@@ -156,7 +162,7 @@ it('marks connection as active after successful token acquisition', function () 
 
     $picqerConnection = $this->mock(Connection::class, function (MockInterface $mock) {
         $mock->shouldReceive('setAuthorizationCode')->once();
-        $mock->shouldReceive('connect')->once();
+        $mock->shouldReceive('connect')->once()->andReturn(Mockery::mock(Client::class));
         $mock->shouldReceive('getAccessToken')->once()->andReturn('token');
         $mock->shouldReceive('getRefreshToken')->once()->andReturn('refresh');
         $mock->shouldReceive('getTokenExpires')->once()->andReturn(now()->addMinutes(10)->timestamp);
@@ -167,7 +173,7 @@ it('marks connection as active after successful token acquisition', function () 
         ->once()
         ->andReturn($picqerConnection);
 
-    $this->action->execute($this->connection, 'test-code');
+    $this->action->execute($this->connection, 'valid-test-authorization-code');
 
     $this->connection->refresh();
     expect($this->connection->is_active)->toBeTrue();

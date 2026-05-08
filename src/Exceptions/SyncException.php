@@ -18,6 +18,7 @@ class SyncException extends ExactOnlineException
 
     protected ?string $remoteId = null;
 
+    /** @var array<int, mixed> */
     protected array $failedRecords = [];
 
     protected int $successCount = 0;
@@ -101,6 +102,9 @@ class SyncException extends ExactOnlineException
 
     /**
      * Create exception for batch sync failure.
+     */
+    /**
+     * @param  array<int, mixed>  $failedRecords
      */
     public static function batchFailed(
         string $entity,
@@ -240,6 +244,8 @@ class SyncException extends ExactOnlineException
 
     /**
      * Get failed records from batch sync.
+     *
+     * @return array<int, mixed>
      */
     public function getFailedRecords(): array
     {
@@ -288,6 +294,8 @@ class SyncException extends ExactOnlineException
 
     /**
      * Get exception data for logging.
+     *
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {

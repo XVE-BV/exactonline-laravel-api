@@ -45,7 +45,7 @@ class Config
     {
         $actionClass = self::getActionClass($actionName, $actionBaseClass);
 
-        return new $actionClass;
+        return app($actionClass);
     }
 
     /**

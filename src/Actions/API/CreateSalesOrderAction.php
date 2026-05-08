@@ -19,26 +19,7 @@ class CreateSalesOrderAction
     /**
      * Create a new sales order in Exact Online.
      *
-     * @param  array{
-     *     OrderedBy: string,
-     *     OrderDate?: string|null,
-     *     DeliveryDate?: string|null,
-     *     Description?: string|null,
-     *     Currency?: string|null,
-     *     YourRef?: string|null,
-     *     Remarks?: string|null,
-     *     DeliveryAddress?: string|null,
-     *     InvoiceTo?: string|null,
-     *     SalesOrderLines?: array<int, array{
-     *         Item: string,
-     *         Description?: string|null,
-     *         Quantity: float,
-     *         UnitPrice?: float|null,
-     *         Discount?: float|null,
-     *         VATCode?: string|null,
-     *         Notes?: string|null
-     *     }>|null
-     * }  $data
+     * @param  array<string, mixed>  $data  The entity data
      * @return array<string, mixed>
      *
      * @throws ConnectionException

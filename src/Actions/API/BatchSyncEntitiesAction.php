@@ -88,7 +88,7 @@ class BatchSyncEntitiesAction
                     $stats['processed']++;
 
                     // Call progress callback if provided
-                    if (isset($options['progress_callback']) && is_callable($options['progress_callback'])) {
+                    if (isset($options['progress_callback'])) {
                         $options['progress_callback']($stats['total'], $item);
                     }
 
@@ -155,6 +155,7 @@ class BatchSyncEntitiesAction
             $this->checkRateLimit($connection);
 
             // Set pagination
+            // FIXME: skip() and top() are routed through __call on the Picqer Model and silently drop their arguments at runtime — pagination does not work and this will return all records on every iteration.
             $entity->skip($skip);
             $entity->top($batchSize);
 
@@ -274,7 +275,7 @@ class BatchSyncEntitiesAction
         }
 
         // Refresh proactively at 9 minutes (540 seconds before expiry)
-        return $connection->token_expires_at < (now()->timestamp + 540);
+        return $connection->token_expires_at < (now()->getTimestamp() + 540);
     }
 
     /**

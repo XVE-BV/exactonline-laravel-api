@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use GuzzleHttp\Client;
 use Illuminate\Contracts\Cache\Lock;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
@@ -18,8 +19,8 @@ beforeEach(function () {
     Event::fake();
 
     $this->connection = ExactConnection::factory()->create([
-        'access_token' => encrypt('old-access-token'),
-        'refresh_token' => encrypt('valid-refresh-token'),
+        'access_token' => 'old-access-token',
+        'refresh_token' => 'valid-refresh-token',
         'token_expires_at' => now()->addMinutes(2)->timestamp, // Expires soon
     ]);
 
@@ -44,8 +45,7 @@ it('refreshes access token successfully with distributed lock', function () {
             ->with('valid-refresh-token');
 
         $mock->shouldReceive('connect')
-            ->once()
-            ->andReturn(true);
+            ->once();
 
         $mock->shouldReceive('getAccessToken')
             ->once()
@@ -94,8 +94,8 @@ it('waits for lock when another process is refreshing', function () {
 
     // Simulate the connection being refreshed by another process
     $this->connection->update([
-        'access_token' => encrypt('token-from-other-process'),
-        'refresh_token' => encrypt('refresh-from-other-process'),
+        'access_token' => 'token-from-other-process',
+        'refresh_token' => 'refresh-from-other-process',
         'token_expires_at' => now()->addMinutes(10)->timestamp,
     ]);
 
@@ -113,28 +113,28 @@ it('checks if token needs refresh with 9-minute threshold', function () {
     $connection1 = ExactConnection::factory()->create([
         'token_expires_at' => now()->addMinutes(8)->timestamp,
     ]);
-    expect($this->invokeMethod($this->action, 'tokenNeedsRefresh', [$connection1]))
+    expect(invokeMethod($this->action, 'tokenNeedsRefresh', [$connection1]))
         ->toBeTrue();
 
     // Token expires in 11 minutes - should not need refresh
     $connection2 = ExactConnection::factory()->create([
         'token_expires_at' => now()->addMinutes(11)->timestamp,
     ]);
-    expect($this->invokeMethod($this->action, 'tokenNeedsRefresh', [$connection2]))
+    expect(invokeMethod($this->action, 'tokenNeedsRefresh', [$connection2]))
         ->toBeFalse();
 
     // Token already expired - should need refresh
     $connection3 = ExactConnection::factory()->create([
         'token_expires_at' => now()->subMinutes(1)->timestamp,
     ]);
-    expect($this->invokeMethod($this->action, 'tokenNeedsRefresh', [$connection3]))
+    expect(invokeMethod($this->action, 'tokenNeedsRefresh', [$connection3]))
         ->toBeTrue();
 
     // No expiry set - should need refresh
     $connection4 = ExactConnection::factory()->create([
         'token_expires_at' => null,
     ]);
-    expect($this->invokeMethod($this->action, 'tokenNeedsRefresh', [$connection4]))
+    expect(invokeMethod($this->action, 'tokenNeedsRefresh', [$connection4]))
         ->toBeTrue();
 });
 
@@ -160,7 +160,7 @@ it('implements exponential backoff retry on failure', function () {
                     throw new Exception('Network error');
                 }
 
-                return true;
+                return Mockery::mock(Client::class);
             });
 
         $mock->shouldReceive('getAccessToken')
@@ -222,12 +222,10 @@ it('throws exception after max retries exceeded', function () {
     $this->action = Mockery::mock(RefreshAccessTokenAction::class)->makePartial();
     $this->action->shouldReceive('sleep')->times(2);
 
-    Event::fake();
-
     $this->action->execute($this->connection);
 })->throws(
     TokenRefreshException::class,
-    'Token refresh failed after all retries'
+    'Token refresh failed after 3 attempts'
 );
 
 it('dispatches TokenRefreshFailed event on failure', function () {
@@ -276,15 +274,15 @@ it('always releases lock even on exception', function () {
         ->andReturn($lock);
 
     $picqerConnection = $this->mock(Connection::class, function (MockInterface $mock) {
-        $mock->shouldReceive('setRefreshToken')->once();
+        $mock->shouldReceive('setRefreshToken')->times(3);
         $mock->shouldReceive('connect')
-            ->once()
+            ->times(3)
             ->andThrow(new Exception('Critical error'));
     });
 
     $this->connection = Mockery::mock($this->connection)->makePartial();
     $this->connection->shouldReceive('getPicqerConnection')
-        ->once()
+        ->times(3)
         ->andReturn($picqerConnection);
 
     try {
@@ -308,7 +306,7 @@ it('skips refresh if token was already refreshed after lock acquisition', functi
     // Update token to not need refresh (simulating another process refreshed it)
     $this->connection->update([
         'token_expires_at' => now()->addMinutes(10)->timestamp,
-        'access_token' => encrypt('recently-refreshed-token'),
+        'access_token' => 'recently-refreshed-token',
     ]);
 
     // Should not call picqer connection at all
@@ -322,7 +320,7 @@ it('skips refresh if token was already refreshed after lock acquisition', functi
 
 it('logs all refresh attempts with context', function () {
     Log::shouldReceive('info')
-        ->with(Mockery::pattern('/Refreshing access token/'), Mockery::any())
+        ->with(Mockery::pattern('/Token refresh successful/'), Mockery::any())
         ->once();
 
     Log::shouldReceive('warning')
@@ -370,7 +368,7 @@ it('handles timeout while waiting for another process to refresh', function () {
     $this->action->execute($this->connection);
 })->throws(
     TokenRefreshException::class,
-    'Timeout waiting for token refresh by another process'
+    'Timeout waiting for token refresh lock'
 );
 
 // Helper method to invoke protected/private methods

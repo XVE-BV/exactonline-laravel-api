@@ -20,19 +20,7 @@ class CreateJournalAction
      * Create a new journal in Exact Online.
      *
      * @param  ExactConnection  $connection  The Exact Online connection
-     * @param  array{
-     *     Code: string,
-     *     Description: string,
-     *     Type?: int|null,
-     *     Bank?: string|null,
-     *     Currency?: string|null,
-     *     GLAccount?: string|null,
-     *     GLAccountType?: int|null,
-     *     PaymentInTransitAccount?: string|null,
-     *     PaymentServiceAccountIdentifier?: string|null,
-     *     PaymentServiceProvider?: int|null,
-     *     PaymentServiceProviderName?: string|null
-     * }  $data  Journal data following Exact Online's schema
+     * @param  array<string, mixed>  $data  The entity data
      * @return array<string, mixed> The created journal data
      *
      * @throws ConnectionException

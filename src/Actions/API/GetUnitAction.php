@@ -104,7 +104,7 @@ class GetUnitAction
             return true;
         }
 
-        return $connection->token_expires_at < (now()->timestamp + 540);
+        return $connection->token_expires_at < (now()->getTimestamp() + 540);
     }
 
     /**
