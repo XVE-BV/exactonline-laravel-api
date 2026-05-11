@@ -2,6 +2,10 @@
 
 All notable changes to `exactonline-laravel-api` will be documented in this file.
 
+## v3.0.1 - 2026-05-11
+
+Fix: removed incorrect `readOnly` flag on `SalesInvoice.Status` in the schema. Exact Online's REST API accepts `Status` on create (e.g. `50` for Draft, `20` for Open), but the schema marked it read-only and the payload validator rejected create payloads that set it. Senders that need to control the initial status of a pushed invoice can now set it.
+
 ## v3.0.0 - 2026-05-08
 
 Breaking: PHP namespace renamed from `Skylence\ExactonlineLaravelApi` to `XVE\ExactonlineLaravelApi` and composer package name from `skylence/exactonline-laravel-api` to `xve/exactonline-laravel-api`. No functional changes.
