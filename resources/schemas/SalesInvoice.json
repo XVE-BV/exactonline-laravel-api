@@ -14,7 +14,7 @@
     "DeliverTo": { "type": "guid" },
     "DeliverToContactPerson": { "type": "guid" },
     "DeliveryAddress": { "type": "guid" },
-    "Status": { "type": "int16", "readOnly": true },
+    "Status": { "type": "int16" },
     "StatusDescription": { "type": "string", "readOnly": true },
     "Type": { "type": "int32" },
     "Currency": { "type": "string", "maxLength": 3 },
