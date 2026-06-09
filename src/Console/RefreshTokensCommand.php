@@ -16,7 +16,7 @@ class RefreshTokensCommand extends Command
 {
     protected $signature = 'exact:refresh-tokens';
 
-    protected $description = 'Refresh access tokens for active Exact Online connections and warn about expiring refresh tokens';
+    protected $description = 'Keep Exact Online refresh tokens alive: refresh a connection only when its refresh token nears its ~30-day expiry (access tokens are refreshed lazily per request)';
 
     public function handle(): int
     {
@@ -45,11 +45,17 @@ class RefreshTokensCommand extends Command
 
     protected function refreshAccessToken(ExactConnection $connection, RefreshAccessTokenAction $action): void
     {
-        $needsRefresh = empty($connection->token_expires_at)
-            || $connection->token_expires_at < (now()->getTimestamp() + 540);
+        // picqer refreshes the 10-minute access token lazily on every request,
+        // so this scheduled run only needs to keep the single-use refresh token
+        // from reaching its ~30-day idle expiry. Refresh only when it is within
+        // the configured buffer; every refresh rotates the refresh token, and
+        // each rotation risks breaking the chain, so avoid needless ones.
+        $bufferDays = Config::getRefreshTokenBufferDays();
+        $needsRefresh = empty($connection->refresh_token_expires_at)
+            || $connection->refreshTokenExpiringSoon($bufferDays);
 
         if (! $needsRefresh) {
-            $this->line("  [{$connection->name}] Token still valid, skipping.");
+            $this->line("  [{$connection->name}] Refresh token not near expiry, skipping.");
 
             return;
         }

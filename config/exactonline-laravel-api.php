@@ -23,6 +23,7 @@ return [
         'success_url' => env('EXACT_OAUTH_SUCCESS_URL', '/dashboard'),
         'failure_url' => env('EXACT_OAUTH_FAILURE_URL', '/'),
         'force_login' => env('EXACT_FORCE_LOGIN', false),
+        'refresh_token_buffer_days' => env('EXACT_REFRESH_TOKEN_BUFFER_DAYS', 7),
     ],
 
     /*

@@ -102,6 +102,11 @@ class Config
         return config('exactonline-laravel-api.oauth.redirect_url', '/exact/oauth/callback');
     }
 
+    public static function getRefreshTokenBufferDays(): int
+    {
+        return (int) config('exactonline-laravel-api.oauth.refresh_token_buffer_days', 7);
+    }
+
     public static function shouldWaitOnMinutelyLimit(): bool
     {
         return config('exactonline-laravel-api.rate_limiting.wait_on_minutely_limit', true);
