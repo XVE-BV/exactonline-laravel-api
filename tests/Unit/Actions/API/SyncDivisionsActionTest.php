@@ -61,6 +61,38 @@ it('maps active and archived division archive dates from Exact data', function (
         ->and($archivedDivision->archived_at?->toDateTimeString())->toBe('2024-06-01 12:34:56');
 });
 
+it('sets the active division relationship after syncing matching division code', function () {
+    config()->set('exactonline-laravel-api.actions.get_divisions', FakeSyncDivisionsGetDivisionsAction::class);
+
+    $this->connection->update(['division' => '1284243']);
+
+    FakeSyncDivisionsGetDivisionsAction::$divisions = [
+        [
+            'Code' => 1046400,
+            'Description' => 'Other division',
+            'Status' => 0,
+        ],
+        [
+            'Code' => 1284243,
+            'Description' => 'Active division',
+            'Status' => 0,
+        ],
+    ];
+
+    app(SyncDivisionsAction::class)->execute($this->connection);
+
+    $activeDivision = ExactDivision::query()
+        ->where('connection_id', $this->connection->id)
+        ->where('code', 1284243)
+        ->firstOrFail();
+
+    $this->connection->refresh();
+
+    expect($this->connection->division_id)->toBe($activeDivision->id)
+        ->and($this->connection->activeDivision)->toBeInstanceOf(ExactDivision::class)
+        ->and($this->connection->activeDivision?->is($activeDivision))->toBeTrue();
+});
+
 class FakeSyncDivisionsGetDivisionsAction extends GetDivisionsAction
 {
     /**

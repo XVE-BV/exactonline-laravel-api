@@ -37,6 +37,8 @@ class ExactonlineLaravelApiServiceProvider extends PackageServiceProvider
                 'create_exact_webhooks_table',
                 'create_exact_rate_limits_table',
                 'create_exact_mappings_table',
+                '2026_01_11_000001_create_exact_divisions_table',
+                'create_exact_connections_table_add_division_id_to_exact_connections_table',
             ])
             ->hasRoute('web')
             ->hasCommand(GenerateSchemasCommand::class)

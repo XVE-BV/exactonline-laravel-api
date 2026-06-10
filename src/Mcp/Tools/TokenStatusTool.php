@@ -84,6 +84,7 @@ class TokenStatusTool extends Tool
             'connection_name' => $connection->name,
             'is_active' => $connection->is_active,
             'division' => $connection->division,
+            'division_id' => $connection->division_id,
             'access_token' => [
                 'set' => ! empty($connection->getAttributes()['access_token']),
                 'expires_at' => $accessExpiresAt,

@@ -10,6 +10,7 @@ use Picqer\Financials\Exact\ApiException;
 use Picqer\Financials\Exact\Division;
 use XVE\ExactonlineLaravelApi\Exceptions\ConnectionException;
 use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactDivision;
 
 class SwitchDivisionAction
 {
@@ -52,9 +53,17 @@ class SwitchDivisionAction
             $this->verifyDivisionAccess($connection, $divisionId);
         }
 
-        // Update the division
+        // Update the division code and best-effort synced division pointer.
         $oldDivision = $connection->division;
-        $connection->update(['division' => $divisionId]);
+        $divisionRowId = ExactDivision::query()
+            ->where('connection_id', $connection->id)
+            ->where('code', $divisionId)
+            ->value('id');
+
+        $connection->update([
+            'division' => $divisionId,
+            'division_id' => $divisionRowId === null ? null : (int) $divisionRowId,
+        ]);
 
         // Update metadata to track division changes
         $metadata = $connection->metadata ?? [];

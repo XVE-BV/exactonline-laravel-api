@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
@@ -20,6 +21,7 @@ use XVE\ExactonlineLaravelApi\Database\Factories\ExactConnectionFactory;
  * @property int|null $user_id
  * @property string|null $tenant_id
  * @property string|null $division
+ * @property int|null $division_id
  * @property string|null $access_token
  * @property string|null $refresh_token
  * @property int|null $token_expires_at
@@ -39,6 +41,7 @@ use XVE\ExactonlineLaravelApi\Database\Factories\ExactConnectionFactory;
  * @property-read ExactRateLimit|null $rateLimit
  * @property-read Collection<int, ExactMapping> $mappings
  * @property-read Collection<int, ExactDivision> $divisions
+ * @property-read ExactDivision|null $activeDivision
  */
 class ExactConnection extends Model
 {
@@ -61,6 +64,7 @@ class ExactConnection extends Model
         'user_id',
         'tenant_id',
         'division',
+        'division_id',
         'access_token',
         'refresh_token',
         'token_expires_at',
@@ -83,6 +87,7 @@ class ExactConnection extends Model
      */
     protected $casts = [
         'is_active' => 'boolean',
+        'division_id' => 'integer',
         'metadata' => 'array',
         'last_token_refresh_at' => 'datetime',
         'last_used_at' => 'datetime',
@@ -139,6 +144,16 @@ class ExactConnection extends Model
     public function divisions(): HasMany
     {
         return $this->hasMany(ExactDivision::class, 'connection_id');
+    }
+
+    /**
+     * Get the synced division row for the active division code.
+     *
+     * @return BelongsTo<ExactDivision, $this>
+     */
+    public function activeDivision(): BelongsTo
+    {
+        return $this->belongsTo(ExactDivision::class, 'division_id');
     }
 
     /**
