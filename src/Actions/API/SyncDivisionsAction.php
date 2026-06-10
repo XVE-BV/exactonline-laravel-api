@@ -97,6 +97,8 @@ class SyncDivisionsAction
             ->where('code', $code)
             ->first();
 
+        $status = (int) ($data['Status'] ?? 0);
+
         $attributes = [
             'connection_id' => $connection->id,
             'code' => $code,
@@ -108,10 +110,10 @@ class SyncDivisionsAction
             'currency' => $data['Currency'] ?? null,
             'vat_number' => $data['VATNumber'] ?? null,
             'is_main' => (bool) ($data['Main'] ?? false),
-            'status' => (int) ($data['Status'] ?? 0),
+            'status' => $status,
             'blocking_status' => (int) ($data['BlockingStatus'] ?? 0),
             'started_at' => $this->parseDate($data['StartDate'] ?? null),
-            'archived_at' => $this->parseDate($data['ArchiveDate'] ?? null),
+            'archived_at' => $this->resolveArchivedAt($status, $data['ArchiveDate'] ?? null, $existing),
             'synced_at' => now(),
         ];
 
@@ -127,21 +129,51 @@ class SyncDivisionsAction
     }
 
     /**
-     * Parse Exact Online date format.
+     * Resolve the local archived timestamp from Exact's ArchiveDate field.
      */
-    protected function parseDate(?string $date): ?\DateTime
+    protected function resolveArchivedAt(int $status, mixed $archiveDate, ?ExactDivision $existing): ?\DateTime
     {
-        if (empty($date)) {
+        if ($status !== 1) {
             return null;
         }
 
-        // Handle /Date(timestamp)/ format
-        if (preg_match('/\/Date\((\d+)\)\//', $date, $matches)) {
-            return (new \DateTime)->setTimestamp((int) ($matches[1] / 1000));
+        return $this->parseDate($archiveDate)
+            ?? $existing?->archived_at?->toDateTime()
+            ?? now()->toDateTime();
+    }
+
+    /**
+     * Parse Exact Online date format.
+     */
+    protected function parseDate(mixed $date): ?\DateTime
+    {
+        if ($date instanceof \DateTime) {
+            return $date;
+        }
+
+        if ($date instanceof \DateTimeInterface) {
+            return \DateTime::createFromInterface($date);
+        }
+
+        if (! is_string($date) || trim($date) === '') {
+            return null;
+        }
+
+        // Handle Exact/Picqer OData /Date(timestamp)/ format.
+        if (preg_match('/\/Date\((-?\d+)\)\//', $date, $matches) === 1) {
+            $timestamp = (int) ((int) $matches[1] / 1000);
+
+            if ($timestamp <= 0) {
+                return null;
+            }
+
+            return (new \DateTime)->setTimestamp($timestamp);
         }
 
         try {
-            return new \DateTime($date);
+            $parsed = new \DateTime($date);
+
+            return (int) $parsed->format('Y') <= 1 ? null : $parsed;
         } catch (\Exception) {
             return null;
         }
