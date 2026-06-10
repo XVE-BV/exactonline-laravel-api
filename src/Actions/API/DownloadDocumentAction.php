@@ -24,15 +24,16 @@ class DownloadDocumentAction
      * @param  string  $documentId  The document ID (GUID)
      * @param  string|null  $attachmentId  The attachment ID (GUID) - if null, downloads the first attachment
      * @return array{
-     *     content: string,
+     *     content?: string,
      *     filename: string,
      *     mime_type: string,
-     *     size: int
+     *     size: int,
+     *     attachment_id: string
      * }|null Returns document data or null if not found
      *
      * @throws ConnectionException
      */
-    public function execute(ExactConnection $connection, string $documentId, ?string $attachmentId = null): ?array
+    public function execute(ExactConnection $connection, string $documentId, ?string $attachmentId = null, bool $includeContent = true): ?array
     {
         // Ensure we have a valid access token
         $this->ensureValidToken($connection);
@@ -62,7 +63,7 @@ class DownloadDocumentAction
             $attachment = new DocumentAttachment($picqerConnection);
             $result = $attachment->find($attachmentId);
 
-            if ($result === null) {
+            if (! $result->exists()) {
                 Log::info('Document attachment not found', [
                     'connection_id' => $connection->id,
                     'document_id' => $documentId,
@@ -72,35 +73,37 @@ class DownloadDocumentAction
                 return null;
             }
 
-            // Download the actual file content
-            $downloadUrl = $result->Url;
+            $filename = $result->FileName ?? 'document.pdf';
+            $size = (int) ($result->FileSize ?? 0);
 
-            if (empty($downloadUrl)) {
-                throw new ConnectionException('Document attachment has no download URL');
+            $data = [
+                'filename' => $filename,
+                'mime_type' => $this->getMimeType($filename),
+                'size' => $size,
+                'attachment_id' => (string) ($result->ID ?? $attachmentId),
+            ];
+
+            if ($includeContent) {
+                $content = $this->downloadFile($result);
+                $data['content'] = $content;
+                $data['size'] = strlen($content);
             }
 
-            // Use picqer connection to download the file
-            $content = $this->downloadFile($picqerConnection, $downloadUrl);
-
-            // Track rate limit usage after the request
+            // Track rate limit usage after Exact requests have completed.
             $this->trackRateLimitUsage($connection, $picqerConnection);
 
-            Log::info('Downloaded document from Exact Online', [
+            Log::info('Retrieved document attachment from Exact Online', [
                 'connection_id' => $connection->id,
                 'document_id' => $documentId,
                 'attachment_id' => $attachmentId,
-                'filename' => $result->FileName ?? 'unknown',
-                'size' => strlen($content),
+                'filename' => $filename,
+                'content_included' => $includeContent,
+                'size' => $data['size'],
             ]);
 
-            return [
-                'content' => $content,
-                'filename' => $result->FileName ?? 'document.pdf',
-                'mime_type' => $this->getMimeType($result->FileName ?? ''),
-                'size' => strlen($content),
-            ];
+            return $data;
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Failed to download document from Exact Online', [
                 'connection_id' => $connection->id,
                 'document_id' => $documentId,
@@ -123,56 +126,39 @@ class DownloadDocumentAction
     {
         $picqerConnection = $connection->getPicqerConnection();
 
-        // Get the document
         $document = new Document($picqerConnection);
         $doc = $document->find($documentId);
 
-        if ($doc === null) {
+        if (! $doc->exists()) {
             return null;
         }
 
-        // Get attachments
         $attachments = new DocumentAttachment($picqerConnection);
-        $attachments->filter("Document eq guid'{$documentId}'");
-        $attachmentList = $attachments->get();
+        $attachmentList = $attachments->filter("Document eq guid'{$documentId}'");
 
         if (empty($attachmentList)) {
             return null;
         }
 
-        // Return the first attachment ID
         return $attachmentList[0]->ID;
     }
 
     /**
-     * Download file content from URL using picqer connection
+     * Download file content using Picqer's documented Downloadable trait.
      *
-     *
-     * @throws \Exception
+     * @throws \Throwable
      */
-    protected function downloadFile(Connection $picqerConnection, string $url): string
+    protected function downloadFile(DocumentAttachment $attachment): string
     {
-        // Use picqer's download method if available
-        // Otherwise, make a direct HTTP request with authentication
-        $client = $picqerConnection->getClient();
+        $content = $attachment->download()->getContents();
 
-        // FIXME: getClient() returns a GuzzleHttp\Client but the stub types it as mixed, so request() is unknown to PHPStan. Will throw at runtime if picqer ever changes the underlying client.
-        // @phpstan-ignore-next-line method.notFound
-        $response = $client->request('GET', $url, [
-            'headers' => [
-                'Accept' => 'application/octet-stream',
-                'Authorization' => 'Bearer '.$picqerConnection->getAccessToken(),
-            ],
-        ]);
-
-        $content = $response->getBody()->getContents();
-
-        if (empty($content)) {
-            throw new \Exception('Downloaded file is empty');
+        if ($content === '') {
+            throw new \RuntimeException('Downloaded file is empty');
         }
 
         return $content;
     }
+
 
     /**
      * Get MIME type based on file extension

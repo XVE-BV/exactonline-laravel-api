@@ -35,21 +35,10 @@ class GetDivisionsAction
         try {
             $division = new Division($picqerConnection);
 
-            // Apply query options
-            if (! empty($options['filter'])) {
-                $division->filter($options['filter']);
-            }
-
-            if (! empty($options['select'])) {
-                $division->select($options['select']);
-            }
-
-            if (! empty($options['top'])) {
-                $division->top($options['top']);
-            }
+            $queryOptions = $this->buildQueryOptions($options);
 
             // Get divisions
-            $divisions = $division->get();
+            $divisions = $division->get($queryOptions);
 
             $this->completeRequest($connection, $picqerConnection);
 
@@ -70,5 +59,42 @@ class GetDivisionsAction
 
             throw ApiException::fromPicqerException($e, 'Division', (string) $connection->id);
         }
+    }
+
+    /**
+     * Build OData query options for Picqer's request API.
+     *
+     * @param  array<string, mixed>  $options
+     * @return array<string, mixed>
+     */
+    protected function buildQueryOptions(array $options): array
+    {
+        $queryOptions = [];
+
+        if (! empty($options['filter'])) {
+            $queryOptions['$filter'] = $options['filter'];
+        }
+
+        if (! empty($options['select']) && is_array($options['select'])) {
+            $queryOptions['$select'] = implode(',', $options['select']);
+        }
+
+        if (! empty($options['expand']) && is_array($options['expand'])) {
+            $queryOptions['$expand'] = implode(',', $options['expand']);
+        }
+
+        if (! empty($options['orderby'])) {
+            $queryOptions['$orderby'] = $options['orderby'];
+        }
+
+        if (isset($options['top'])) {
+            $queryOptions['$top'] = (int) $options['top'];
+        }
+
+        if (isset($options['skip'])) {
+            $queryOptions['$skip'] = (int) $options['skip'];
+        }
+
+        return $queryOptions;
     }
 }

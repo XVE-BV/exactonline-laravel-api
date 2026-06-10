@@ -48,11 +48,10 @@ class GetDocumentsAction
             // Create Document instance
             $document = new Document($picqerConnection);
 
-            // Apply filters if provided
-            $this->applyQueryOptions($document, $options);
+            $queryOptions = $this->buildQueryOptions($options);
 
             // Get documents
-            $documents = $document->get();
+            $documents = $document->get($queryOptions);
 
             // Track rate limit usage after the request
             $this->trackRateLimitUsage($connection, $picqerConnection);
@@ -138,40 +137,39 @@ class GetDocumentsAction
     }
 
     /**
-     * Apply OData query options to the entity
+     * Build OData query options for Picqer's request API.
      *
      * @param  array<string, mixed>  $options
+     * @return array<string, mixed>
      */
-    protected function applyQueryOptions(Document $document, array $options): void
+    protected function buildQueryOptions(array $options): array
     {
-        // Apply filter
+        $queryOptions = [];
+
         if (! empty($options['filter'])) {
-            $document->filter($options['filter']);
+            $queryOptions['$filter'] = $options['filter'];
         }
 
-        // Apply select (field selection)
-        if (! empty($options['select'])) {
-            $document->select($options['select']);
+        if (! empty($options['select']) && is_array($options['select'])) {
+            $queryOptions['$select'] = implode(',', $options['select']);
         }
 
-        // Apply expand (related entities)
-        if (! empty($options['expand'])) {
-            $document->expand(implode(',', $options['expand']));
+        if (! empty($options['expand']) && is_array($options['expand'])) {
+            $queryOptions['$expand'] = implode(',', $options['expand']);
         }
 
-        // Apply orderby
         if (! empty($options['orderby'])) {
-            $document->orderBy($options['orderby']);
+            $queryOptions['$orderby'] = $options['orderby'];
         }
 
-        // Apply top (limit)
-        if (! empty($options['top'])) {
-            $document->top($options['top']);
+        if (isset($options['top'])) {
+            $queryOptions['$top'] = (int) $options['top'];
         }
 
-        // Apply skip (offset)
-        if (! empty($options['skip'])) {
-            $document->skip($options['skip']);
+        if (isset($options['skip'])) {
+            $queryOptions['$skip'] = (int) $options['skip'];
         }
+
+        return $queryOptions;
     }
 }

@@ -90,28 +90,17 @@ it('applies OData query options correctly', function () {
 
     $this->app->instance(TrackRateLimitUsageAction::class, $trackRateLimitAction);
 
-    // Mock Account entity with query options
     $accountEntity = Mockery::mock(Account::class);
-    $accountEntity->shouldReceive('filter')
-        ->once()
-        ->with("Name eq 'Test'");
-    $accountEntity->shouldReceive('select')
-        ->once()
-        ->with(['ID', 'Name']);
-    $accountEntity->shouldReceive('expand')
-        ->once()
-        ->with('Contacts,Addresses');
-    $accountEntity->shouldReceive('orderBy')
-        ->once()
-        ->with('Name desc');
-    $accountEntity->shouldReceive('top')
-        ->once()
-        ->with(50);
-    $accountEntity->shouldReceive('skip')
-        ->once()
-        ->with(100);
     $accountEntity->shouldReceive('get')
         ->once()
+        ->with([
+            '$filter' => "Name eq 'Test'",
+            '$select' => 'ID,Name',
+            '$expand' => 'Contacts,Addresses',
+            '$orderby' => 'Name desc',
+            '$top' => 50,
+            '$skip' => 100,
+        ])
         ->andReturn([]);
 
     $this->action->shouldReceive('createAccount')->once()->andReturn($accountEntity);
