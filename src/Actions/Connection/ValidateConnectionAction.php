@@ -174,11 +174,8 @@ class ValidateConnectionAction
     protected function testApiConnectivity(ExactConnection $connection): array
     {
         try {
-            $picqerConnection = $connection->getPicqerConnection();
-
             // Try to get the current user info (lightweight API call)
-            $me = new Me($picqerConnection);
-            $currentUser = $me->get();
+            $currentUser = $this->getCurrentUser($connection);
 
             if (empty($currentUser)) {
                 return [
@@ -190,6 +187,10 @@ class ValidateConnectionAction
             // Store division if we don't have one yet
             if (! $connection->division && isset($currentUser[0]->CurrentDivision)) {
                 $connection->update(['division' => $currentUser[0]->CurrentDivision]);
+            }
+
+            if ($connection->division) {
+                $connection->resolveDivisionId();
             }
 
             return [
@@ -219,6 +220,19 @@ class ValidateConnectionAction
                 'error' => 'Failed to connect to Exact Online: '.$e->getMessage(),
             ];
         }
+    }
+
+    /**
+     * Get the current Exact user from the API.
+     *
+     * @return array<int, object>
+     */
+    protected function getCurrentUser(ExactConnection $connection): array
+    {
+        $picqerConnection = $connection->getPicqerConnection();
+        $me = new Me($picqerConnection);
+
+        return $me->get();
     }
 
     /**

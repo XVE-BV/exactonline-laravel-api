@@ -151,6 +151,10 @@ class AcquireAccessTokenAction
                 }
             }
 
+            if ($connection->division) {
+                $connection->resolveDivisionId();
+            }
+
             return [
                 'access_token' => $accessToken,
                 'refresh_token' => $refreshToken,

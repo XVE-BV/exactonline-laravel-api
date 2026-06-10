@@ -2,6 +2,10 @@
 
 All notable changes to `exactonline-laravel-api` will be documented in this file.
 
+## v3.2.0 - 2026-06-10
+
+Feature: add `division_id` foreign key on `exact_connections` referencing `exact_divisions.id`, alongside the existing `division` code (which the Exact API still uses). Exposes an `activeDivision()` relationship. `division_id` is auto-populated wherever the active division is set: division sync, division switch, and OAuth connection setup. Additive and nullable; no behavior change to API calls.
+
 ## v3.1.0 - 2026-06-10
 
 Feature: optional read-only MCP (Model Context Protocol) server, disabled by default. Exposes the integration's local state (connections, mappings, rate limits, divisions, webhooks) and live read-only Exact Online API calls to MCP clients over two transports: stdio (`exact:mcp` artisan command) and streamable-HTTP (`exact/mcp` route with static bearer-token auth). Built on the optional `laravel/mcp` dependency; OAuth tokens and secrets are never returned (scrubbed from all output).
