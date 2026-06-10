@@ -112,31 +112,12 @@ class TrackRateLimitUsageAction
     {
         $headers = [];
 
-        // Get rate limit data from picqer connection
-        // @phpstan-ignore-next-line function.alreadyNarrowedType
-        if (method_exists($picqerConnection, 'getDailyLimit')) {
-            $headers['X-RateLimit-Limit'] = (string) $picqerConnection->getDailyLimit();
-        }
-        // @phpstan-ignore-next-line function.alreadyNarrowedType
-        if (method_exists($picqerConnection, 'getDailyLimitRemaining')) {
-            $headers['X-RateLimit-Remaining'] = (string) $picqerConnection->getDailyLimitRemaining();
-        }
-        // @phpstan-ignore-next-line function.alreadyNarrowedType
-        if (method_exists($picqerConnection, 'getDailyLimitReset')) {
-            $headers['X-RateLimit-Reset'] = (string) $picqerConnection->getDailyLimitReset();
-        }
-        // @phpstan-ignore-next-line function.alreadyNarrowedType
-        if (method_exists($picqerConnection, 'getMinutelyLimit')) {
-            $headers['X-RateLimit-Minutely-Limit'] = (string) $picqerConnection->getMinutelyLimit();
-        }
-        // @phpstan-ignore-next-line function.alreadyNarrowedType
-        if (method_exists($picqerConnection, 'getMinutelyLimitRemaining')) {
-            $headers['X-RateLimit-Minutely-Remaining'] = (string) $picqerConnection->getMinutelyLimitRemaining();
-        }
-        // @phpstan-ignore-next-line function.alreadyNarrowedType
-        if (method_exists($picqerConnection, 'getMinutelyLimitReset')) {
-            $headers['X-RateLimit-Minutely-Reset'] = (string) $picqerConnection->getMinutelyLimitReset();
-        }
+        $headers['X-RateLimit-Limit'] = (string) $picqerConnection->getDailyLimit();
+        $headers['X-RateLimit-Remaining'] = (string) $picqerConnection->getDailyLimitRemaining();
+        $headers['X-RateLimit-Reset'] = (string) $picqerConnection->getDailyLimitReset();
+        $headers['X-RateLimit-Minutely-Limit'] = (string) $picqerConnection->getMinutelyLimit();
+        $headers['X-RateLimit-Minutely-Remaining'] = (string) $picqerConnection->getMinutelyLimitRemaining();
+        $headers['X-RateLimit-Minutely-Reset'] = (string) $picqerConnection->getMinutelyLimitReset();
 
         return array_filter($headers);
     }
@@ -205,15 +186,21 @@ class TrackRateLimitUsageAction
      */
     protected function updateRateLimitRecord(ExactRateLimit $rateLimit, array $rateLimits): void
     {
-        $updates = [
-            'last_checked_at' => now(),
-        ];
+        $rateLimit->last_checked_at = now();
 
         foreach ($rateLimits as $field => $value) {
-            $updates[$field] = $value;
+            match ($field) {
+                'daily_limit' => $rateLimit->daily_limit = $value,
+                'daily_remaining' => $rateLimit->daily_remaining = $value,
+                'daily_reset_at' => $rateLimit->daily_reset_at = $value,
+                'minutely_limit' => $rateLimit->minutely_limit = $value,
+                'minutely_remaining' => $rateLimit->minutely_remaining = $value,
+                'minutely_reset_at' => $rateLimit->minutely_reset_at = $value,
+                default => null,
+            };
         }
 
-        $rateLimit->update($updates);
+        $rateLimit->save();
     }
 
     /**
