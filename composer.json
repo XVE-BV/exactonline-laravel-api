@@ -21,7 +21,11 @@
         "picqer/exact-php-client": "^4.0",
         "spatie/laravel-package-tools": "^1.16"
     },
+    "suggest": {
+        "laravel/mcp": "Required to enable the built-in MCP server (stdio + HTTP transports). Set EXACT_MCP_ENABLED=true after installing."
+    },
     "require-dev": {
+        "laravel/mcp": "^0.5.9|^0.6|^0.7",
         "larastan/larastan": "^3.4",
         "laravel/pint": "^1.14",
         "nunomaduro/collision": "^8.1.1",

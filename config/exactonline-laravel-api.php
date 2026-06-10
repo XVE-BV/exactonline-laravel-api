@@ -393,4 +393,54 @@ return [
         // Set to a path containing your own JSON schema files
         'schema_path' => null,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | MCP Server
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for the built-in Model Context Protocol (MCP) server.
+    | Requires laravel/mcp: composer require laravel/mcp
+    | All transports are DISABLED by default.
+    |
+    */
+    'mcp' => [
+        // Master switch. Must be true before any transport is activated.
+        'enabled' => env('EXACT_MCP_ENABLED', false),
+
+        'stdio' => [
+            // Enables the `exact:mcp` artisan command (stdio transport).
+            'enabled' => env('EXACT_MCP_STDIO_ENABLED', true),
+        ],
+
+        'http' => [
+            // Enables the streamable-HTTP MCP route.
+            'enabled' => env('EXACT_MCP_HTTP_ENABLED', true),
+
+            // URL path for the HTTP endpoint.
+            'path' => env('EXACT_MCP_HTTP_PATH', 'exact/mcp'),
+
+            // Middleware stack applied before the auth check.
+            'middleware' => ['api'],
+        ],
+
+        'auth' => [
+            // Static bearer token. HTTP endpoint denies every request when null/empty.
+            'token' => env('EXACT_MCP_TOKEN'),
+
+            // Header name for the token (also accepts Authorization: Bearer).
+            'header' => env('EXACT_MCP_TOKEN_HEADER', 'X-MCP-Token'),
+        ],
+
+        'limits' => [
+            // Default page size for collection reads.
+            'default_limit' => 50,
+
+            // Maximum allowed `top` value for Exact API reads and local record lists.
+            'max_limit' => 200,
+
+            // Maximum document content size (bytes) returned by exact_document_download.
+            'max_document_bytes' => 5 * 1024 * 1024,
+        ],
+    ],
 ];
