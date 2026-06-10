@@ -157,6 +157,35 @@ class ExactConnection extends Model
     }
 
     /**
+     * Resolve the synced division row for the current Exact division code.
+     */
+    public function resolveDivisionId(): void
+    {
+        $divisionId = null;
+
+        if ($this->division !== null) {
+            $divisionId = ExactDivision::query()
+                ->where('connection_id', $this->id)
+                ->where('code', $this->division)
+                ->value('id');
+        }
+
+        $divisionId = $divisionId === null ? null : (int) $divisionId;
+
+        if ($this->division_id === $divisionId) {
+            $this->forceFill(['division_id' => $divisionId]);
+
+            return;
+        }
+
+        $this->forceFill(['division_id' => $divisionId]);
+
+        if ($this->exists) {
+            $this->saveQuietly();
+        }
+    }
+
+    /**
      * Scope a query to only include active connections.
      *
      * @param  Builder<ExactConnection>  $query
