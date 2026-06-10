@@ -52,17 +52,16 @@ class GetSalesInvoicesAction
             // Create SalesInvoice instance
             $invoice = new SalesInvoice($picqerConnection);
 
+            $queryOptions = $this->buildQueryOptions($options);
+
             // Build filter from options
             $filter = $this->buildFilter($options);
             if (! empty($filter)) {
-                $invoice->filter($filter);
+                $queryOptions['$filter'] = $filter;
             }
 
-            // Apply other query options
-            $this->applyQueryOptions($invoice, $options);
-
             // Get invoices
-            $invoices = $invoice->get();
+            $invoices = $invoice->get($queryOptions);
 
             // Track rate limit usage after the request
             $this->trackRateLimitUsage($connection, $picqerConnection);
@@ -132,38 +131,6 @@ class GetSalesInvoicesAction
     }
 
     /**
-     * Apply OData query options to the entity
-     *
-     * @param  array<string, mixed>  $options
-     */
-    protected function applyQueryOptions(SalesInvoice $invoice, array $options): void
-    {
-        // Apply select (field selection)
-        if (! empty($options['select'])) {
-            $invoice->select($options['select']);
-        }
-
-        // Apply expand (related entities)
-        if (! empty($options['expand'])) {
-            $invoice->expand(implode(',', $options['expand']));
-        }
-
-        // Apply orderby (default to InvoiceDate descending)
-        $orderBy = $options['orderby'] ?? 'InvoiceDate desc';
-        $invoice->orderBy($orderBy);
-
-        // Apply top (limit)
-        if (! empty($options['top'])) {
-            $invoice->top($options['top']);
-        }
-
-        // Apply skip (offset)
-        if (! empty($options['skip'])) {
-            $invoice->skip($options['skip']);
-        }
-    }
-
-    /**
      * Ensure the connection has a valid access token
      */
     protected function ensureValidToken(ExactConnection $connection): void
@@ -215,5 +182,42 @@ class GetSalesInvoicesAction
             TrackRateLimitUsageAction::class
         );
         $trackRateLimitAction->execute($connection, $picqerConnection);
+    }
+
+    /**
+     * Build OData query options for Picqer's request API.
+     *
+     * @param  array<string, mixed>  $options
+     * @return array<string, mixed>
+     */
+    protected function buildQueryOptions(array $options): array
+    {
+        $queryOptions = [];
+
+        if (! empty($options['filter'])) {
+            $queryOptions['$filter'] = $options['filter'];
+        }
+
+        if (! empty($options['select']) && is_array($options['select'])) {
+            $queryOptions['$select'] = implode(',', $options['select']);
+        }
+
+        if (! empty($options['expand']) && is_array($options['expand'])) {
+            $queryOptions['$expand'] = implode(',', $options['expand']);
+        }
+
+        $queryOptions['$orderby'] = ! empty($options['orderby'])
+            ? $options['orderby']
+            : 'InvoiceDate desc';
+
+        if (isset($options['top'])) {
+            $queryOptions['$top'] = (int) $options['top'];
+        }
+
+        if (isset($options['skip'])) {
+            $queryOptions['$skip'] = (int) $options['skip'];
+        }
+
+        return $queryOptions;
     }
 }

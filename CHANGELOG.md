@@ -2,6 +2,10 @@
 
 All notable changes to `exactonline-laravel-api` will be documented in this file.
 
+## v3.1.0 - 2026-06-10
+
+Feature: optional read-only MCP (Model Context Protocol) server, disabled by default. Exposes the integration's local state (connections, mappings, rate limits, divisions, webhooks) and live read-only Exact Online API calls to MCP clients over two transports: stdio (`exact:mcp` artisan command) and streamable-HTTP (`exact/mcp` route with static bearer-token auth). Built on the optional `laravel/mcp` dependency; OAuth tokens and secrets are never returned (scrubbed from all output).
+
 ## v3.0.1 - 2026-05-11
 
 Fix: removed incorrect `readOnly` flag on `SalesInvoice.Status` in the schema. Exact Online's REST API accepts `Status` on create (e.g. `50` for Draft, `20` for Open), but the schema marked it read-only and the payload validator rejected create payloads that set it. Senders that need to control the initial status of a pushed invoice can now set it.

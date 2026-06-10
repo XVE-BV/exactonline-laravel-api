@@ -48,11 +48,10 @@ class GetAccountsAction
             // Create Account instance
             $account = $this->createAccount($picqerConnection);
 
-            // Apply filters if provided
-            $this->applyQueryOptions($account, $options);
+            $queryOptions = $this->buildQueryOptions($options);
 
             // Get accounts
-            $accounts = $account->get();
+            $accounts = $account->get($queryOptions);
 
             // Track rate limit usage after the request
             $this->trackRateLimitUsage($connection, $picqerConnection);
@@ -143,40 +142,39 @@ class GetAccountsAction
     }
 
     /**
-     * Apply OData query options to the entity
+     * Build OData query options for Picqer's request API.
      *
      * @param  array<string, mixed>  $options
+     * @return array<string, mixed>
      */
-    protected function applyQueryOptions(Account $account, array $options): void
+    protected function buildQueryOptions(array $options): array
     {
-        // Apply filter
+        $queryOptions = [];
+
         if (! empty($options['filter'])) {
-            $account->filter($options['filter']);
+            $queryOptions['$filter'] = $options['filter'];
         }
 
-        // Apply select (field selection)
-        if (! empty($options['select'])) {
-            $account->select($options['select']);
+        if (! empty($options['select']) && is_array($options['select'])) {
+            $queryOptions['$select'] = implode(',', $options['select']);
         }
 
-        // Apply expand (related entities)
-        if (! empty($options['expand'])) {
-            $account->expand(implode(',', $options['expand']));
+        if (! empty($options['expand']) && is_array($options['expand'])) {
+            $queryOptions['$expand'] = implode(',', $options['expand']);
         }
 
-        // Apply orderby
         if (! empty($options['orderby'])) {
-            $account->orderBy($options['orderby']);
+            $queryOptions['$orderby'] = $options['orderby'];
         }
 
-        // Apply top (limit)
-        if (! empty($options['top'])) {
-            $account->top($options['top']);
+        if (isset($options['top'])) {
+            $queryOptions['$top'] = (int) $options['top'];
         }
 
-        // Apply skip (offset)
-        if (! empty($options['skip'])) {
-            $account->skip($options['skip']);
+        if (isset($options['skip'])) {
+            $queryOptions['$skip'] = (int) $options['skip'];
         }
+
+        return $queryOptions;
     }
 }

@@ -48,11 +48,10 @@ class GetPaymentsAction
             // Create Payment instance
             $payment = new Payment($picqerConnection);
 
-            // Apply filters if provided
-            $this->applyQueryOptions($payment, $options);
+            $queryOptions = $this->buildQueryOptions($options);
 
             // Get payments
-            $payments = $payment->get();
+            $payments = $payment->get($queryOptions);
 
             // Track rate limit usage after the request
             $this->trackRateLimitUsage($connection, $picqerConnection);
@@ -138,40 +137,39 @@ class GetPaymentsAction
     }
 
     /**
-     * Apply OData query options to the entity
+     * Build OData query options for Picqer's request API.
      *
      * @param  array<string, mixed>  $options
+     * @return array<string, mixed>
      */
-    protected function applyQueryOptions(Payment $payment, array $options): void
+    protected function buildQueryOptions(array $options): array
     {
-        // Apply filter
+        $queryOptions = [];
+
         if (! empty($options['filter'])) {
-            $payment->filter($options['filter']);
+            $queryOptions['$filter'] = $options['filter'];
         }
 
-        // Apply select (field selection)
-        if (! empty($options['select'])) {
-            $payment->select($options['select']);
+        if (! empty($options['select']) && is_array($options['select'])) {
+            $queryOptions['$select'] = implode(',', $options['select']);
         }
 
-        // Apply expand (related entities)
-        if (! empty($options['expand'])) {
-            $payment->expand(implode(',', $options['expand']));
+        if (! empty($options['expand']) && is_array($options['expand'])) {
+            $queryOptions['$expand'] = implode(',', $options['expand']);
         }
 
-        // Apply orderby
         if (! empty($options['orderby'])) {
-            $payment->orderBy($options['orderby']);
+            $queryOptions['$orderby'] = $options['orderby'];
         }
 
-        // Apply top (limit)
-        if (! empty($options['top'])) {
-            $payment->top($options['top']);
+        if (isset($options['top'])) {
+            $queryOptions['$top'] = (int) $options['top'];
         }
 
-        // Apply skip (offset)
-        if (! empty($options['skip'])) {
-            $payment->skip($options['skip']);
+        if (isset($options['skip'])) {
+            $queryOptions['$skip'] = (int) $options['skip'];
         }
+
+        return $queryOptions;
     }
 }

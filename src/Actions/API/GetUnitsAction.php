@@ -43,9 +43,9 @@ class GetUnitsAction
 
             $unit = new Unit($picqerConnection);
 
-            $this->applyQueryOptions($unit, $options);
+            $queryOptions = $this->buildQueryOptions($options);
 
-            $units = $unit->get();
+            $units = $unit->get($queryOptions);
 
             $this->trackRateLimitUsage($connection, $picqerConnection);
 
@@ -127,30 +127,39 @@ class GetUnitsAction
     }
 
     /**
-     * Apply OData query options to the entity.
+     * Build OData query options for Picqer's request API.
      *
      * @param  array<string, mixed>  $options
+     * @return array<string, mixed>
      */
-    protected function applyQueryOptions(Unit $unit, array $options): void
+    protected function buildQueryOptions(array $options): array
     {
+        $queryOptions = [];
+
         if (! empty($options['filter'])) {
-            $unit->filter($options['filter']);
+            $queryOptions['$filter'] = $options['filter'];
         }
 
-        if (! empty($options['select'])) {
-            $unit->select($options['select']);
+        if (! empty($options['select']) && is_array($options['select'])) {
+            $queryOptions['$select'] = implode(',', $options['select']);
+        }
+
+        if (! empty($options['expand']) && is_array($options['expand'])) {
+            $queryOptions['$expand'] = implode(',', $options['expand']);
         }
 
         if (! empty($options['orderby'])) {
-            $unit->orderBy($options['orderby']);
+            $queryOptions['$orderby'] = $options['orderby'];
         }
 
-        if (! empty($options['top'])) {
-            $unit->top($options['top']);
+        if (isset($options['top'])) {
+            $queryOptions['$top'] = (int) $options['top'];
         }
 
-        if (! empty($options['skip'])) {
-            $unit->skip($options['skip']);
+        if (isset($options['skip'])) {
+            $queryOptions['$skip'] = (int) $options['skip'];
         }
+
+        return $queryOptions;
     }
 }

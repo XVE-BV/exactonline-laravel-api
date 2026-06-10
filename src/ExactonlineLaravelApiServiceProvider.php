@@ -5,12 +5,17 @@ declare(strict_types=1);
 namespace XVE\ExactonlineLaravelApi;
 
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Route;
+use Laravel\Mcp\Facades\Mcp;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use XVE\ExactonlineLaravelApi\Console\ExactMcpCommand;
 use XVE\ExactonlineLaravelApi\Console\GenerateSchemasCommand;
 use XVE\ExactonlineLaravelApi\Console\RefreshTokensCommand;
+use XVE\ExactonlineLaravelApi\Http\Middleware\AuthenticateMcp;
 use XVE\ExactonlineLaravelApi\Http\Middleware\CheckExactRateLimit;
 use XVE\ExactonlineLaravelApi\Http\Middleware\EnsureValidExactConnection;
+use XVE\ExactonlineLaravelApi\Mcp\ExactMcpServer;
 use XVE\ExactonlineLaravelApi\Validation\FieldValidator;
 use XVE\ExactonlineLaravelApi\Validation\PayloadValidator;
 use XVE\ExactonlineLaravelApi\Validation\SchemaLoader;
@@ -35,13 +40,14 @@ class ExactonlineLaravelApiServiceProvider extends PackageServiceProvider
             ])
             ->hasRoute('web')
             ->hasCommand(GenerateSchemasCommand::class)
-            ->hasCommand(RefreshTokensCommand::class);
+            ->hasCommand(RefreshTokensCommand::class)
+            ->hasCommand(ExactMcpCommand::class);
     }
 
     public function packageBooted(): void
     {
-        // Register middleware aliases
         $this->registerMiddleware();
+        $this->bootMcp();
     }
 
     public function packageRegistered(): void
@@ -50,22 +56,45 @@ class ExactonlineLaravelApiServiceProvider extends PackageServiceProvider
         $this->registerValidation();
     }
 
-    /**
-     * Register the package middleware
-     */
     protected function registerMiddleware(): void
     {
         $router = $this->app->make(Router::class);
 
-        // Register middleware aliases for easy use in routes
         $router->aliasMiddleware('exact.connection', EnsureValidExactConnection::class);
         $router->aliasMiddleware('exact.rate_limit', CheckExactRateLimit::class);
+        $router->aliasMiddleware('exact.mcp.auth', AuthenticateMcp::class);
 
-        // Register middleware groups
         $router->middlewareGroup('exact', [
             'exact.connection',
             'exact.rate_limit',
         ]);
+    }
+
+    protected function bootMcp(): void
+    {
+        if (! config('exactonline-laravel-api.mcp.enabled', false)) {
+            return;
+        }
+
+        if (! class_exists(Mcp::class)) {
+            return;
+        }
+
+        if (config('exactonline-laravel-api.mcp.stdio.enabled', true)) {
+            Mcp::local('exact', ExactMcpServer::class);
+        }
+
+        if (config('exactonline-laravel-api.mcp.http.enabled', true) && ! $this->app->routesAreCached()) {
+            $path = config('exactonline-laravel-api.mcp.http.path', 'exact/mcp');
+            $middleware = array_merge(
+                (array) config('exactonline-laravel-api.mcp.http.middleware', ['api']),
+                ['exact.mcp.auth'],
+            );
+
+            Route::middleware($middleware)->group(function () use ($path): void {
+                Mcp::web($path, ExactMcpServer::class);
+            });
+        }
     }
 
     /**

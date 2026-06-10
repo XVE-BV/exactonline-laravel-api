@@ -238,6 +238,65 @@ Payloads are validated before sending to the API:
 ],
 ```
 
+## MCP Server
+
+This package includes an optional, read-only MCP (Model Context Protocol) server for inspecting Exact Online integration state and making ad-hoc read-only API calls from an MCP client such as Claude. It is disabled by default.
+
+### Installation
+
+The MCP server uses Laravel's MCP package as an optional dependency. Install it only when you want to enable MCP access:
+
+```bash
+composer require laravel/mcp
+```
+
+### Configuration
+
+Configure the server with environment variables:
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `EXACT_MCP_ENABLED` | `false` | Master switch for the MCP server. |
+| `EXACT_MCP_STDIO_ENABLED` | `true` | Enables the stdio transport. |
+| `EXACT_MCP_HTTP_ENABLED` | `true` | Enables the streamable-HTTP transport. |
+| `EXACT_MCP_HTTP_PATH` | `exact/mcp` | HTTP endpoint path. |
+| `EXACT_MCP_TOKEN` | | Bearer token for HTTP. When unset, the HTTP endpoint denies every request. |
+| `EXACT_MCP_TOKEN_HEADER` | `X-MCP-Token` | Custom token header. The HTTP endpoint also accepts `Authorization: Bearer`. |
+
+### stdio transport
+
+Run the stdio server with Artisan:
+
+```bash
+php artisan exact:mcp
+```
+
+Register that command in your MCP client's `mcp.json` so the client can start the server process.
+
+### HTTP transport
+
+POST JSON-RPC requests to the configured path with the bearer token:
+
+```bash
+curl -X POST https://your-app.test/exact/mcp -H 'Authorization: Bearer <token>' -H 'Content-Type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+```
+
+### Available tools
+
+| Tool | Description |
+| --- | --- |
+| `exact_connections_list` | List local connections with credentials scrubbed. |
+| `exact_connection_get` | Get one connection with token health, rate limit state, and optional webhooks/divisions. |
+| `exact_local_records_list` | List mappings, rate limits, webhooks, or divisions. |
+| `exact_local_record_get` | Get one local record by type and id. |
+| `exact_api_read` | Read any Exact Online entity through the configured `get_*` actions with OData filter/select/expand/orderby/top/skip support; `top` is capped. |
+| `exact_document_download` | Get document metadata, with base64 content available only when opted in and within the size cap. |
+| `exact_token_status` | Report OAuth access and refresh token health without side effects. |
+
+### Security
+
+The MCP server is read-only: only `get_*` and `download_*` actions are allowed. OAuth tokens and secrets are never exposed in tool output. The HTTP transport requires a bearer token and fails closed when the token is unset. Everything is off by default.
+
 ## Testing
 
 ```bash
