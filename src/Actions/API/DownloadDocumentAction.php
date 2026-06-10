@@ -63,7 +63,7 @@ class DownloadDocumentAction
             $attachment = new DocumentAttachment($picqerConnection);
             $result = $attachment->find($attachmentId);
 
-            if (! $result->exists()) {
+            if ($result === null || ! $result->exists()) {
                 Log::info('Document attachment not found', [
                     'connection_id' => $connection->id,
                     'document_id' => $documentId,
@@ -129,7 +129,7 @@ class DownloadDocumentAction
         $document = new Document($picqerConnection);
         $doc = $document->find($documentId);
 
-        if (! $doc->exists()) {
+        if ($doc === null || ! $doc->exists()) {
             return null;
         }
 
@@ -158,7 +158,6 @@ class DownloadDocumentAction
 
         return $content;
     }
-
 
     /**
      * Get MIME type based on file extension

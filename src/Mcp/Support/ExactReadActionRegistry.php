@@ -51,17 +51,25 @@ class ExactReadActionRegistry
     public function readableEntities(): array
     {
         $actions = config('exactonline-laravel-api.actions', []);
+        $entities = [];
 
-        return array_values(array_filter(
-            array_keys($actions),
-            fn (string $name) => $this->isReadable($name)
-        ));
+        if (! is_array($actions)) {
+            return $entities;
+        }
+
+        foreach ($actions as $name => $_actionClass) {
+            if (is_string($name) && $this->isReadable($name)) {
+                $entities[] = $name;
+            }
+        }
+
+        return $entities;
     }
 
     /**
      * Resolve and validate a readable action instance.
      *
-     * @return object The resolved action instance
+     * @return object The resolved action instance with an execute() method
      *
      * @throws InvalidActionClass when the entity is not known or not a read action
      */
@@ -81,7 +89,35 @@ class ExactReadActionRegistry
             );
         }
 
+        $this->ensureExecutable($actionClass, $entity);
+
         return app($actionClass);
+    }
+
+    /**
+     * @param  array<int, mixed>  $arguments
+     */
+    public function execute(object $action, array $arguments): mixed
+    {
+        try {
+            return (new ReflectionMethod($action, 'execute'))->invokeArgs($action, $arguments);
+        } catch (\ReflectionException) {
+            throw new InvalidActionClass('Resolved action does not expose an execute method.');
+        }
+    }
+
+    /**
+     * @param  class-string  $actionClass
+     *
+     * @throws InvalidActionClass
+     */
+    private function ensureExecutable(string $actionClass, string $entity): void
+    {
+        if (! method_exists($actionClass, 'execute')) {
+            throw new InvalidActionClass(
+                "Entity \"{$entity}\" is configured with an action class that does not expose execute()."
+            );
+        }
     }
 
     /**

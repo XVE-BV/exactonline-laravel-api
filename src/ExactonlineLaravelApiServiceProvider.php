@@ -6,6 +6,7 @@ namespace XVE\ExactonlineLaravelApi;
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
+use Laravel\Mcp\Facades\Mcp;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use XVE\ExactonlineLaravelApi\Console\ExactMcpCommand;
@@ -75,12 +76,12 @@ class ExactonlineLaravelApiServiceProvider extends PackageServiceProvider
             return;
         }
 
-        if (! class_exists(\Laravel\Mcp\Facades\Mcp::class)) {
+        if (! class_exists(Mcp::class)) {
             return;
         }
 
         if (config('exactonline-laravel-api.mcp.stdio.enabled', true)) {
-            \Laravel\Mcp\Facades\Mcp::local('exact', ExactMcpServer::class);
+            Mcp::local('exact', ExactMcpServer::class);
         }
 
         if (config('exactonline-laravel-api.mcp.http.enabled', true) && ! $this->app->routesAreCached()) {
@@ -91,7 +92,7 @@ class ExactonlineLaravelApiServiceProvider extends PackageServiceProvider
             );
 
             Route::middleware($middleware)->group(function () use ($path): void {
-                \Laravel\Mcp\Facades\Mcp::web($path, ExactMcpServer::class);
+                Mcp::web($path, ExactMcpServer::class);
             });
         }
     }

@@ -13,6 +13,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 use XVE\ExactonlineLaravelApi\Mcp\Support\ConnectionResolver;
 use XVE\ExactonlineLaravelApi\Mcp\Support\ExactReadActionRegistry;
 use XVE\ExactonlineLaravelApi\Mcp\Support\SecretScrubber;
+use XVE\ExactonlineLaravelApi\Models\ExactConnection;
 
 /**
  * Dispatcher tool over all 47 Get* API actions.
@@ -87,8 +88,8 @@ class ExactApiReadTool extends Tool
 
                 $options = $this->applyCollectionLimit($options);
                 $result = $registry->acceptsOptions($action)
-                    ? $action->execute($connection, $options)
-                    : $action->execute($connection);
+                    ? $registry->execute($action, [$connection, $options])
+                    : $registry->execute($action, [$connection]);
 
                 $records = $this->scrubRecords($result);
 
@@ -106,7 +107,7 @@ class ExactApiReadTool extends Tool
     /**
      * @param  array<string, mixed>  $options
      */
-    private function handleSingleRead(ExactReadActionRegistry $registry, string $entity, object $action, $connection, string $id, array $options): Response
+    private function handleSingleRead(ExactReadActionRegistry $registry, string $entity, object $action, ExactConnection $connection, string $id, array $options): Response
     {
         $scrubber = new SecretScrubber;
 
@@ -117,8 +118,8 @@ class ExactApiReadTool extends Tool
                 $collectionAction = $registry->resolve($collectionEntity);
                 $singleOptions = $this->optionsForSingleCollectionRead($options, $id);
                 $result = $registry->acceptsOptions($collectionAction)
-                    ? $collectionAction->execute($connection, $singleOptions)
-                    : $collectionAction->execute($connection);
+                    ? $registry->execute($collectionAction, [$connection, $singleOptions])
+                    : $registry->execute($collectionAction, [$connection]);
 
                 $records = $this->scrubRecords($result);
                 $record = is_array($records) ? ($records[0] ?? null) : null;
@@ -132,8 +133,8 @@ class ExactApiReadTool extends Tool
         }
 
         $result = $registry->acceptsOptions($action)
-            ? $action->execute($connection, $id, $options)
-            : $action->execute($connection, $id);
+            ? $registry->execute($action, [$connection, $id, $options])
+            : $registry->execute($action, [$connection, $id]);
 
         $data = $result !== null ? $scrubber->scrubKnownFields($result) : null;
         $response = ['record' => $this->normaliseRecord($data)];

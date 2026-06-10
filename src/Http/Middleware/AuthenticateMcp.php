@@ -28,15 +28,19 @@ class AuthenticateMcp
         $expected = config('exactonline-laravel-api.mcp.auth.token');
         $header = config('exactonline-laravel-api.mcp.auth.header', 'X-MCP-Token');
 
-        // Fail closed: if the server token is not configured, deny everything.
-        if (empty($expected)) {
+        // Fail closed: if the server token is not configured as a string, deny everything.
+        if (! is_string($expected) || $expected === '') {
+            return $this->deny($request);
+        }
+
+        if (! is_string($header) || $header === '') {
             return $this->deny($request);
         }
 
         // Accept token from the configured header or from the Authorization bearer.
         $provided = $request->header($header) ?? $request->bearerToken();
 
-        if (empty($provided)) {
+        if (! is_string($provided) || $provided === '') {
             return $this->deny($request);
         }
 

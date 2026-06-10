@@ -61,7 +61,7 @@ class ListLocalRecordsTool extends Tool
 
             // Apply connection filter.
             if ($connectionId = $request->get('connection_id')) {
-                $query->where('connection_id', $connectionId);
+                $query->getQuery()->where('connection_id', $connectionId);
             }
 
             // Apply additional column filters (only allowed columns).
@@ -71,7 +71,7 @@ class ListLocalRecordsTool extends Tool
             if (is_array($extraFilters)) {
                 foreach ($extraFilters as $col => $val) {
                     if (in_array($col, $allowedFilters, true)) {
-                        $query->where($col, $val);
+                        $query->getQuery()->where($col, $val);
                     }
                 }
             }
