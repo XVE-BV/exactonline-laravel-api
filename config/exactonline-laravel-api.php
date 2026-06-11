@@ -442,5 +442,10 @@ return [
             // Maximum document content size (bytes) returned by exact_document_download.
             'max_document_bytes' => 5 * 1024 * 1024,
         ],
+
+        // Anonymize personal/customer data in MCP tool output (names, addresses, emails, phone
+        // numbers, IBAN/BIC, VAT/CoC numbers). Set false only in trusted environments where
+        // real data is needed for debugging. Defaults to true (anonymized).
+        'anonymize' => env('EXACT_MCP_ANONYMIZE', true),
     ],
 ];

@@ -2,6 +2,10 @@
 
 All notable changes to `exactonline-laravel-api` will be documented in this file.
 
+## v3.3.0 - 2026-06-11
+
+Feature: MCP tool output now anonymizes personal/customer-identifying data by default. Names (account, contact, `OrderedByName`, `InvoiceToName`), addresses (street/city/postcode/country), emails, phone numbers, IBAN/BIC, VAT/CoC registration numbers, and free-text remarks are replaced with deterministic fake values seeded by sha1 of the original (same input → same fake output, not reversible). Business data — order/invoice numbers, amounts, quantities, dates, GUIDs/IDs, item codes, GL accounts, VAT codes — is never touched. Disable with `EXACT_MCP_ANONYMIZE=false` (e.g. in a trusted internal debugging environment). Config key: `exactonline-laravel-api.mcp.anonymize`.
+
 ## v3.2.0 - 2026-06-10
 
 Feature: add `division_id` foreign key on `exact_connections` referencing `exact_divisions.id`, alongside the existing `division` code (which the Exact API still uses). Exposes an `activeDivision()` relationship. `division_id` is auto-populated wherever the active division is set: division sync, division switch, and OAuth connection setup. Additive and nullable; no behavior change to API calls.
