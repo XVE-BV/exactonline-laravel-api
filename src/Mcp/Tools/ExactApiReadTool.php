@@ -230,6 +230,10 @@ class ExactApiReadTool extends Tool
         return $result;
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     private function anonymizeIfEnabled(array $data): array
     {
         if (! config('exactonline-laravel-api.mcp.anonymize', true)) {
