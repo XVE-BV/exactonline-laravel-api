@@ -11,6 +11,7 @@ use XVE\ExactonlineLaravelApi\Actions\OAuth\AcquireAccessTokenAction;
 use XVE\ExactonlineLaravelApi\Events\TokenAcquired;
 use XVE\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
 use XVE\ExactonlineLaravelApi\Models\ExactConnection;
+use XVE\ExactonlineLaravelApi\Models\ExactDivision;
 
 beforeEach(function () {
     Event::fake();
@@ -76,6 +77,38 @@ it('can acquire access token with valid authorization code', function () {
     Event::assertDispatched(TokenAcquired::class, function ($event) {
         return $event->connection->id === $this->connection->id;
     });
+});
+
+it('resolves division id when OAuth token exchange discovers a synced division code', function () {
+    $this->connection->update(['division' => null]);
+
+    $division = ExactDivision::query()->create([
+        'connection_id' => $this->connection->id,
+        'code' => 1284243,
+        'description' => 'Synced division',
+    ]);
+
+    $picqerConnection = $this->mock(Connection::class, function (MockInterface $mock) {
+        $mock->shouldReceive('setAuthorizationCode')->once();
+        $mock->shouldReceive('connect')->once()->andReturn(Mockery::mock(Client::class));
+        $mock->shouldReceive('getAccessToken')->once()->andReturn('new-access-token');
+        $mock->shouldReceive('getRefreshToken')->once()->andReturn('new-refresh-token');
+        $mock->shouldReceive('getTokenExpires')->once()->andReturn(now()->addMinutes(10)->timestamp);
+        $mock->shouldReceive('getDivision')->once()->andReturn('1284243');
+    });
+
+    $this->connection = Mockery::mock($this->connection)->makePartial();
+    $this->connection->shouldReceive('getPicqerConnection')
+        ->once()
+        ->andReturn($picqerConnection);
+
+    $this->action->execute($this->connection, 'valid-test-authorization-code');
+
+    $this->connection->refresh();
+
+    expect($this->connection->division)->toBe('1284243')
+        ->and($this->connection->division_id)->toBe($division->id)
+        ->and($this->connection->activeDivision?->is($division))->toBeTrue();
 });
 
 it('throws exception for empty authorization code', function () {

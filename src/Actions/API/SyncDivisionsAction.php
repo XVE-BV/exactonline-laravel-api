@@ -44,7 +44,7 @@ class SyncDivisionsAction
                 }
             }
 
-            $this->syncActiveDivisionId($connection);
+            $connection->resolveDivisionId();
 
             Log::info('Synced divisions from Exact Online', [
                 'connection_id' => $connection->id,
@@ -128,20 +128,6 @@ class SyncDivisionsAction
         ExactDivision::create($attributes);
 
         return 'created';
-    }
-
-    protected function syncActiveDivisionId(ExactConnection $connection): void
-    {
-        $divisionId = null;
-
-        if ($connection->division !== null) {
-            $divisionId = ExactDivision::query()
-                ->where('connection_id', $connection->id)
-                ->where('code', $connection->division)
-                ->value('id');
-        }
-
-        $connection->forceFill(['division_id' => $divisionId === null ? null : (int) $divisionId])->save();
     }
 
     /**
