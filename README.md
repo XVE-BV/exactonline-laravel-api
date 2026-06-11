@@ -262,6 +262,7 @@ Configure the server with environment variables:
 | `EXACT_MCP_HTTP_PATH` | `exact/mcp` | HTTP endpoint path. |
 | `EXACT_MCP_TOKEN` | | Bearer token for HTTP. When unset, the HTTP endpoint denies every request. |
 | `EXACT_MCP_TOKEN_HEADER` | `X-MCP-Token` | Custom token header. The HTTP endpoint also accepts `Authorization: Bearer`. |
+| `EXACT_MCP_ANONYMIZE` | `true` | Anonymize customer/personal data in tool output (names, addresses, emails, phone numbers, IBAN/BIC, VAT/CoC numbers). Set `false` only in trusted internal environments. |
 
 ### stdio transport
 
@@ -295,7 +296,7 @@ curl -X POST https://your-app.test/exact/mcp -H 'Authorization: Bearer <token>' 
 
 ### Security
 
-The MCP server is read-only: only `get_*` and `download_*` actions are allowed. OAuth tokens and secrets are never exposed in tool output. The HTTP transport requires a bearer token and fails closed when the token is unset. Everything is off by default.
+The MCP server is read-only: only `get_*` and `download_*` actions are allowed. OAuth tokens and secrets are never exposed in tool output. Customer and personal data (names, addresses, contact details, financial IDs) is anonymized by default — deterministic fake values replace the real ones so the data is coherent but not reversible. Disable anonymization with `EXACT_MCP_ANONYMIZE=false`. The HTTP transport requires a bearer token and fails closed when the token is unset. Everything is off by default.
 
 ## Testing
 

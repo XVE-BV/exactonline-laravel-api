@@ -10,6 +10,7 @@ use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\Server\Tool;
 use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
+use XVE\ExactonlineLaravelApi\Mcp\Support\Anonymizer;
 use XVE\ExactonlineLaravelApi\Mcp\Support\ConnectionResolver;
 use XVE\ExactonlineLaravelApi\Mcp\Support\ExactReadActionRegistry;
 use XVE\ExactonlineLaravelApi\Mcp\Support\SecretScrubber;
@@ -136,7 +137,9 @@ class ExactApiReadTool extends Tool
             ? $registry->execute($action, [$connection, $id, $options])
             : $registry->execute($action, [$connection, $id]);
 
-        $data = $result !== null ? $scrubber->scrubKnownFields($result) : null;
+        $data = $result !== null
+            ? $this->anonymizeIfEnabled($scrubber->scrubKnownFields($result))
+            : null;
         $response = ['record' => $this->normaliseRecord($data)];
 
         if (isset($note)) {
@@ -215,12 +218,24 @@ class ExactApiReadTool extends Tool
         $scrubber = new SecretScrubber;
 
         if ($result instanceof Collection) {
-            return $result->map(fn ($item) => is_array($item)
-                ? $scrubber->scrubKnownFields($item)
-                : $item
-            )->all();
+            return $result->map(function ($item) use ($scrubber) {
+                if (! is_array($item)) {
+                    return $item;
+                }
+
+                return $this->anonymizeIfEnabled($scrubber->scrubKnownFields($item));
+            })->all();
         }
 
         return $result;
+    }
+
+    private function anonymizeIfEnabled(array $data): array
+    {
+        if (! config('exactonline-laravel-api.mcp.anonymize', true)) {
+            return $data;
+        }
+
+        return (new Anonymizer)->anonymize($data);
     }
 }
