@@ -266,6 +266,17 @@ class ExactConnection extends Model
         // discarded, while Exact has already killed the copy we have stored —
         // so every later refresh fails and the connection is silently dead
         // until the stored token reaches its ~30-day idle expiry.
+        //
+        // Two known limits, neither of which existed as a working guarantee
+        // before this callback:
+        //  - picqer holds ONE callback slot and setTokenUpdateCallback
+        //    overwrites it. A consumer that registers its own on the returned
+        //    connection silently disables this persistence and reopens the
+        //    outage above; such a consumer must chain the persist itself.
+        //  - the lock callbacks are deliberately not registered here, so two
+        //    concurrent picqer-initiated refreshes on one connection can still
+        //    race for the single-use token. The loser's call fails, but the
+        //    winner's pair is persisted, so the chain survives.
         $connection->setTokenUpdateCallback(function (Connection $picqer): void {
             $this->persistRotatedTokens($picqer);
         });

@@ -30,6 +30,12 @@ it('registers a token update callback on the picqer connection', function () {
 
     // The property is private on picqer's Connection, so assert through
     // reflection rather than by triggering a real OAuth round-trip.
+    //
+    // CAVEAT: firing the callback by hand proves the wiring and the persist
+    // behaviour, not that picqer actually invokes it. That leg rests on the
+    // locked vendor source (Connection.php:613-615). If picqer is ever bumped
+    // across a major version, re-verify that invocation still exists — this
+    // suite would stay green without it.
     $property = (new ReflectionClass($picqer))->getProperty('tokenUpdateCallback');
     $property->setAccessible(true);
 
