@@ -26,8 +26,8 @@ class BookSalesInvoiceAction
     /**
      * @param  string  $invoiceId  The Exact Online sales invoice ID (GUID) of the draft to book.
      * @param  array<string, mixed>  $options  Overrides merged into the POST body (e.g. DocumentLayout,
-     *                                          InvoiceDate). The Send* flags default to false so booking
-     *                                          never auto-emails / auto-Peppols / posts the invoice.
+     *                                         InvoiceDate). The Send* flags default to false so booking
+     *                                         never auto-emails / auto-Peppols / posts the invoice.
      * @return array<string, mixed> The PrintedSalesInvoice attributes returned by Exact.
      *
      * @throws ConnectionException
