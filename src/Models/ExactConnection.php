@@ -13,8 +13,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Connection;
+use XVE\ExactonlineLaravelApi\Actions\OAuth\StoreTokensAction;
 use XVE\ExactonlineLaravelApi\Database\Factories\ExactConnectionFactory;
+use XVE\ExactonlineLaravelApi\Support\Config;
 
 /**
  * @property int $id
@@ -255,7 +258,62 @@ class ExactConnection extends Model
         $connection->setExactClientSecret($this->getDecryptedClientSecret());
         $connection->setRedirectUrl($this->redirect_url);
 
+        // Exact rotates its single-use refresh token on EVERY refresh: the old
+        // one is invalidated the moment a new one is issued. picqer performs
+        // that refresh itself inside Connection::acquireAccessToken() and
+        // surfaces the new pair only through this callback. Without it the
+        // rotated token lives in memory for the rest of the request and is then
+        // discarded, while Exact has already killed the copy we have stored —
+        // so every later refresh fails and the connection is silently dead
+        // until the stored token reaches its ~30-day idle expiry.
+        //
+        // Two known limits, neither of which existed as a working guarantee
+        // before this callback:
+        //  - picqer holds ONE callback slot and setTokenUpdateCallback
+        //    overwrites it. A consumer that registers its own on the returned
+        //    connection silently disables this persistence and reopens the
+        //    outage above; such a consumer must chain the persist itself.
+        //  - the lock callbacks are deliberately not registered here, so two
+        //    concurrent picqer-initiated refreshes on one connection can still
+        //    race for the single-use token. The loser's call fails, but the
+        //    winner's pair is persisted, so the chain survives.
+        $connection->setTokenUpdateCallback(function (Connection $picqer): void {
+            $this->persistRotatedTokens($picqer);
+        });
+
         return $connection;
+    }
+
+    /**
+     * Persist a token pair picqer refreshed on its own initiative.
+     *
+     * Best-effort by design: this fires from inside an in-flight Exact request,
+     * and failing to record the rotation must not turn a successful API call
+     * into an exception. A failure is loud in the log because it means the
+     * chain is about to break.
+     */
+    protected function persistRotatedTokens(Connection $picqer): void
+    {
+        $accessToken = $picqer->getAccessToken();
+        $refreshToken = $picqer->getRefreshToken();
+
+        if (empty($accessToken) || empty($refreshToken)) {
+            return;
+        }
+
+        try {
+            Config::getAction('store_tokens', StoreTokensAction::class)->execute($this, [
+                'access_token' => (string) $accessToken,
+                'refresh_token' => (string) $refreshToken,
+                'expires_at' => $picqer->getTokenExpires(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Failed to persist refresh token rotated by picqer — the Exact token chain is now broken for this connection', [
+                'connection_id' => $this->id,
+                'exception_class' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

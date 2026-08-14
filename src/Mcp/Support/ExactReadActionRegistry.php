@@ -142,13 +142,16 @@ class ExactReadActionRegistry
             $secondParam = $params[1];
             $type = $secondParam->getType();
 
-            if ($type === null) {
+            // A plain `string` parameter is always a ReflectionNamedType, and
+            // a union/intersection type can never equal 'string' — so null and
+            // non-named types both answer false, exactly as the old
+            // (string) $type comparison did. Mirrors acceptsOptions() below and
+            // drops the ReflectionType->string cast, deprecated in PHP 8.
+            if (! $type instanceof \ReflectionNamedType) {
                 return false;
             }
 
-            $typeName = $type instanceof \ReflectionNamedType ? $type->getName() : (string) $type;
-
-            return $typeName === 'string';
+            return $type->getName() === 'string';
         } catch (\ReflectionException) {
             return false;
         }
