@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace XVE\ExactonlineLaravelApi\Models;
 
+use Illuminate\Contracts\Cache\Lock;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Picqer\Financials\Exact\Connection;
@@ -50,6 +52,19 @@ class ExactConnection extends Model
 {
     /** @use HasFactory<ExactConnectionFactory> */
     use HasFactory;
+
+    /**
+     * Lock held while picqer acquires a token on its own initiative.
+     *
+     * Transient and request-scoped: it is taken in
+     * acquirePicqerRefreshLock() and released from picqer's finally block, so
+     * it is never held across a queue boundary. Declared here (rather than
+     * left undeclared) so Eloquent treats it as a plain property instead of
+     * routing it through the attribute bag.
+     *
+     * @var Lock|null
+     */
+    protected $picqerRefreshLock = null;
 
     /**
      * The table associated with the model.
@@ -267,18 +282,41 @@ class ExactConnection extends Model
         // so every later refresh fails and the connection is silently dead
         // until the stored token reaches its ~30-day idle expiry.
         //
-        // Two known limits, neither of which existed as a working guarantee
-        // before this callback:
-        //  - picqer holds ONE callback slot and setTokenUpdateCallback
-        //    overwrites it. A consumer that registers its own on the returned
-        //    connection silently disables this persistence and reopens the
-        //    outage above; such a consumer must chain the persist itself.
-        //  - the lock callbacks are deliberately not registered here, so two
-        //    concurrent picqer-initiated refreshes on one connection can still
-        //    race for the single-use token. The loser's call fails, but the
-        //    winner's pair is persisted, so the chain survives.
+        // One known limit: picqer holds ONE callback slot and
+        // setTokenUpdateCallback overwrites it. A consumer that registers its
+        // own on the returned connection silently disables this persistence
+        // and reopens the outage above; such a consumer must chain the
+        // persist itself.
         $connection->setTokenUpdateCallback(function (Connection $picqer): void {
             $this->persistRotatedTokens($picqer);
+        });
+
+        // Serialise picqer-initiated refreshes. Without this, two workers
+        // hitting an expired token at once both POST the same single-use
+        // refresh token: one wins, the other gets invalid_grant and its call
+        // fails. The lock makes the loser wait, and the refresh callback then
+        // hands it the winner's freshly stored token so it skips its own
+        // request entirely.
+        //
+        // The key is deliberately NOT RefreshAccessTokenAction's
+        // "exact-token-refresh:{id}". That action calls getPicqerConnection()
+        // internally (RefreshAccessTokenAction::performTokenRefresh), so
+        // reusing its key would have the action deadlock against its own lock
+        // the moment picqer asked for a token. For the same reason the refresh
+        // callback below only READS the stored row — routing it back through
+        // the action would recurse action -> picqer -> action.
+        $lockKey = 'exact-picqer-token-refresh:'.$this->getKey();
+
+        $connection->setAcquireAccessTokenLockCallback(function () use ($lockKey): void {
+            $this->acquirePicqerRefreshLock($lockKey);
+        });
+
+        $connection->setAcquireAccessTokenUnlockCallback(function (): void {
+            $this->releasePicqerRefreshLock();
+        });
+
+        $connection->setRefreshAccessTokenCallback(function (Connection $picqer): void {
+            $this->adoptStoredTokensIfFresh($picqer);
         });
 
         return $connection;
@@ -314,6 +352,95 @@ class ExactConnection extends Model
                 'message' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * Adopt the stored token pair when another worker already refreshed.
+     *
+     * picqer calls this at the top of acquireAccessToken() and, if the
+     * connection is no longer expired afterwards, returns without making its
+     * own token request. So when we lost the race for the lock above, this is
+     * what stops us from POSTing a refresh token the winner already consumed.
+     *
+     * Deliberately a plain read of the stored row: routing it through
+     * RefreshAccessTokenAction would recurse, because that action builds a
+     * picqer connection of its own.
+     */
+    protected function adoptStoredTokensIfFresh(Connection $picqer): void
+    {
+        try {
+            $stored = $this->fresh();
+        } catch (\Throwable $e) {
+            return;
+        }
+
+        if ($stored === null || empty($stored->token_expires_at)) {
+            return;
+        }
+
+        // picqer treats a token as expired 10s before its stamp, so require
+        // more than that much life left or it will refresh anyway. A stale row
+        // is left alone: adopting it would only downgrade what picqer holds.
+        if ($stored->token_expires_at <= (now()->getTimestamp() + 10)) {
+            return;
+        }
+
+        $accessToken = $stored->getDecryptedAccessToken();
+        if (empty($accessToken)) {
+            return;
+        }
+
+        $picqer->setAccessToken($accessToken);
+        $picqer->setTokenExpires($stored->token_expires_at);
+
+        $refreshToken = $stored->getDecryptedRefreshToken();
+        if (! empty($refreshToken)) {
+            $picqer->setRefreshToken($refreshToken);
+        }
+    }
+
+    /**
+     * Hold a lock for the duration of picqer's own token acquisition.
+     *
+     * Blocking rather than failing is the point: the waiter goes on to adopt
+     * the winner's token instead of burning the rotated one. Lock trouble is
+     * never allowed to break the API call — the worst case is the
+     * unsynchronised behaviour we had before.
+     */
+    protected function acquirePicqerRefreshLock(string $lockKey): void
+    {
+        $this->picqerRefreshLock = null;
+
+        try {
+            $lock = Cache::lock($lockKey, 30);
+            $lock->block(15);
+            $this->picqerRefreshLock = $lock;
+        } catch (\Throwable $e) {
+            Log::warning('Could not serialise picqer token refresh; proceeding unsynchronised', [
+                'connection_id' => $this->id,
+                'exception_class' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Release the lock taken by acquirePicqerRefreshLock(). picqer calls this
+     * from a finally block, so it also runs when the refresh threw.
+     */
+    protected function releasePicqerRefreshLock(): void
+    {
+        if ($this->picqerRefreshLock === null) {
+            return;
+        }
+
+        try {
+            $this->picqerRefreshLock->release();
+        } catch (\Throwable $e) {
+            // A lock we cannot release will lapse on its own 30s TTL.
+        }
+
+        $this->picqerRefreshLock = null;
     }
 
     /**
