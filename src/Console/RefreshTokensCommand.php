@@ -6,6 +6,7 @@ namespace XVE\ExactonlineLaravelApi\Console;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use XVE\ExactonlineLaravelApi\Actions\OAuth\MonitorRefreshTokenExpiryAction;
 use XVE\ExactonlineLaravelApi\Actions\OAuth\RefreshAccessTokenAction;
 use XVE\ExactonlineLaravelApi\Exceptions\TokenRefreshException;
@@ -65,6 +66,17 @@ class RefreshTokensCommand extends Command
             $this->info("  [{$connection->name}] Access token refreshed successfully.");
         } catch (TokenRefreshException $e) {
             $this->error("  [{$connection->name}] Refresh failed: {$e->getMessage()}");
+
+            // Scheduled runs discard console output, so this was previously
+            // silent. A failing renewal means the connection is heading for a
+            // hard outage: once the stored refresh token passes its ~30-day
+            // idle expiry only a manual re-authorisation brings it back.
+            Log::error('Exact refresh-token renewal failed', [
+                'connection_id' => $connection->id,
+                'connection_name' => $connection->name,
+                'refresh_token_expires_at' => $connection->refresh_token_expires_at,
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 
