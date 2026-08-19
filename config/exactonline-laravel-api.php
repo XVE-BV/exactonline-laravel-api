@@ -76,6 +76,8 @@ return [
         'get_sales_invoices' => Actions\API\GetSalesInvoicesAction::class,
         'get_sales_invoice' => Actions\API\GetSalesInvoiceAction::class,
         'create_sales_invoice' => Actions\API\CreateSalesInvoiceAction::class,
+        'book_sales_invoice' => Actions\API\BookSalesInvoiceAction::class,
+        'get_sales_invoice_lines' => Actions\API\GetSalesInvoiceLinesAction::class,
         'sync_sales_invoice' => Actions\API\SyncSalesInvoiceAction::class,
 
         // API Operations - Purchase Orders
