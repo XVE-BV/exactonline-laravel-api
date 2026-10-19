@@ -319,6 +319,14 @@ class ExactConnection extends Model
             $this->adoptStoredTokensIfFresh($picqer);
         });
 
+        // Consumer-supplied Guzzle middleware sees every HTTP call this
+        // connection makes: each page picqer follows on its own, and the token
+        // calls picqer makes mid-request. That makes it the one place an app
+        // can count or audit Exact traffic exactly.
+        foreach (Config::getHttpMiddleware() as $middleware) {
+            $connection->insertMiddleWare($middleware);
+        }
+
         return $connection;
     }
 

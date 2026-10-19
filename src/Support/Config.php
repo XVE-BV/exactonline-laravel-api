@@ -131,4 +131,30 @@ class Config
     {
         return config('exactonline-laravel-api.models.rate_limit', ExactRateLimit::class);
     }
+
+    /**
+     * Guzzle middleware for every picqer connection, resolved from the
+     * container when given as a class name.
+     *
+     * @return list<callable>
+     */
+    public static function getHttpMiddleware(): array
+    {
+        $middleware = [];
+
+        foreach ((array) config('exactonline-laravel-api.connection.http_middleware', []) as $entry) {
+            $resolved = is_string($entry) && class_exists($entry) ? app($entry) : $entry;
+
+            if (! is_callable($resolved)) {
+                throw new \InvalidArgumentException(sprintf(
+                    'exactonline-laravel-api.connection.http_middleware entries must be Guzzle middleware callables or invokable classes, got %s.',
+                    get_debug_type($resolved),
+                ));
+            }
+
+            $middleware[] = $resolved;
+        }
+
+        return $middleware;
+    }
 }

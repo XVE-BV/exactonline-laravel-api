@@ -319,6 +319,13 @@ return [
             // Lock timeout in seconds (should be less than token lifetime)
             'lock_timeout' => env('EXACT_LOCK_TIMEOUT', 30),
         ],
+
+        // Guzzle middleware pushed onto every picqer connection, so it sees
+        // each HTTP call to Exact (including pages picqer follows itself and
+        // its own token refreshes). Each entry is an invokable class name
+        // (resolved from the container) or a callable with Guzzle's
+        // middleware shape: fn (callable $handler): callable.
+        'http_middleware' => [],
     ],
 
     /*

@@ -2,6 +2,10 @@
 
 All notable changes to `exactonline-laravel-api` will be documented in this file.
 
+## Unreleased
+
+Feature: `exactonline-laravel-api.connection.http_middleware` takes a list of Guzzle middleware (invokable class names resolved from the container, or callables) that `ExactConnection::getPicqerConnection()` pushes onto every picqer connection. Each HTTP call to Exact passes through it, including the result pages picqer follows on its own and the token refreshes it makes mid-request, so an app can count or audit Exact traffic exactly. Empty by default; no behavior change unless configured.
+
 ## v3.3.0 - 2026-06-11
 
 Feature: MCP tool output now anonymizes personal/customer-identifying data by default. Names (account, contact, `OrderedByName`, `InvoiceToName`), addresses (street/city/postcode/country), emails, phone numbers, IBAN/BIC, VAT/CoC registration numbers, and free-text remarks are replaced with deterministic fake values seeded by sha1 of the original (same input → same fake output, not reversible). Business data — order/invoice numbers, amounts, quantities, dates, GUIDs/IDs, item codes, GL accounts, VAT codes — is never touched. Disable with `EXACT_MCP_ANONYMIZE=false` (e.g. in a trusted internal debugging environment). Config key: `exactonline-laravel-api.mcp.anonymize`.
