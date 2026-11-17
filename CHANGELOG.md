@@ -2,6 +2,10 @@
 
 All notable changes to `exactonline-laravel-api` will be documented in this file.
 
+## Unreleased
+
+Feature: `DeleteAccountAction` deletes an account in Exact Online, through the same token refresh, rate-limit check and usage tracking as the other account actions. Registered as `delete_account` in the action config. Exact may refuse the delete; that refusal is thrown as a `ConnectionException` carrying Exact's message.
+
 ## v3.3.0 - 2026-06-11
 
 Feature: MCP tool output now anonymizes personal/customer-identifying data by default. Names (account, contact, `OrderedByName`, `InvoiceToName`), addresses (street/city/postcode/country), emails, phone numbers, IBAN/BIC, VAT/CoC registration numbers, and free-text remarks are replaced with deterministic fake values seeded by sha1 of the original (same input → same fake output, not reversible). Business data — order/invoice numbers, amounts, quantities, dates, GUIDs/IDs, item codes, GL accounts, VAT codes — is never touched. Disable with `EXACT_MCP_ANONYMIZE=false` (e.g. in a trusted internal debugging environment). Config key: `exactonline-laravel-api.mcp.anonymize`.

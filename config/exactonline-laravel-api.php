@@ -49,6 +49,7 @@ return [
         'get_account' => Actions\API\GetAccountAction::class,
         'create_account' => Actions\API\CreateAccountAction::class,
         'update_account' => Actions\API\UpdateAccountAction::class,
+        'delete_account' => Actions\API\DeleteAccountAction::class,
         'sync_account' => Actions\API\SyncAccountAction::class,
 
         // API Operations - Contacts
